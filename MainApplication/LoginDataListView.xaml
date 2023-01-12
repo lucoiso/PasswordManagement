@@ -1,6 +1,6 @@
 ﻿<!-- Author: Lucas Oliveira Vilas-Bôas -->
 <!-- Year: 2022 -->
-<!-- Repository: -->
+<!-- Repository: https://github.com/lucoiso/PasswordManagement -->
 
 <UserControl
     x:Class="MainApplication.LoginDataListView"
