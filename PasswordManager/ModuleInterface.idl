@@ -1,0 +1,50 @@
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository:
+
+namespace PasswordManager
+{ 
+	enum LoginDataFileType
+	{
+		Undefined,
+		CSV,
+		TXT,
+		MAX
+	};
+
+	[default_interface]
+	runtimeclass LoginData
+	{
+		LoginData();
+
+		String Name;
+		String Url;
+		String Username;
+		String Password;
+
+		String getDataAsString(LoginDataFileType type);
+
+		Boolean hasEmptyData();
+		void resetLoginData();
+	}
+
+	[default_interface]
+	runtimeclass LoginUpdateEventParams
+	{
+		LoginUpdateEventParams(LoginData data, LoginDataFileType type);
+
+		LoginData Data{ get; };
+		LoginDataFileType Type{ get; };
+	};
+
+	[default_interface]
+	runtimeclass LoginDataManager
+	{
+		LoginDataManager();
+
+		Windows.Foundation.IAsyncAction importData(Windows.Storage.StorageFile file);
+		Windows.Foundation.IAsyncAction exportData(Windows.Storage.StorageFile file, Windows.Foundation.Collections.IVectorView<LoginData> data);
+
+		event Windows.Foundation.EventHandler<LoginUpdateEventParams> LoginDataUpdated;
+	}
+}

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Midl Include="App.idl" />
+    <Midl Include="MainWindow.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Wide310x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\LockScreenLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{7b626a51-a470-41e2-aa1d-c8ea46edb072}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{edbbc367-ed1d-415a-a91d-5c22cbd73aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development">
+      <UniqueIdentifier>{3109d630-d6fa-4fd6-9f59-8ec4b0faa357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Xaml">
+      <UniqueIdentifier>{28e0f676-d233-4915-93dc-d5da44585cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Xaml\Main">
+      <UniqueIdentifier>{f7f4139f-7061-45e0-881a-966057f97176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Xaml\Controls">
+      <UniqueIdentifier>{0fa9e384-e755-466a-b8e5-23caeeb07644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Xaml\Pages">
+      <UniqueIdentifier>{cd317509-2e88-469b-a340-7dd462334792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Source Files">
+      <UniqueIdentifier>{408ac38b-1cb7-40fe-9fa8-a793509bc45e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\Header Files">
+      <UniqueIdentifier>{4c890565-4364-48e6-9634-260e0b851f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Development\MIDL Files">
+      <UniqueIdentifier>{9fc13aa1-adfd-4a3d-8f4f-1076a0cd1b3d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Filter>Development\Xaml\Main</Filter>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="app.manifest">
+      <Filter>Settings</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <Filter>Settings</Filter>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Settings</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="LoginDataListView.xaml">
+      <Filter>Development\Xaml\Controls</Filter>
+    </Page>
+    <Page Include="LoginDataTypeComboBox.xaml">
+      <Filter>Development\Xaml\Controls</Filter>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Filter>Development\Xaml\Main</Filter>
+    </Page>
+  </ItemGroup>
+</Project>
