@@ -7,19 +7,17 @@
 #include "LoginData.g.h"
 
 namespace winrt::PasswordManager::implementation
-{
+{    
     struct LoginData : LoginDataT<LoginData>
     {
         LoginData() = default;
-
-        const bool operator==(const LoginData& rhs) const
+        inline bool operator==(const LoginData& rhs) const
         {
-			return Name() == rhs.Name() && Url() == rhs.Url() && Username() == rhs.Username();
+            return this->Name() == rhs.Name() && this->Url() == rhs.Url() && this->Username() == rhs.Username();
         }
 
-        winrt::PasswordManager::LoginData Copy() const;
-
-        const bool IsEqual(winrt::PasswordManager::LoginData const& rhs) const;
+        winrt::PasswordManager::IFunctionalData Clone() const;
+        const bool Equals(winrt::PasswordManager::IFunctionalData const& rhs) const;
 
 #pragma region Getters and Setters
         hstring Name() const;

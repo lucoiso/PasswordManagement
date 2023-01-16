@@ -32,7 +32,7 @@ namespace winrt::MainApplication::implementation
 
     winrt::Windows::Foundation::IAsyncAction MainPage::performDataImport()
     {
-        for (const auto& iterator : co_await Helper::chooseFileInput())
+        for (const auto& iterator : co_await Helper::loadPasswordDataFiles())
         {
             if (!iterator)
             {
@@ -54,7 +54,7 @@ namespace winrt::MainApplication::implementation
 
     winrt::Windows::Foundation::IAsyncAction MainPage::performDataExport()
     {
-        if (const auto exported_file = co_await Helper::chooseFileDestination(MO_DataOptions().SelectedExportDataType()))
+        if (const auto exported_file = co_await Helper::savePasswordDataFile(MO_DataOptions().SelectedExportDataType()))
         {
             this->m_manager.exportData(exported_file, LI_LoginData().Data().GetView());
         }

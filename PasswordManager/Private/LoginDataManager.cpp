@@ -150,9 +150,9 @@ namespace winrt::PasswordManager::implementation
 
 			for (unsigned int iterator = 0u; iterator <= num_columns; ++iterator)
 			{
-				const unsigned int nextSeparatorIndex = static_cast<unsigned int>(iterator == num_columns - 1 ? std_line.size() - currentSeparatorIndex : static_cast<unsigned int>(std_line.find(',', currentSeparatorIndex + 1u)));
+				const unsigned int nextSeparatorIndex = static_cast<unsigned int>(iterator == num_columns ? std_line.size() - 1 : std_line.find(',', currentSeparatorIndex));
 
-				const hstring value_hstr = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex));
+				const hstring value_hstr = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex - currentSeparatorIndex));
 				switch (iterator)
 				{
 					case 0u:

@@ -12,13 +12,16 @@ namespace PasswordManager
 		MAX
 	};
 
+	interface IFunctionalData
+	{
+		IFunctionalData Clone();
+		Boolean Equals(IFunctionalData rhs);
+	};
+
 	[default_interface]
-	runtimeclass LoginData
+	runtimeclass LoginData : IFunctionalData
 	{
 		LoginData();
-
-		LoginData Copy();
-		Boolean IsEqual(LoginData rhs);
 
 		String Name;
 		String Url;

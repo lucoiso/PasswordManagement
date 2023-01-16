@@ -15,7 +15,7 @@ using namespace winrt::MainApplication;
 
 namespace Helper
 {
-    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Storage::StorageFile>> chooseFileInput()
+    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Storage::StorageFile>> loadPasswordDataFiles()
     {
         winrt::Windows::Storage::Pickers::FileOpenPicker file_picker;
         file_picker.as<IInitializeWithWindow>()->Initialize(winrt::MainApplication::implementation::App::getWindowHandle());
@@ -26,7 +26,7 @@ namespace Helper
         return file_picker.PickMultipleFilesAsync();
     }
 
-    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> chooseFileDestination(const winrt::PasswordManager::LoginDataFileType& export_mode)
+    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> savePasswordDataFile(const winrt::PasswordManager::LoginDataFileType& export_mode)
     {
         winrt::Windows::Storage::Pickers::FileSavePicker file_picker;
         file_picker.as<IInitializeWithWindow>()->Initialize(winrt::MainApplication::implementation::App::getWindowHandle());
@@ -58,6 +58,7 @@ namespace Helper
         try
         {
             const winrt::Windows::Storage::StorageFolder localAppDir = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
+            Helper::printDebugLine(localAppDir.Path().c_str());
 
             if (const auto existingFile = co_await localAppDir.TryGetItemAsync(L"app_data.csv"))
             {

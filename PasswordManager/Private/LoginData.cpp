@@ -11,20 +11,20 @@
 
 namespace winrt::PasswordManager::implementation
 {
-    winrt::PasswordManager::LoginData LoginData::Copy() const
+    winrt::PasswordManager::IFunctionalData LoginData::Clone() const
     {
-        winrt::PasswordManager::LoginData newData_Copy;
-        newData_Copy.Name(Name());
-        newData_Copy.Url(Url());
-        newData_Copy.Username(Username());
-        newData_Copy.Password(Password());
-        
-        return newData_Copy;
+        winrt::PasswordManager::LoginData output;
+        output.Name(this->m_name);
+        output.Url(this->m_url);
+        output.Username(this->m_username);
+        output.Password(this->m_password);
+
+        return output;
     }
 
-    const bool LoginData::IsEqual(winrt::PasswordManager::LoginData const& rhs) const
+    const bool LoginData::Equals(winrt::PasswordManager::IFunctionalData const& rhs) const
     {
-        return Name() == rhs.Name() && Url() == rhs.Url() && Username() == rhs.Username();;
+        return *this == *rhs.try_as<LoginData>().get();
     }
 
 #pragma region Getters and Setters
