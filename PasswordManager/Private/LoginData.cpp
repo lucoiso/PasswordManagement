@@ -11,6 +11,22 @@
 
 namespace winrt::PasswordManager::implementation
 {
+    winrt::PasswordManager::LoginData LoginData::Copy() const
+    {
+        winrt::PasswordManager::LoginData newData_Copy;
+        newData_Copy.Name(Name());
+        newData_Copy.Url(Url());
+        newData_Copy.Username(Username());
+        newData_Copy.Password(Password());
+        
+        return newData_Copy;
+    }
+
+    const bool LoginData::IsEqual(winrt::PasswordManager::LoginData const& rhs) const
+    {
+        return Name() == rhs.Name() && Url() == rhs.Url() && Username() == rhs.Username();;
+    }
+
 #pragma region Getters and Setters
     hstring LoginData::Name() const
     {

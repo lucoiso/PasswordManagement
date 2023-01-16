@@ -7,6 +7,8 @@
 #include "LoginDataListView.xaml.h"
 #include "LoginDataListView.g.cpp"
 
+#include <Helper.h>
+
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -21,21 +23,17 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListView::insertDataInList(winrt::PasswordManager::LoginData const& data)
     {
-        winrt::PasswordManager::LoginData newData_Copy;
-        newData_Copy.Name(data.Name());
-        newData_Copy.Url(data.Url());
-        newData_Copy.Username(data.Username());
-        newData_Copy.Password(data.Password());
+        const winrt::PasswordManager::LoginData newData_Copy = data.Copy();
 
-		if (const auto matchingIterator = std::find(this->m_data.begin(), this->m_data.end(), newData_Copy);
-            matchingIterator != this->m_data.end())
+		if (const auto matchingIterator = std::find_if(this->m_data.begin(), this->m_data.end(), [newData_Copy](const winrt::PasswordManager::LoginData& element) { return element.IsEqual(newData_Copy); }); matchingIterator != this->m_data.end())
 		{
 			const unsigned int index = static_cast<unsigned int>(std::distance(this->m_data.begin(), matchingIterator));
+            Helper::printDebugLine(L"Replacing existing data: " + this->m_data.GetAt(index).Name());
 			this->m_data.SetAt(index, newData_Copy);
             
             return;
 		}
-
+        
         this->m_data.Append(newData_Copy);
     }
 
@@ -46,6 +44,6 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListView::Sort([[maybe_unused]] winrt::MainApplication::DataSortMode const& mode, [[maybe_unused]] winrt::MainApplication::DataSortOrientation const& orientation)
     {
-
+        // TODO
     }
 }

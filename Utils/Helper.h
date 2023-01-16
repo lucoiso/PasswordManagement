@@ -8,6 +8,7 @@
 
 #include <string>
 #include <hstring.h>
+#include <chrono>
 
 namespace Helper
 {

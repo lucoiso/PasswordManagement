@@ -17,6 +17,9 @@ namespace PasswordManager
 	{
 		LoginData();
 
+		LoginData Copy();
+		Boolean IsEqual(LoginData rhs);
+
 		String Name;
 		String Url;
 		String Username;

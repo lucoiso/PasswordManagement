@@ -17,6 +17,10 @@ namespace winrt::PasswordManager::implementation
 			return Name() == rhs.Name() && Url() == rhs.Url() && Username() == rhs.Username();
         }
 
+        winrt::PasswordManager::LoginData Copy() const;
+
+        const bool IsEqual(winrt::PasswordManager::LoginData const& rhs) const;
+
 #pragma region Getters and Setters
         hstring Name() const;
         void Name(hstring const& value);
