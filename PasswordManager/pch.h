@@ -18,3 +18,6 @@
 #include <wil/cppwinrt_helpers.h>
 
 #include <winrt/Windows.Storage.h>
+#include <winrt/Windows.Security.Cryptography.h>
+#include <winrt/Windows.Security.DataProtection.h>
+#include <winrt/Windows.Storage.Streams.h>

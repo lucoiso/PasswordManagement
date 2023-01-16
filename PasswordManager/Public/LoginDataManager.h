@@ -23,11 +23,16 @@ namespace winrt::PasswordManager::implementation
 
         void sendData(const winrt::PasswordManager::LoginData& data, const winrt::PasswordManager::LoginDataFileType& type);
 
+        void readBinaryData(const winrt::Windows::Foundation::Collections::IVectorView<hstring>& file_text);
+        winrt::Windows::Foundation::IAsyncAction writeBinaryData(const winrt::Windows::Storage::StorageFile& file, const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data) const;
+
         void readTextData(const winrt::Windows::Foundation::Collections::IVectorView<hstring>& file_text);
         winrt::Windows::Foundation::IAsyncAction writeTextData(const winrt::Windows::Storage::StorageFile& file, const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data) const;
 
         void readCsvData(const winrt::Windows::Foundation::Collections::IVectorView<hstring>& file_text);
         winrt::Windows::Foundation::IAsyncAction writeCsvData(const winrt::Windows::Storage::StorageFile& file, const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data) const;
+
+		void processCsvLine(const winrt::hstring line, winrt::PasswordManager::LoginData& current_data, const winrt::PasswordManager::LoginDataFileType& data_type);
     };
 }
 namespace winrt::PasswordManager::factory_implementation

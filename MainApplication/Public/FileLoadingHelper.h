@@ -22,6 +22,7 @@ namespace Helper
 
         file_picker.FileTypeFilter().Append(L".txt");
         file_picker.FileTypeFilter().Append(L".csv");
+        file_picker.FileTypeFilter().Append(L".bin");
 
         return file_picker.PickMultipleFilesAsync();
     }
@@ -43,6 +44,10 @@ namespace Helper
                 file_types.Append(L".txt");
                 break;
 
+            case winrt::PasswordManager::LoginDataFileType::BIN:
+                file_types.Append(L".bin");
+                break;
+
             default:
                 throw winrt::hresult_not_implemented(L"not implemented yet");
                 break;
@@ -60,12 +65,12 @@ namespace Helper
             const winrt::Windows::Storage::StorageFolder localAppDir = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
             Helper::printDebugLine(localAppDir.Path().c_str());
 
-            if (const auto existingFile = co_await localAppDir.TryGetItemAsync(L"app_data.csv"))
+            if (const auto existingFile = co_await localAppDir.TryGetItemAsync(L"data.bin"))
             {
-                co_return co_await localAppDir.GetFileAsync(L"app_data.csv");
+                co_return co_await localAppDir.GetFileAsync(L"data.bin");
             }
 
-            co_return co_await localAppDir.CreateFileAsync(L"app_data.csv");
+            co_return co_await localAppDir.CreateFileAsync(L"data.bin");
         }
         catch (const winrt::hresult_error& e)
         {

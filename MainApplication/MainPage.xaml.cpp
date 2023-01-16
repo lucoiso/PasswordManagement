@@ -39,14 +39,7 @@ namespace winrt::MainApplication::implementation
                 continue;
             }
 
-            if (iterator.FileType() == L".txt")
-            {
-                this->m_manager.importData(iterator);
-            }
-            else if (iterator.FileType() == L".csv")
-            {
-                this->m_manager.importData(iterator);
-            }
+            this->m_manager.importData(iterator);
         }
 
         saveLocalData();

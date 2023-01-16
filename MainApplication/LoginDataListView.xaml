@@ -13,18 +13,18 @@
     mc:Ignorable="d">
 
 	<StackPanel Orientation="Vertical">
-	<ListView Margin="4" Height="600" Width="600" CornerRadius="4" ItemsSource="{x:Bind Data}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="Single">
-		<ListView.ItemTemplate>
-			<DataTemplate x:DataType="manager:LoginData">
-				<StackPanel Orientation="Vertical">
-					<TextBlock Text="{x:Bind Name}" Style="{ThemeResource BodyTextBlockStyle}"/>
-					<TextBlock Text="{x:Bind Url}" Style="{ThemeResource BodyTextBlockStyle}"/>
-					<TextBlock Text="{x:Bind Username}" Style="{ThemeResource BodyTextBlockStyle}"/>
-					<TextBlock Text="{x:Bind Password}" Style="{ThemeResource BodyTextBlockStyle}"/>
-				</StackPanel>
-			</DataTemplate>
-		</ListView.ItemTemplate>
-	</ListView>
-	<TextBlock x:Name="TB_EntriesNum"/>
+		<ListView Margin="4" Height="600" Width="600" CornerRadius="4" ItemsSource="{x:Bind Data}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="Single">
+			<ListView.ItemTemplate>
+				<DataTemplate x:DataType="manager:LoginData">
+					<StackPanel Orientation="Vertical" Margin="4">
+						<TextBlock Text="{x:Bind Name}" Style="{ThemeResource BodyTextBlockStyle}"/>
+						<TextBlock Text="{x:Bind Url}" Style="{ThemeResource BodyTextBlockStyle}"/>
+						<TextBlock Text="{x:Bind Username}" Style="{ThemeResource BodyTextBlockStyle}"/>
+						<!-- <TextBlock Text="{x:Bind Password}" Style="{ThemeResource BodyTextBlockStyle}"/> -->
+					</StackPanel>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+		<TextBlock Margin="4" x:Name="TB_EntriesNum"/>
 	</StackPanel>
 </UserControl>

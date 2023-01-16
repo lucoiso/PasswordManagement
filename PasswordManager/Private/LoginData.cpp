@@ -74,6 +74,7 @@ namespace winrt::PasswordManager::implementation
         switch (inType)
         {
         case winrt::PasswordManager::LoginDataFileType::CSV:
+        case winrt::PasswordManager::LoginDataFileType::BIN:
             return getDataAsString_CSV_Internal();
 
         case winrt::PasswordManager::LoginDataFileType::TXT:

@@ -9,6 +9,7 @@ namespace PasswordManager
 		Undefined,
 		CSV,
 		TXT,
+		BIN,
 		MAX
 	};
 

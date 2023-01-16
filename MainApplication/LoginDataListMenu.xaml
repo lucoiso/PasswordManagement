@@ -24,9 +24,9 @@
 		</ComboBox>
 
 		<ComboBox x:Name="CB_ExportMode" PlaceholderText="Export Mode" Grid.Row="2" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
-			<x:String>Kapersky</x:String>
-			<x:String>Google</x:String>
-			<x:String>Microsoft</x:String>
+			<x:String>.txt</x:String>
+			<x:String>.csv</x:String>
+			<x:String>.bin</x:String>
 		</ComboBox>
 		
 		<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Import</Button>

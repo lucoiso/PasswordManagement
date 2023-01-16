@@ -31,13 +31,17 @@ namespace winrt::MainApplication::implementation
     {
         const hstring selectedValue = winrt::unbox_value<hstring>(CB_ExportMode().SelectedItem());
 
-        if (selectedValue == L"Kapersky")
+        if (selectedValue == L".txt")
         {
             return winrt::PasswordManager::LoginDataFileType::TXT;
         }
-        else if (selectedValue == L"Google" || selectedValue == L"Microsoft")
+        else if (selectedValue == L".csv")
         {
             return winrt::PasswordManager::LoginDataFileType::CSV;
+        }
+        else if (selectedValue == L".bin")
+        {
+            return winrt::PasswordManager::LoginDataFileType::BIN;
         }
 
         return winrt::PasswordManager::LoginDataFileType::Undefined;
