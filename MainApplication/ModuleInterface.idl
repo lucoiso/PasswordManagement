@@ -1,0 +1,25 @@
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository: https://github.com/lucoiso/PasswordManagement
+
+namespace MainApplication
+{
+    enum DataSortMode
+    {
+        Undefined,
+        Name,
+        Url,
+        Username,
+        MAX
+    };
+
+    enum DataSortOrientation
+    {
+        Undefined,
+        Ascending,
+        Descending,
+        MAX
+    };
+    
+    delegate void SingleVoidDelegate();
+}

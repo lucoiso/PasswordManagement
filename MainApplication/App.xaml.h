@@ -14,7 +14,11 @@ namespace winrt::MainApplication::implementation
 
         void OnLaunched(Microsoft::UI::Xaml::LaunchActivatedEventArgs const&);
 
+        winrt::Microsoft::UI::Xaml::Window Window() const;
+
+        static HWND getWindowHandle();
+
     private:
-        winrt::Microsoft::UI::Xaml::Window window{ nullptr };
+        winrt::Microsoft::UI::Xaml::Window m_window{ nullptr };
     };
 }

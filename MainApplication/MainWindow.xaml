@@ -11,13 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-			<Button Margin="4" x:Name="BP_Import" Click="BP_Import_Click">Import</Button>
-			<Button Margin="4" x:Name="BP_Export" Click="BP_Export_Click">Export</Button>
-			<local:LoginDataTypeComboBox x:Name="CB_ExportMode"/>
-		</StackPanel>
-
-		<local:LoginDataListView x:Name="LI_LoginData"/>
-	</StackPanel>
+	<ScrollViewer HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
+		<local:MainPage/>
+	</ScrollViewer>
 </Window>

@@ -1,0 +1,21 @@
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository: https://github.com/lucoiso/PasswordManagement
+
+import "ModuleInterface.idl";
+
+namespace MainApplication
+{
+    [default_interface]
+    runtimeclass LoginDataListMenu : Microsoft.UI.Xaml.Controls.UserControl
+    {
+        LoginDataListMenu();
+
+        PasswordManager.LoginDataFileType SelectedExportDataType{ get; };        
+        DataSortMode SelectedSortingMode{ get; };        
+        DataSortOrientation SelectedSortingOrientation{ get; };
+
+        event MainApplication.SingleVoidDelegate ImportPressed;
+        event MainApplication.SingleVoidDelegate ExportPressed;
+    }
+}

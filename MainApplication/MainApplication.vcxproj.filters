@@ -3,6 +3,9 @@
   <ItemGroup>
     <Midl Include="App.idl" />
     <Midl Include="MainWindow.idl" />
+    <Midl Include="ModuleInterface.idl">
+      <Filter>Development\MIDL Files</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
@@ -91,6 +94,9 @@
     <ClInclude Include="pch.h">
       <Filter>Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Public\FileLoadingHelper.h">
+      <Filter>Development\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
@@ -99,11 +105,14 @@
     <Page Include="LoginDataListView.xaml">
       <Filter>Development\Xaml\Controls</Filter>
     </Page>
-    <Page Include="LoginDataTypeComboBox.xaml">
-      <Filter>Development\Xaml\Controls</Filter>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Filter>Development\Xaml\Main</Filter>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <Filter>Development\Xaml\Pages</Filter>
+    </Page>
+    <Page Include="LoginDataListMenu.xaml">
+      <Filter>Development\Xaml\Controls</Filter>
     </Page>
   </ItemGroup>
 </Project>

@@ -12,6 +12,11 @@ namespace winrt::PasswordManager::implementation
     {
         LoginData() = default;
 
+        const bool operator==(const LoginData& rhs) const
+        {
+			return Name() == rhs.Name() && Url() == rhs.Url() && Username() == rhs.Username();
+        }
+
 #pragma region Getters and Setters
         hstring Name() const;
         void Name(hstring const& value);

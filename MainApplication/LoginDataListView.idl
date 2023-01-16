@@ -2,6 +2,8 @@
 // Year: 2022
 // Repository: https://github.com/lucoiso/PasswordManagement
 
+import "ModuleInterface.idl";
+
 namespace MainApplication
 {
     [default_interface]
@@ -11,5 +13,7 @@ namespace MainApplication
 
         void insertDataInList(PasswordManager.LoginData data);
         Windows.Foundation.Collections.IVector<PasswordManager.LoginData> Data{ get; };
+
+        void Sort(DataSortMode mode, DataSortOrientation orientation);
     }
 }

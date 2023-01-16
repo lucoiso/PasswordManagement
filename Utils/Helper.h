@@ -4,7 +4,10 @@
 
 #pragma once
 
+#include "Constants.h"
+
 #include <string>
+#include <hstring.h>
 
 namespace Helper
 {
@@ -34,5 +37,14 @@ namespace Helper
 	inline const bool stringContains(const std::string& string, const std::string& find)
 	{
 		return string.find(find) != std::string::npos;
+	}
+
+	inline void printDebugLine(const winrt::hstring& message)
+	{
+		if constexpr (ALLOW_DEBBUGGING)
+		{
+			OutputDebugStringW(message.c_str());
+			OutputDebugStringW(L"\n");
+		}
 	}
 }

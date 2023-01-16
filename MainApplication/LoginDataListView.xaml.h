@@ -4,9 +4,6 @@
 
 #pragma once
 
-#include "winrt/Microsoft.UI.Xaml.h"
-#include "winrt/Microsoft.UI.Xaml.Markup.h"
-#include "winrt/Microsoft.UI.Xaml.Controls.Primitives.h"
 #include "LoginDataListView.g.h"
 
 namespace winrt::MainApplication::implementation
@@ -17,6 +14,8 @@ namespace winrt::MainApplication::implementation
 
         void insertDataInList(winrt::PasswordManager::LoginData const& data);
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::PasswordManager::LoginData> Data() const;
+
+		void Sort(winrt::MainApplication::DataSortMode const& mode, winrt::MainApplication::DataSortOrientation const& orientation);
 
     private:
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::PasswordManager::LoginData> m_data;
