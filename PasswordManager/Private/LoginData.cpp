@@ -9,20 +9,22 @@
 
 #include "Helper.h"
 
+using namespace winrt;
+
 namespace winrt::PasswordManager::implementation
 {
-    winrt::PasswordManager::IFunctionalData LoginData::Clone() const
+    PasswordManager::IFunctionalData LoginData::Clone() const
     {
-        winrt::PasswordManager::LoginData output;
-        output.Name(this->m_name);
-        output.Url(this->m_url);
-        output.Username(this->m_username);
-        output.Password(this->m_password);
+        PasswordManager::LoginData output;
+        output.Name(m_name);
+        output.Url(m_url);
+        output.Username(m_username);
+        output.Password(m_password);
 
         return output;
     }
 
-    const bool LoginData::Equals(winrt::PasswordManager::IFunctionalData const& rhs) const
+    const bool LoginData::Equals(PasswordManager::IFunctionalData const& rhs) const
     {
         return *this == *rhs.try_as<LoginData>().get();
     }
@@ -30,54 +32,54 @@ namespace winrt::PasswordManager::implementation
 #pragma region Getters and Setters
     hstring LoginData::Name() const
     {
-        return this->m_name;
+        return m_name;
     }
 
     void LoginData::Name(hstring const& value)
     {
-        Helper::setMemberValue(value, this->m_name);
+        Helper::setMemberValue(value, m_name);
     }
 
     hstring LoginData::Url() const
     {
-        return this->m_url;
+        return m_url;
     }
 
     void LoginData::Url(hstring const& value)
     {
-        Helper::setMemberValue(value, this->m_url);
+        Helper::setMemberValue(value, m_url);
     }
 
     hstring LoginData::Username() const
     {
-        return this->m_username;
+        return m_username;
     }
 
     void LoginData::Username(hstring const& value)
     {
-        Helper::setMemberValue(value, this->m_username);
+        Helper::setMemberValue(value, m_username);
     }
 
     hstring LoginData::Password() const
     {
-        return this->m_password;
+        return m_password;
     }
 
     void LoginData::Password(hstring const& value)
     {
-        Helper::setMemberValue(value, this->m_password);
+        Helper::setMemberValue(value, m_password);
     }
 #pragma endregion Getters and Setters
 
-    hstring LoginData::getDataAsString(winrt::PasswordManager::LoginDataFileType const& inType) const
+    hstring LoginData::getDataAsString(PasswordManager::LoginDataFileType const& inType) const
     {
         switch (inType)
         {
-        case winrt::PasswordManager::LoginDataFileType::CSV:
-        case winrt::PasswordManager::LoginDataFileType::BIN:
+        case PasswordManager::LoginDataFileType::CSV:
+        case PasswordManager::LoginDataFileType::BIN:
             return getDataAsString_CSV_Internal();
 
-        case winrt::PasswordManager::LoginDataFileType::TXT:
+        case PasswordManager::LoginDataFileType::TXT:
             return getDataAsString_TXT_Internal();
 
         default:
@@ -88,24 +90,24 @@ namespace winrt::PasswordManager::implementation
 
     bool LoginData::hasEmptyData() const
     {
-        return Helper::hasEmptyData(this->m_name, this->m_url, this->m_username, this->m_password);
+        return Helper::hasEmptyData(m_name, m_url, m_username, m_password);
     }
 
     void LoginData::resetLoginData()
     {
-        this->m_name.clear();
-        this->m_url.clear();
-        this->m_username.clear();
-        this->m_password.clear();
+        m_name.clear();
+        m_url.clear();
+        m_username.clear();
+        m_password.clear();
     }
 
     hstring LoginData::getDataAsString_CSV_Internal() const
     {
-        return this->m_name + L"," + this->m_url + L"," + this->m_username + L"," + this->m_password;
+        return m_name + L"," + m_url + L"," + m_username + L"," + m_password;
     }
 
     hstring LoginData::getDataAsString_TXT_Internal() const
     {
-        return L"Website name: " + this->m_name + L"\nWebsite URL: " + this->m_url + L"\nLogin name: \nLogin: " + this->m_username + L"\nPassword: " + this->m_password + L"\nComment: \n\n---\n\n";
+        return L"Website name: " + m_name + L"\nWebsite URL: " + m_url + L"\nLogin name: \nLogin: " + m_username + L"\nPassword: " + m_password + L"\nComment: \n\n---\n\n";
     }
 }

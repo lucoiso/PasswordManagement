@@ -12,13 +12,13 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListView();
 
-        void insertDataInList(winrt::PasswordManager::LoginData const& data);
-        winrt::Windows::Foundation::Collections::IObservableVector<winrt::PasswordManager::LoginData> Data() const;
+        void insertDataInList(PasswordManager::LoginData const& data);
+        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> Data() const;
 
-		void Sort(winrt::MainApplication::DataSortMode const& mode, winrt::MainApplication::DataSortOrientation const& orientation);
+        void Sort(MainApplication::DataSortMode const& mode, MainApplication::DataSortOrientation const& orientation);
 
     private:
-        winrt::Windows::Foundation::Collections::IObservableVector<winrt::PasswordManager::LoginData> m_data;
+        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_data;
     };
 }
 

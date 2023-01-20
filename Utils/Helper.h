@@ -9,7 +9,7 @@
 #include <string>
 #include <hstring.h>
 
-namespace Helper
+namespace winrt::Helper
 {
 	template <typename T>
 	inline constexpr void setMemberValue(const T& value, T& member)
@@ -39,7 +39,7 @@ namespace Helper
 		return string.find(find) != std::string::npos;
 	}
 
-	inline void printDebugLine(const winrt::hstring& message)
+	inline void printDebugLine(const hstring& message)
 	{
 		if constexpr (ALLOW_DEBBUGGING)
 		{

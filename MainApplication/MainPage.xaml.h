@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
 
@@ -14,20 +15,20 @@ namespace winrt::MainApplication::implementation
         void InitializeSubobjects();
 
     protected:
-        winrt::Windows::Foundation::IAsyncAction performDataImport();
-        winrt::Windows::Foundation::IAsyncAction performDataExport();
+        Windows::Foundation::IAsyncAction performDataImport();
+        Windows::Foundation::IAsyncAction performDataExport();
 
     private:
-        winrt::PasswordManager::LoginDataManager m_manager;
-        winrt::event_token m_data_update_token;
-        winrt::event_token m_data_import_token;
-        winrt::event_token m_data_export_token;
+        PasswordManager::LoginDataManager m_manager;
+        event_token m_data_update_token;
+        event_token m_data_import_token;
+        event_token m_data_export_token;
 
         void bindDataUpdate();
         void bindDataLoad();
         
-        winrt::Windows::Foundation::IAsyncAction loadLocalData();
-        winrt::Windows::Foundation::IAsyncAction saveLocalData();
+        Windows::Foundation::IAsyncAction loadLocalData();
+        Windows::Foundation::IAsyncAction saveLocalData();
     };
 }
 

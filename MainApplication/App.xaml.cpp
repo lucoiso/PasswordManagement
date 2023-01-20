@@ -39,18 +39,18 @@ void App::OnLaunched(LaunchActivatedEventArgs const&)
     m_window.Activate();
 }
 
-Window winrt::MainApplication::implementation::App::Window() const
+Window MainApplication::implementation::App::Window() const
 {
     return m_window;
 }
 
-HWND winrt::MainApplication::implementation::App::getWindowHandle()
+HWND MainApplication::implementation::App::getWindowHandle()
 {    
-    const winrt::Microsoft::UI::Xaml::Window currentWindow = Application::Current().try_as<App>()->Window();
-    winrt::check_bool(currentWindow);
+    const Microsoft::UI::Xaml::Window currentWindow = Application::Current().try_as<App>()->Window();
+    check_bool(currentWindow);
 
     auto windowNative{ currentWindow.try_as<IWindowNative>() };
-    winrt::check_bool(windowNative);
+    check_bool(windowNative);
 
     HWND output{ 0 };
     windowNative->get_WindowHandle(&output);

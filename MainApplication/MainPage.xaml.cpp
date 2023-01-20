@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
 #include "MainPage.xaml.h"
@@ -30,7 +31,7 @@ namespace winrt::MainApplication::implementation
         loadLocalData();
     }
 
-    winrt::Windows::Foundation::IAsyncAction MainPage::performDataImport()
+    Windows::Foundation::IAsyncAction MainPage::performDataImport()
     {
         for (const auto& iterator : co_await Helper::loadPasswordDataFiles())
         {
@@ -39,17 +40,17 @@ namespace winrt::MainApplication::implementation
                 continue;
             }
 
-            this->m_manager.importData(iterator);
+            m_manager.importData(iterator);
         }
 
         saveLocalData();
     }
 
-    winrt::Windows::Foundation::IAsyncAction MainPage::performDataExport()
+    Windows::Foundation::IAsyncAction MainPage::performDataExport()
     {
         if (const auto exported_file = co_await Helper::savePasswordDataFile(MO_DataOptions().SelectedExportDataType()))
         {
-            this->m_manager.exportData(exported_file, LI_LoginData().Data().GetView());
+            m_manager.exportData(exported_file, LI_LoginData().Data().GetView());
         }
     }
 
@@ -60,7 +61,7 @@ namespace winrt::MainApplication::implementation
             LI_LoginData().insertDataInList(event_data.Data());
         };
 
-        this->m_data_update_token = this->m_manager.LoginDataUpdated(update_data_lambda);
+        m_data_update_token = m_manager.LoginDataUpdated(update_data_lambda);
     }
 
     void MainPage::bindDataLoad()
@@ -94,11 +95,11 @@ namespace winrt::MainApplication::implementation
         m_data_export_token = MO_DataOptions().ExportPressed(export_data_lambda);
     }
 
-    winrt::Windows::Foundation::IAsyncAction MainPage::loadLocalData()
+    Windows::Foundation::IAsyncAction MainPage::loadLocalData()
     {
         try
         {
-            this->m_manager.importData(co_await Helper::getLocalDataFile());
+            m_manager.importData(co_await Helper::getLocalDataFile());
         }
         catch (const hresult_error& e)
         {
@@ -108,11 +109,11 @@ namespace winrt::MainApplication::implementation
         co_return;
     }
 
-    winrt::Windows::Foundation::IAsyncAction MainPage::saveLocalData()
+    Windows::Foundation::IAsyncAction MainPage::saveLocalData()
     {
         try
         {
-            this->m_manager.exportData(co_await Helper::getLocalDataFile(), LI_LoginData().Data().GetView());
+            m_manager.exportData(co_await Helper::getLocalDataFile(), LI_LoginData().Data().GetView());
         }
         catch (const hresult_error& e)
         {

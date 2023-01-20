@@ -1,11 +1,9 @@
-// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
 
-#include "winrt/Microsoft.UI.Xaml.h"
-#include "winrt/Microsoft.UI.Xaml.Markup.h"
-#include "winrt/Microsoft.UI.Xaml.Controls.Primitives.h"
 #include "LoginDataListMenu.g.h"
 
 namespace winrt::MainApplication::implementation
@@ -14,22 +12,22 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListMenu();
 
-        void BP_Import_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& args);
-        void BP_Export_Click(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void BP_Import_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void BP_Export_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
-        winrt::PasswordManager::LoginDataFileType SelectedExportDataType();
-        DataSortMode SelectedSortingMode();
-        DataSortOrientation SelectedSortingOrientation();
-        
-        winrt::event_token ImportPressed(MainApplication::SingleVoidDelegate const& handler);
-        void ImportPressed(winrt::event_token const& token) noexcept;
+        PasswordManager::LoginDataFileType SelectedExportDataType();
+        MainApplication::DataSortMode SelectedSortingMode();
+        MainApplication::DataSortOrientation SelectedSortingOrientation();
 
-        winrt::event_token ExportPressed(MainApplication::SingleVoidDelegate const& handler);
-        void ExportPressed(winrt::event_token const& token) noexcept;
+        event_token ImportPressed(MainApplication::SingleVoidDelegate const& handler);
+        void ImportPressed(event_token const& token) noexcept;
+
+        event_token ExportPressed(MainApplication::SingleVoidDelegate const& handler);
+        void ExportPressed(event_token const& token) noexcept;
 
     private:
-		winrt::event<MainApplication::SingleVoidDelegate> m_import_pressed;
-		winrt::event<MainApplication::SingleVoidDelegate> m_export_pressed;
+        event<MainApplication::SingleVoidDelegate> m_import_pressed;
+        event<MainApplication::SingleVoidDelegate> m_export_pressed;
     };
 }
 

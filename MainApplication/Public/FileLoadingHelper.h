@@ -13,12 +13,12 @@
 
 using namespace winrt::MainApplication;
 
-namespace Helper
+namespace winrt::Helper
 {
-    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Foundation::Collections::IVectorView<winrt::Windows::Storage::StorageFile>> loadPasswordDataFiles()
+    Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> loadPasswordDataFiles()
     {
-        winrt::Windows::Storage::Pickers::FileOpenPicker file_picker;
-        file_picker.as<IInitializeWithWindow>()->Initialize(winrt::MainApplication::implementation::App::getWindowHandle());
+        Windows::Storage::Pickers::FileOpenPicker file_picker;
+        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::getWindowHandle());
 
         file_picker.FileTypeFilter().Append(L".txt");
         file_picker.FileTypeFilter().Append(L".csv");
@@ -27,29 +27,29 @@ namespace Helper
         return file_picker.PickMultipleFilesAsync();
     }
 
-    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> savePasswordDataFile(const winrt::PasswordManager::LoginDataFileType& export_mode)
+    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> savePasswordDataFile(const PasswordManager::LoginDataFileType& export_mode)
     {
-        winrt::Windows::Storage::Pickers::FileSavePicker file_picker;
-        file_picker.as<IInitializeWithWindow>()->Initialize(winrt::MainApplication::implementation::App::getWindowHandle());
+        Windows::Storage::Pickers::FileSavePicker file_picker;
+        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::getWindowHandle());
 
-        auto file_types = winrt::single_threaded_vector<winrt::hstring>();
+        auto file_types = single_threaded_vector<hstring>();
 
         switch (export_mode)
         {
-            case winrt::PasswordManager::LoginDataFileType::CSV:
+            case PasswordManager::LoginDataFileType::CSV:
                 file_types.Append(L".csv");
                 break;
 
-            case winrt::PasswordManager::LoginDataFileType::TXT:
+            case PasswordManager::LoginDataFileType::TXT:
                 file_types.Append(L".txt");
                 break;
 
-            case winrt::PasswordManager::LoginDataFileType::BIN:
+            case PasswordManager::LoginDataFileType::BIN:
                 file_types.Append(L".bin");
                 break;
 
             default:
-                throw winrt::hresult_not_implemented(L"not implemented yet");
+                throw hresult_not_implemented(L"not implemented yet");
                 break;
         }
 
@@ -58,11 +58,11 @@ namespace Helper
         return file_picker.PickSaveFileAsync();
     }
 
-    winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> getLocalDataFile()
+    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> getLocalDataFile()
     {
         try
         {
-            const winrt::Windows::Storage::StorageFolder localAppDir = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
+            const Windows::Storage::StorageFolder localAppDir = Windows::Storage::ApplicationData::Current().LocalFolder();
             Helper::printDebugLine(localAppDir.Path().c_str());
 
             if (const auto existingFile = co_await localAppDir.TryGetItemAsync(L"data.bin"))
@@ -72,7 +72,7 @@ namespace Helper
 
             co_return co_await localAppDir.CreateFileAsync(L"data.bin");
         }
-        catch (const winrt::hresult_error& e)
+        catch (const hresult_error& e)
         {
             Helper::printDebugLine(e.message());
         }

@@ -7,19 +7,21 @@
 #include "LoginUpdateEventParams.h"
 #include "LoginUpdateEventParams.g.cpp"
 
+using namespace winrt;
+
 namespace winrt::PasswordManager::implementation
 {
-    LoginUpdateEventParams::LoginUpdateEventParams(winrt::PasswordManager::LoginData const& data, winrt::PasswordManager::LoginDataFileType const& type) : m_data(data), m_type(type)
+    LoginUpdateEventParams::LoginUpdateEventParams(PasswordManager::LoginData const& data, PasswordManager::LoginDataFileType const& type) : m_data(data), m_type(type)
     {
     }
 
-    winrt::PasswordManager::LoginData LoginUpdateEventParams::Data() const
+    PasswordManager::LoginData LoginUpdateEventParams::Data() const
     {
-        return this->m_data;
+        return m_data;
     }
 
-    winrt::PasswordManager::LoginDataFileType LoginUpdateEventParams::Type() const
+    PasswordManager::LoginDataFileType LoginUpdateEventParams::Type() const
     {
-        return this->m_type;
+        return m_type;
     }
 }

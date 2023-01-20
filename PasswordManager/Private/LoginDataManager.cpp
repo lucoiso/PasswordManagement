@@ -15,9 +15,11 @@
 #include <string>
 #include <LoginData.h>
 
+using namespace winrt;
+
 namespace winrt::PasswordManager::implementation
 {
-	winrt::Windows::Foundation::IAsyncAction LoginDataManager::importData(const winrt::Windows::Storage::StorageFile& file)
+	Windows::Foundation::IAsyncAction LoginDataManager::importData(const Windows::Storage::StorageFile& file)
 	{
 		if (!file.IsAvailable())
 		{
@@ -25,7 +27,7 @@ namespace winrt::PasswordManager::implementation
 		}
 		const hstring fileType = file.FileType();
 
-		const auto fileContent = (co_await winrt::Windows::Storage::FileIO::ReadLinesAsync(file)).GetView();
+		const auto fileContent = (co_await Windows::Storage::FileIO::ReadLinesAsync(file)).GetView();
 		
 		if (fileType == L".bin")
 		{
@@ -47,7 +49,7 @@ namespace winrt::PasswordManager::implementation
 		co_return;
 	}
 
-	winrt::Windows::Foundation::IAsyncAction LoginDataManager::exportData(const winrt::Windows::Storage::StorageFile& file, const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data)
+	Windows::Foundation::IAsyncAction LoginDataManager::exportData(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
 	{
 		if (!file.IsAvailable())
 		{
@@ -76,22 +78,22 @@ namespace winrt::PasswordManager::implementation
 		co_return;
 	}
 
-	event_token LoginDataManager::LoginDataUpdated(winrt::Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams> const& handler)
+	event_token LoginDataManager::LoginDataUpdated(Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams> const& handler)
 	{
-		return this->m_data_updated.add(handler);
+		return m_data_updated.add(handler);
 	}
 
 	void LoginDataManager::LoginDataUpdated(event_token const& token) noexcept
 	{
-		this->m_data_updated.remove(token);
+		m_data_updated.remove(token);
 	}
 
-	void LoginDataManager::sendData(const winrt::PasswordManager::LoginData& data, const winrt::PasswordManager::LoginDataFileType& type)
+	void LoginDataManager::sendData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataFileType& type)
 	{
-		this->m_data_updated(*this, winrt::make<winrt::PasswordManager::implementation::LoginUpdateEventParams>(data, type));
+		m_data_updated(*this, make<PasswordManager::implementation::LoginUpdateEventParams>(data, type));
 	}
 
-	void LoginDataManager::readBinaryData(const winrt::Windows::Foundation::Collections::IVectorView<hstring>& file_text)
+	void LoginDataManager::readBinaryData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
 	{
 		hstring fileContent;
 		for (const auto& iterator : file_text)
@@ -99,18 +101,18 @@ namespace winrt::PasswordManager::implementation
 			fileContent = fileContent + iterator;
 		}
 		
-		const auto decoded_buffer = winrt::Windows::Security::Cryptography::CryptographicBuffer::DecodeFromBase64String(fileContent);
-		fileContent = winrt::Windows::Security::Cryptography::CryptographicBuffer::ConvertBinaryToString(winrt::Windows::Security::Cryptography::BinaryStringEncoding::Utf8, decoded_buffer);
+		const auto decoded_buffer = Windows::Security::Cryptography::CryptographicBuffer::DecodeFromBase64String(fileContent);
+		fileContent = Windows::Security::Cryptography::CryptographicBuffer::ConvertBinaryToString(Windows::Security::Cryptography::BinaryStringEncoding::Utf8, decoded_buffer);
 		
-		winrt::PasswordManager::LoginData newData = make<winrt::PasswordManager::implementation::LoginData>();
+		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
 			
-		const std::string std_content = winrt::to_string(fileContent);
+		const std::string std_content = to_string(fileContent);
 		std::string line;
 		for (const auto& iterator : std_content)
 		{
 			if (iterator == '\n')
 			{
-				processCsvLine(winrt::to_hstring(line), newData, winrt::PasswordManager::LoginDataFileType::BIN);
+				processCsvLine(to_hstring(line), newData, PasswordManager::LoginDataFileType::BIN);
 				line.clear();
 			}
 			else
@@ -120,23 +122,23 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	winrt::Windows::Foundation::IAsyncAction LoginDataManager::writeBinaryData(const winrt::Windows::Storage::StorageFile& file, const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::writeBinaryData(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		hstring fileContent = L"name,url,username,password";
 		for (const auto& iterator : data)
 		{
-			fileContent = fileContent + L"\n" + iterator.getDataAsString(winrt::PasswordManager::LoginDataFileType::BIN);
+			fileContent = fileContent + L"\n" + iterator.getDataAsString(PasswordManager::LoginDataFileType::BIN);
 		}
 		
-		const auto data_buffer = winrt::Windows::Security::Cryptography::CryptographicBuffer::ConvertStringToBinary(fileContent, winrt::Windows::Security::Cryptography::BinaryStringEncoding::Utf8);
-		const hstring encodedContent = winrt::Windows::Security::Cryptography::CryptographicBuffer::EncodeToBase64String(data_buffer);
+		const auto data_buffer = Windows::Security::Cryptography::CryptographicBuffer::ConvertStringToBinary(fileContent, Windows::Security::Cryptography::BinaryStringEncoding::Utf8);
+		const hstring encodedContent = Windows::Security::Cryptography::CryptographicBuffer::EncodeToBase64String(data_buffer);
 
-		co_await winrt::Windows::Storage::FileIO::WriteTextAsync(file, encodedContent);
+		co_await Windows::Storage::FileIO::WriteTextAsync(file, encodedContent);
 	}
 
-	void LoginDataManager::readTextData(const winrt::Windows::Foundation::Collections::IVectorView<hstring>& file_text)
+	void LoginDataManager::readTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
 	{
-		winrt::PasswordManager::LoginData newData = make<winrt::PasswordManager::implementation::LoginData>();
+		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
 
 		for (const auto line : file_text)
 		{
@@ -173,41 +175,41 @@ namespace winrt::PasswordManager::implementation
 			{
 				newData.Password(to_hstring(value));
 
-				sendData(newData, winrt::PasswordManager::LoginDataFileType::TXT);
+				sendData(newData, PasswordManager::LoginDataFileType::TXT);
 				newData.resetLoginData();
 			}
 		}
 	}
 
-	winrt::Windows::Foundation::IAsyncAction LoginDataManager::writeTextData([[maybe_unused]] const winrt::Windows::Storage::StorageFile& file, [[maybe_unused]] const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::writeTextData([[maybe_unused]] const Windows::Storage::StorageFile& file, [[maybe_unused]] const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		throw hresult_not_implemented(L"not implemented yet");
 	}
 
-	void LoginDataManager::readCsvData(const winrt::Windows::Foundation::Collections::IVectorView<hstring>& file_text)
+	void LoginDataManager::readCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
 	{
-		winrt::PasswordManager::LoginData newData = make<winrt::PasswordManager::implementation::LoginData>();
+		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
 
 		for (const auto line : file_text)
 		{
-			processCsvLine(line, newData, winrt::PasswordManager::LoginDataFileType::CSV);
+			processCsvLine(line, newData, PasswordManager::LoginDataFileType::CSV);
 		}
 	}
 
-	winrt::Windows::Foundation::IAsyncAction LoginDataManager::writeCsvData(const winrt::Windows::Storage::StorageFile& file, const winrt::Windows::Foundation::Collections::IVectorView<winrt::PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::writeCsvData(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
-		winrt::Windows::Foundation::Collections::IVector<hstring> lines = winrt::single_threaded_vector<hstring>();
+		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
 		lines.Append(L"name,url,username,password");
 
-		for (const winrt::PasswordManager::LoginData& iterator : data)
+		for (const PasswordManager::LoginData& iterator : data)
 		{
-			lines.Append(iterator.getDataAsString(winrt::PasswordManager::LoginDataFileType::CSV));
+			lines.Append(iterator.getDataAsString(PasswordManager::LoginDataFileType::CSV));
 		}
 
-		co_await winrt::Windows::Storage::FileIO::WriteLinesAsync(file, lines);
+		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
 	}
 	
-	void LoginDataManager::processCsvLine(const winrt::hstring line, winrt::PasswordManager::LoginData& current_data, const winrt::PasswordManager::LoginDataFileType& data_type)
+	void LoginDataManager::processCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type)
 	{
 		const std::string std_line = to_string(line);
 
