@@ -221,30 +221,27 @@ namespace winrt::PasswordManager::implementation
 		constexpr unsigned int num_columns = 4u;
 		unsigned int currentSeparatorIndex = 0u;
 
-		for (unsigned int iterator = 0u; iterator <= num_columns; ++iterator)
+		for (unsigned int iterator = 0u; iterator < num_columns; ++iterator)
 		{
-			const unsigned int nextSeparatorIndex = static_cast<unsigned int>(iterator == num_columns ? std_line.size() - 1 : std_line.find(',', currentSeparatorIndex));
+			const unsigned int nextSeparatorIndex = static_cast<unsigned int>(iterator == num_columns - 1 ? std_line.size() : std_line.find(',', currentSeparatorIndex));
 
-			const hstring winrt_str = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex - currentSeparatorIndex));
+			const hstring converted_value = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex - currentSeparatorIndex));
 			switch (iterator)
 			{
 				case 0u:
-					current_data.Name(winrt_str);
+					current_data.Name(converted_value);
 					break;
 
 				case 1u:
-					current_data.Url(winrt_str);
+					current_data.Url(converted_value);
 					break;
 
 				case 2u:
-					current_data.Username(winrt_str);
+					current_data.Username(converted_value);
 					break;
 
 				case 3u:
-					current_data.Password(winrt_str);
-					break;
-
-				default:
+					current_data.Password(converted_value);
 					sendData(current_data, data_type);
 					current_data.resetLoginData();
 					currentSeparatorIndex = 0u;
