@@ -114,5 +114,8 @@
     <Page Include="LoginDataListMenu.xaml">
       <Filter>Development\Xaml\Controls</Filter>
     </Page>
+    <Page Include="LoginDataListItem.xaml">
+      <Filter>Development\Xaml\Controls</Filter>
+    </Page>
   </ItemGroup>
 </Project>

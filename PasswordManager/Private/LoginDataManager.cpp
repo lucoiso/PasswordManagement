@@ -225,23 +225,23 @@ namespace winrt::PasswordManager::implementation
 		{
 			const unsigned int nextSeparatorIndex = static_cast<unsigned int>(iterator == num_columns ? std_line.size() - 1 : std_line.find(',', currentSeparatorIndex));
 
-			const hstring value_hstr = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex - currentSeparatorIndex));
+			const hstring winrt_str = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex - currentSeparatorIndex));
 			switch (iterator)
 			{
 				case 0u:
-					current_data.Name(value_hstr);
+					current_data.Name(winrt_str);
 					break;
 
 				case 1u:
-					current_data.Url(value_hstr);
+					current_data.Url(winrt_str);
 					break;
 
 				case 2u:
-					current_data.Username(value_hstr);
+					current_data.Username(winrt_str);
 					break;
 
 				case 3u:
-					current_data.Password(value_hstr);
+					current_data.Password(winrt_str);
 					break;
 
 				default:

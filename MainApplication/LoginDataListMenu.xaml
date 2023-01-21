@@ -12,13 +12,13 @@
     mc:Ignorable="d">
 
 	<Grid ColumnDefinitions="160, 160, 160" RowDefinitions ="Auto, Auto, Auto">
-		<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="0" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">
+		<ComboBox IsEnabled="false" x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="0" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">
 			<x:String>Name</x:String>
 			<x:String>Url</x:String>
 			<x:String>Username</x:String>
 		</ComboBox>
 		
-		<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" SelectedIndex="0" Grid.Row="0" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
+		<ComboBox IsEnabled="false" x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" SelectedIndex="0" Grid.Row="0" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
 			<x:String>Ascending</x:String>
 			<x:String>Descending</x:String>
 		</ComboBox>

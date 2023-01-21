@@ -1,0 +1,15 @@
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2022
+// Repository: https://github.com/lucoiso/PasswordManagement
+
+namespace MainApplication
+{
+    [default_interface]
+    runtimeclass LoginDataListItem : Microsoft.UI.Xaml.Controls.UserControl, Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        LoginDataListItem();
+
+        PasswordManager.LoginData Data;
+        String Password{ get; };
+    }
+}

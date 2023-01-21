@@ -15,5 +15,6 @@ namespace winrt::MainApplication::implementation
     MainWindow::MainWindow()
     {
         InitializeComponent();
+        Title(L"Work in Progress: Password Management");
     }
 }

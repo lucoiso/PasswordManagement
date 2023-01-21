@@ -13,18 +13,19 @@
     mc:Ignorable="d">
 
 	<StackPanel Orientation="Vertical">
-		<ListView x:Name="LV_DataList" Margin="4" Height="600" Width="600" CornerRadius="4" ItemsSource="{x:Bind Data}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="Single">
+			<TextBox x:Name="TB_Search" PlaceholderText="Search" MinWidth="600" Margin="4" TextChanged="TB_Search_TextChanged"/>
+		
+		<ListView x:Name="LV_DataList" Margin="4" Height="600" Width="600" CornerRadius="4" ItemsSource="{x:Bind Data}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="None">
 			<ListView.ItemTemplate>
 				<DataTemplate x:DataType="manager:LoginData">
-					<StackPanel Orientation="Vertical" Margin="4">
-						<TextBlock Text="{x:Bind Name}" Style="{ThemeResource BodyTextBlockStyle}" />
-						<TextBlock Text="{x:Bind Url}" Style="{ThemeResource BodyTextBlockStyle}" />
-						<TextBlock Text="{x:Bind Username}" Style="{ThemeResource BodyTextBlockStyle}" />
-						<TextBlock Text="{x:Bind Password}" Style="{ThemeResource BodyTextBlockStyle}" />
-					</StackPanel>
+					<local:LoginDataListItem Data="{x:Bind}" HorizontalAlignment="Stretch"/>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
-		<TextBlock Margin="4" x:Name="TB_EntriesNum"/>
+		
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Margin="8" x:Name="TB_TotalEntriesNum" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+			<TextBlock Margin="8" x:Name="TB_FilteredEntriesNum" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+		</StackPanel>
 	</StackPanel>
 </UserControl>

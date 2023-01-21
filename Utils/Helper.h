@@ -12,14 +12,15 @@
 namespace winrt::Helper
 {
 	template <typename T>
-	inline constexpr void setMemberValue(const T& value, T& member)
+	inline constexpr bool setMemberValue(const T& value, T& member)
 	{
 		if (value == member)
 		{
-			return;
+			return false;
 		}
 
-		member = value;
+		member = value;		
+		return true;
 	}
 
 	template<typename ArgTy>
@@ -37,6 +38,11 @@ namespace winrt::Helper
 	inline const bool stringContains(const std::string& string, const std::string& find)
 	{
 		return string.find(find) != std::string::npos;
+	}
+
+	inline const bool stringContains(const hstring& string, const hstring& find)
+	{
+		return stringContains(to_string(string), to_string(find));
 	}
 
 	inline void printDebugLine(const hstring& message)

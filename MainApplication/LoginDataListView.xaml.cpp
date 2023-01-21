@@ -18,35 +18,64 @@ namespace winrt::MainApplication::implementation
     {
         InitializeComponent();
 
-        m_data = single_threaded_observable_vector<PasswordManager::LoginData>();
+        m_data = single_threaded_vector<PasswordManager::LoginData>();
+        m_filtered_data = single_threaded_observable_vector<PasswordManager::LoginData>();
     }
 
     void LoginDataListView::insertDataInList(PasswordManager::LoginData const& data)
     {
         const PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
 		check_bool(newData != nullptr);
-
-        if (const auto matchingIterator = std::find_if(m_data.begin(), m_data.end(), [newData](const PasswordManager::LoginData& element) { return element.Equals(newData); });
-            matchingIterator != m_data.end())
-        {
-            const unsigned int index = static_cast<unsigned int>(std::distance(m_data.begin(), matchingIterator));
-            m_data.SetAt(index, newData);
-        }
-        else
-        {
-            m_data.Append(newData);
-        }
         
-        TB_EntriesNum().Text(L"Entries: " + to_hstring(m_data.Size()));
+		const auto push_data = [&newData](const auto& container, const auto& validator)
+        {
+            if (const auto matchingIterator = std::find_if(container.begin(), container.end(), [newData](const PasswordManager::LoginData& element) { return element.Equals(newData); });
+                matchingIterator != container.end())
+            {
+                const unsigned int index = static_cast<unsigned int>(std::distance(container.begin(), matchingIterator));
+                container.SetAt(index, newData);
+            }
+			else if (validator(newData))
+			{
+				container.Append(newData);
+			}
+        };
+        
+        push_data(m_data, []([[maybe_unused]] const PasswordManager::LoginData& data) -> bool { return true; });
+		push_data(m_filtered_data, [this](const PasswordManager::LoginData& data) { return MatchSearch(data); });
+        
+        UpdateEntriesIndicator();
     }
 
     Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> LoginDataListView::Data() const
     {
-        return m_data;
+        return m_filtered_data;
     }
 
-    void LoginDataListView::Sort([[maybe_unused]] MainApplication::DataSortMode const& mode, [[maybe_unused]] MainApplication::DataSortOrientation const& orientation)
+    void MainApplication::implementation::LoginDataListView::TB_Search_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::TextChangedEventArgs const& args)
     {
-        // TODO
+        m_current_search = TB_Search().Text();
+        m_filtered_data.Clear();
+
+        for (const auto& it : m_data)
+        {
+            if (MatchSearch(it))
+            {
+                m_filtered_data.Append(it);
+            }
+        }
+
+        UpdateEntriesIndicator();
+    }
+    
+    bool MainApplication::implementation::LoginDataListView::MatchSearch(const PasswordManager::LoginData& data) const
+    {
+        return Helper::stringContains(data.Name(), m_current_search) || Helper::stringContains(data.Url(), m_current_search) || Helper::stringContains(data.Username(), m_current_search);
+    }
+
+    void MainApplication::implementation::LoginDataListView::UpdateEntriesIndicator()
+    {
+        TB_TotalEntriesNum().Text(L"Total Entries: " + to_hstring(m_data.Size()));
+        TB_FilteredEntriesNum().Text(L"Filtered Entries: " + to_hstring(m_filtered_data.Size()));
     }
 }

@@ -131,6 +131,10 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LoginDataListItem.xaml.h">
+      <DependentUpon>LoginDataListItem.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
     <ClInclude Include="LoginDataListMenu.xaml.h">
       <DependentUpon>LoginDataListMenu.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -155,6 +159,10 @@
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LoginDataListItem.xaml.cpp">
+      <DependentUpon>LoginDataListItem.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="LoginDataListMenu.xaml.cpp">
       <DependentUpon>LoginDataListMenu.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -181,6 +189,10 @@
     <Midl Include="App.idl">
       <SubType>Code</SubType>
       <DependentUpon>App.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="LoginDataListItem.idl">
+      <DependentUpon>LoginDataListItem.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Midl>
     <Midl Include="LoginDataListMenu.idl">
       <DependentUpon>LoginDataListMenu.xaml</DependentUpon>
@@ -226,6 +238,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="LoginDataListItem.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="LoginDataListMenu.xaml">
       <SubType>Designer</SubType>
     </Page>

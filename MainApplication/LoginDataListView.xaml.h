@@ -15,10 +15,16 @@ namespace winrt::MainApplication::implementation
         void insertDataInList(PasswordManager::LoginData const& data);
         Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> Data() const;
 
-        void Sort(MainApplication::DataSortMode const& mode, MainApplication::DataSortOrientation const& orientation);
+        void TB_Search_TextChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args);
 
     private:
-        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_data;
+        Windows::Foundation::Collections::IVector<PasswordManager::LoginData> m_data;
+        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_filtered_data;
+
+        hstring m_current_search;
+
+		bool MatchSearch(const PasswordManager::LoginData& data) const;
+        void UpdateEntriesIndicator();
     };
 }
 

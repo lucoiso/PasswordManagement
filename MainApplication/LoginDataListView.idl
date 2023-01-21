@@ -13,7 +13,5 @@ namespace MainApplication
 
         void insertDataInList(PasswordManager.LoginData data);
         Windows.Foundation.Collections.IVector<PasswordManager.LoginData> Data{ get; };
-
-        void Sort(DataSortMode mode, DataSortOrientation orientation);
     }
 }
