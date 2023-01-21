@@ -15,8 +15,11 @@ namespace winrt::MainApplication::implementation
         void InitializeSubobjects();
 
     protected:
-        Windows::Foundation::IAsyncAction performDataImport();
-        Windows::Foundation::IAsyncAction performDataExport();
+        Windows::Foundation::IAsyncAction PerformDataImportAsync();
+        Windows::Foundation::IAsyncAction PerformDataExportAsync();
+
+        Windows::Foundation::IAsyncAction LoadLocalDataAsync();
+        Windows::Foundation::IAsyncAction SaveLocalDataAsync();
 
     private:
         PasswordManager::LoginDataManager m_manager;
@@ -24,11 +27,8 @@ namespace winrt::MainApplication::implementation
         event_token m_data_import_token;
         event_token m_data_export_token;
 
-        void bindDataUpdate();
-        void bindDataLoad();
-        
-        Windows::Foundation::IAsyncAction loadLocalData();
-        Windows::Foundation::IAsyncAction saveLocalData();
+        void BindDataUpdate();
+        void BindDataLoad();
     };
 }
 

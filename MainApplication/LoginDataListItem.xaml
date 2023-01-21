@@ -15,10 +15,10 @@
 		<RelativePanel Margin="4, 8, 4, 8" HorizontalAlignment="Stretch">
 			<Grid ColumnDefinitions="80, 420" RowDefinitions ="24, 24, 24, 24">
 				<TextBlock Grid.Column="0" Grid.Row="0" Text="Name:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Bind Data.Name, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+				<TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Bind Data.Name, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Name, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="1" Text="Url:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Data.Url, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+				<TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Data.Url, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Url, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Text="Username:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
 				<TextBlock Grid.Column="1" Grid.Row="2" Text="{x:Bind Data.Username, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>

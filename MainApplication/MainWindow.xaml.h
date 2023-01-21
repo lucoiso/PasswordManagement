@@ -11,6 +11,10 @@ namespace winrt::MainApplication::implementation
     struct MainWindow : MainWindowT<MainWindow>
     {
         MainWindow();
+        
+        void FR_MainFrame_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+
+        Windows::Foundation::IAsyncAction InitializeContentAsync();
     };
 }
 

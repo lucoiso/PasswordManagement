@@ -12,8 +12,9 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListView();
 
-        void insertDataInList(PasswordManager::LoginData const& data);
-        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> Data() const;
+        void InsertDataInList(PasswordManager::LoginData const& data);
+        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> FilteredData() const;
+        Windows::Foundation::Collections::IVector<PasswordManager::LoginData> Data() const;
 
         void TB_Search_TextChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args);
 
@@ -23,6 +24,7 @@ namespace winrt::MainApplication::implementation
 
         hstring m_current_search;
 
+    protected:
 		bool MatchSearch(const PasswordManager::LoginData& data) const;
         void UpdateEntriesIndicator();
     };

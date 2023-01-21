@@ -13,7 +13,7 @@ namespace winrt::PasswordManager::implementation
         LoginData() = default;
         inline bool operator==(const LoginData& rhs) const
         {
-            return Name() == rhs.Name() && Url() == rhs.Url() && Username() == rhs.Username();
+            return Url() == rhs.Url() && Username() == rhs.Username();
         }
 
         PasswordManager::IFunctionalData Clone() const;
@@ -33,20 +33,21 @@ namespace winrt::PasswordManager::implementation
         void Password(hstring const& value);
 #pragma endregion Getters and Setters
 
-        hstring getDataAsString(PasswordManager::LoginDataFileType const& type) const;
+        hstring GetDataAsString(PasswordManager::LoginDataFileType const& type) const;
 
-        bool hasEmptyData() const;
+        bool HasEmptyData() const;
 
         void resetLoginData();
+
+    protected:
+        hstring GetDataAsString_CSV_Internal() const;
+        hstring GetDataAsString_TXT_Internal() const;
 
     private:
         hstring m_name;
         hstring m_url;
         hstring m_username;
         hstring m_password;
-
-        hstring getDataAsString_CSV_Internal() const;
-        hstring getDataAsString_TXT_Internal() const;
     };
 }
 namespace winrt::PasswordManager::factory_implementation

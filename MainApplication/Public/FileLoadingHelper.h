@@ -15,10 +15,10 @@ using namespace winrt::MainApplication;
 
 namespace winrt::Helper
 {
-    Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> loadPasswordDataFiles()
+    Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> LoadPasswordDataFilesAsync()
     {
         Windows::Storage::Pickers::FileOpenPicker file_picker;
-        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::getWindowHandle());
+        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetWindowHandle());
 
         file_picker.FileTypeFilter().Append(L".txt");
         file_picker.FileTypeFilter().Append(L".csv");
@@ -27,10 +27,10 @@ namespace winrt::Helper
         return file_picker.PickMultipleFilesAsync();
     }
 
-    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> savePasswordDataFile(const PasswordManager::LoginDataFileType& export_mode)
+    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode)
     {
         Windows::Storage::Pickers::FileSavePicker file_picker;
-        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::getWindowHandle());
+        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetWindowHandle());
 
         auto file_types = single_threaded_vector<hstring>();
 
@@ -58,12 +58,12 @@ namespace winrt::Helper
         return file_picker.PickSaveFileAsync();
     }
 
-    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> getLocalDataFile()
+    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> GetLocalDataFileAsync()
     {
         try
         {
             const Windows::Storage::StorageFolder localAppDir = Windows::Storage::ApplicationData::Current().LocalFolder();
-            Helper::printDebugLine(localAppDir.Path().c_str());
+            Helper::PrintDebugLine(localAppDir.Path().c_str());
 
             if (const auto existingFile = co_await localAppDir.TryGetItemAsync(L"data.bin"))
             {
@@ -74,7 +74,7 @@ namespace winrt::Helper
         }
         catch (const hresult_error& e)
         {
-            Helper::printDebugLine(e.message());
+            Helper::PrintDebugLine(e.message());
         }
 
         co_return nullptr;

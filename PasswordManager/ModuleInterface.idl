@@ -29,9 +29,9 @@ namespace PasswordManager
 		String Username;
 		String Password;
 
-		String getDataAsString(LoginDataFileType type);
+		String GetDataAsString(LoginDataFileType type);
 
-		Boolean hasEmptyData();
+		Boolean HasEmptyData();
 		void resetLoginData();
 	}
 
@@ -49,8 +49,8 @@ namespace PasswordManager
 	{
 		LoginDataManager();
 
-		Windows.Foundation.IAsyncAction importData(Windows.Storage.StorageFile file);
-		Windows.Foundation.IAsyncAction exportData(Windows.Storage.StorageFile file, Windows.Foundation.Collections.IVectorView<LoginData> data);
+		Windows.Foundation.IAsyncAction ImportDataAsync(Windows.Storage.StorageFile file);
+		Windows.Foundation.IAsyncAction ExportDataAsync(Windows.Storage.StorageFile file, Windows.Foundation.Collections.IVectorView<LoginData> data);
 
 		event Windows.Foundation.EventHandler<LoginUpdateEventParams> LoginDataUpdated;
 	}

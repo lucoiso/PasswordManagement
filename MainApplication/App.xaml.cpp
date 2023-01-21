@@ -44,7 +44,7 @@ Window MainApplication::implementation::App::Window() const
     return m_window;
 }
 
-HWND MainApplication::implementation::App::getWindowHandle()
+HWND MainApplication::implementation::App::GetWindowHandle()
 {    
     const Microsoft::UI::Xaml::Window currentWindow = Application::Current().try_as<App>()->Window();
     check_bool(currentWindow);

@@ -37,7 +37,7 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Name(hstring const& value)
     {
-        Helper::setMemberValue(value, m_name);
+        Helper::SetMemberValue(value, m_name);
     }
 
     hstring LoginData::Url() const
@@ -47,7 +47,7 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Url(hstring const& value)
     {
-        Helper::setMemberValue(value, m_url);
+        Helper::SetMemberValue(Helper::GetCleanUrlString(value), m_url);
     }
 
     hstring LoginData::Username() const
@@ -57,7 +57,7 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Username(hstring const& value)
     {
-        Helper::setMemberValue(value, m_username);
+        Helper::SetMemberValue(value, m_username);
     }
 
     hstring LoginData::Password() const
@@ -67,20 +67,20 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Password(hstring const& value)
     {
-        Helper::setMemberValue(value, m_password);
+        Helper::SetMemberValue(value, m_password);
     }
 #pragma endregion Getters and Setters
 
-    hstring LoginData::getDataAsString(PasswordManager::LoginDataFileType const& inType) const
+    hstring LoginData::GetDataAsString(PasswordManager::LoginDataFileType const& inType) const
     {
         switch (inType)
         {
         case PasswordManager::LoginDataFileType::CSV:
         case PasswordManager::LoginDataFileType::BIN:
-            return getDataAsString_CSV_Internal();
+            return GetDataAsString_CSV_Internal();
 
         case PasswordManager::LoginDataFileType::TXT:
-            return getDataAsString_TXT_Internal();
+            return GetDataAsString_TXT_Internal();
 
         default:
             throw hresult_not_implemented(L"not implemented yet");
@@ -88,9 +88,9 @@ namespace winrt::PasswordManager::implementation
         }
     }
 
-    bool LoginData::hasEmptyData() const
+    bool LoginData::HasEmptyData() const
     {
-        return Helper::hasEmptyData(m_name, m_url, m_username, m_password);
+        return Helper::HasEmptyData(m_name, m_url, m_username, m_password);
     }
 
     void LoginData::resetLoginData()
@@ -101,12 +101,12 @@ namespace winrt::PasswordManager::implementation
         m_password.clear();
     }
 
-    hstring LoginData::getDataAsString_CSV_Internal() const
+    hstring LoginData::GetDataAsString_CSV_Internal() const
     {
         return m_name + L"," + m_url + L"," + m_username + L"," + m_password;
     }
 
-    hstring LoginData::getDataAsString_TXT_Internal() const
+    hstring LoginData::GetDataAsString_TXT_Internal() const
     {
         return L"Website name: " + m_name + L"\nWebsite URL: " + m_url + L"\nLogin name: \nLogin: " + m_username + L"\nPassword: " + m_password + L"\nComment: \n\n---\n\n";
     }

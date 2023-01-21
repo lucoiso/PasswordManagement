@@ -11,7 +11,8 @@ namespace MainApplication
     {
         LoginDataListView();
 
-        void insertDataInList(PasswordManager.LoginData data);
+        void InsertDataInList(PasswordManager.LoginData data);
+        Windows.Foundation.Collections.IObservableVector<PasswordManager.LoginData> FilteredData{ get; };
         Windows.Foundation.Collections.IVector<PasswordManager.LoginData> Data{ get; };
     }
 }

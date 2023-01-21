@@ -24,57 +24,85 @@ namespace winrt::MainApplication::implementation
     void MainPage::InitializeSubobjects()
     {
         { // Event bindings
-            bindDataUpdate();
-            bindDataLoad();
+            BindDataUpdate();
+            BindDataLoad();
         }
         
-        loadLocalData();
+        LoadLocalDataAsync();
     }
 
-    Windows::Foundation::IAsyncAction MainPage::performDataImport()
+    Windows::Foundation::IAsyncAction MainPage::PerformDataImportAsync()
     {
-        for (const auto& iterator : co_await Helper::loadPasswordDataFiles())
+        for (const auto& iterator : co_await Helper::LoadPasswordDataFilesAsync())
         {
             if (!iterator)
             {
                 continue;
             }
 
-            m_manager.importData(iterator);
+            m_manager.ImportDataAsync(iterator);
         }
 
-        saveLocalData();
+        SaveLocalDataAsync();
     }
 
-    Windows::Foundation::IAsyncAction MainPage::performDataExport()
+    Windows::Foundation::IAsyncAction MainPage::PerformDataExportAsync()
     {
-        if (const auto exported_file = co_await Helper::savePasswordDataFile(MO_DataOptions().SelectedExportDataType()))
+        if (const auto exported_file = co_await Helper::SavePasswordDataFileAsync(MO_DataOptions().SelectedExportDataType()))
         {
-            m_manager.exportData(exported_file, LI_LoginData().Data().GetView());
+            m_manager.ExportDataAsync(exported_file, LI_LoginData().Data().GetView());
         }
     }
 
-    void MainPage::bindDataUpdate()
+    Windows::Foundation::IAsyncAction MainPage::LoadLocalDataAsync()
+    {
+        try
+        {
+            m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync());
+        }
+        catch (const hresult_error& e)
+        {
+            Helper::PrintDebugLine(e.message());
+        }
+
+        co_return;
+    }
+
+    Windows::Foundation::IAsyncAction MainPage::SaveLocalDataAsync()
+    {
+        try
+        {
+            m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), LI_LoginData().Data().GetView());
+        }
+        catch (const hresult_error& e)
+        {
+            Helper::PrintDebugLine(e.message());
+        }
+
+        co_return;
+    }
+
+    void MainPage::BindDataUpdate()
     {
         const auto update_data_lambda = [this]([[maybe_unused]] const auto&, PasswordManager::LoginUpdateEventParams const& event_data)
         {
-            LI_LoginData().insertDataInList(event_data.Data());
+            LI_LoginData().InsertDataInList(event_data.Data());
         };
 
         m_data_update_token = m_manager.LoginDataUpdated(update_data_lambda);
     }
 
-    void MainPage::bindDataLoad()
+    void MainPage::BindDataLoad()
     {
         const auto import_data_lambda = [this]()
         {
             try
             {
-                performDataImport();
+                PerformDataImportAsync();
             }
             catch (const hresult_error& e)
             {
-                Helper::printDebugLine(e.message());
+                Helper::PrintDebugLine(e.message());
             }
         };
 
@@ -84,42 +112,14 @@ namespace winrt::MainApplication::implementation
         {
             try
             {
-                performDataExport();
+                PerformDataExportAsync();
             }
             catch (const hresult_error& e)
             {
-                Helper::printDebugLine(e.message());
+                Helper::PrintDebugLine(e.message());
             }
         };
 
         m_data_export_token = MO_DataOptions().ExportPressed(export_data_lambda);
-    }
-
-    Windows::Foundation::IAsyncAction MainPage::loadLocalData()
-    {
-        try
-        {
-            m_manager.importData(co_await Helper::getLocalDataFile());
-        }
-        catch (const hresult_error& e)
-        {
-            Helper::printDebugLine(e.message());
-        }
-
-        co_return;
-    }
-
-    Windows::Foundation::IAsyncAction MainPage::saveLocalData()
-    {
-        try
-        {
-            m_manager.exportData(co_await Helper::getLocalDataFile(), LI_LoginData().Data().GetView());
-        }
-        catch (const hresult_error& e)
-        {
-            Helper::printDebugLine(e.message());
-        }
-
-        co_return;
     }
 }

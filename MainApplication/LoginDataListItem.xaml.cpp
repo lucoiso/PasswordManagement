@@ -26,7 +26,7 @@ namespace winrt::MainApplication::implementation
 
     void MainApplication::implementation::LoginDataListItem::Data(PasswordManager::LoginData const& value)
     {
-        if (Helper::setMemberValue(value, m_data))
+        if (Helper::SetMemberValue(value, m_data))
         {
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Data" });
         }

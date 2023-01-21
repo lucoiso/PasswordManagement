@@ -22,9 +22,9 @@ namespace winrt::MainApplication::implementation
         m_filtered_data = single_threaded_observable_vector<PasswordManager::LoginData>();
     }
 
-    void LoginDataListView::insertDataInList(PasswordManager::LoginData const& data)
+    void LoginDataListView::InsertDataInList(PasswordManager::LoginData const& data)
     {
-        const PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
+        PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
 		check_bool(newData != nullptr);
         
 		const auto push_data = [&newData](const auto& container, const auto& validator)
@@ -33,6 +33,13 @@ namespace winrt::MainApplication::implementation
                 matchingIterator != container.end())
             {
                 const unsigned int index = static_cast<unsigned int>(std::distance(container.begin(), matchingIterator));
+                                
+				if (newData.Name().size() <= 0 
+                    || (Helper::GetCleanUrlString(newData.Name()) == newData.Url() && container.GetAt(index).Name().size() > 0))
+				{
+					newData.Name(container.GetAt(index).Name());
+				}
+
                 container.SetAt(index, newData);
             }
 			else if (validator(newData))
@@ -47,9 +54,14 @@ namespace winrt::MainApplication::implementation
         UpdateEntriesIndicator();
     }
 
-    Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> LoginDataListView::Data() const
+    Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> MainApplication::implementation::LoginDataListView::FilteredData() const
     {
         return m_filtered_data;
+    }
+
+    Windows::Foundation::Collections::IVector<PasswordManager::LoginData> LoginDataListView::Data() const
+    {
+        return m_data;
     }
 
     void MainApplication::implementation::LoginDataListView::TB_Search_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::TextChangedEventArgs const& args)
@@ -70,7 +82,7 @@ namespace winrt::MainApplication::implementation
     
     bool MainApplication::implementation::LoginDataListView::MatchSearch(const PasswordManager::LoginData& data) const
     {
-        return Helper::stringContains(data.Name(), m_current_search) || Helper::stringContains(data.Url(), m_current_search) || Helper::stringContains(data.Username(), m_current_search);
+        return Helper::StringContains(data.Name(), m_current_search) || Helper::StringContains(data.Url(), m_current_search) || Helper::StringContains(data.Username(), m_current_search);
     }
 
     void MainApplication::implementation::LoginDataListView::UpdateEntriesIndicator()

@@ -17,6 +17,9 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.ApplicationModel.Activation.h>
 #include <winrt/Windows.Storage.Pickers.h>
+#include <winrt/Windows.Security.Credentials.h>
+#include <winrt/Windows.System.h>
+#include <winrt/Windows.UI.Xaml.Interop.h>
 
 #include <winrt/Microsoft.UI.Composition.h>
 #include <winrt/Microsoft.UI.Xaml.h>

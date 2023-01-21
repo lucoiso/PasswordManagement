@@ -12,6 +12,6 @@
     mc:Ignorable="d">
 
 	<ScrollViewer HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
-		<local:MainPage/>
+		<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
 	</ScrollViewer>
 </Window>
