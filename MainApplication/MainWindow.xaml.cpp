@@ -17,7 +17,7 @@ namespace winrt::MainApplication::implementation
     MainWindow::MainWindow()
     {
         InitializeComponent();
-        Title(L"Password Management");
+        Title(L"Password Manager");
     }
 
     void MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
@@ -25,14 +25,34 @@ namespace winrt::MainApplication::implementation
         InitializeContentAsync();
     }
 
+    template<typename ContentTy>
+	Controls::ContentDialog CreateContentDialog(const XamlRoot& root, const bool& can_close, const hstring& Title, const ContentTy& content)
+	{
+		Controls::ContentDialog dialog;
+        dialog.XamlRoot(root);
+        dialog.Title(box_value(Title));
+		dialog.Content(box_value(content));
+        
+        if (can_close)
+        {
+            dialog.CloseButtonText(L"Close");
+        }
+        
+		return dialog;
+	}
+
     Windows::Foundation::IAsyncAction MainWindow::InitializeContentAsync()
     {
-        const auto emit_error = [this] () -> Windows::Foundation::IAsyncAction {
-            Controls::ContentDialog error_dialog;
-            error_dialog.XamlRoot(Content().XamlRoot());
-            error_dialog.Title(box_value(L"An error has occurred"));
-            error_dialog.Content(box_value(L"Your device does not support the required features to run this application. Please enable Windows Hello! in your device settings."));
-            error_dialog.CloseButtonText(L"Close");
+        Controls::ProgressBar progress_bar;
+        progress_bar.IsIndeterminate(true);
+
+		const auto loading_dialog = CreateContentDialog(Content().XamlRoot(), false, L"Loading...", progress_bar);
+        loading_dialog.ShowAsync();
+
+        const auto emit_error = [this, &loading_dialog] () -> Windows::Foundation::IAsyncAction {
+            loading_dialog.Hide();
+            
+            const Controls::ContentDialog error_dialog = CreateContentDialog(Content().XamlRoot(), true, L"An error has occurred", L"Your device does not support the required features to run this application. Please enable Windows Hello! in your device settings.");
             co_await error_dialog.ShowAsync();
             Application::Current().Exit();
         };
@@ -59,7 +79,8 @@ namespace winrt::MainApplication::implementation
                 
             default:
                 Application::Current().Exit();
-                co_return;
         }
+
+        loading_dialog.Hide();
     }
 }
