@@ -14,6 +14,8 @@ namespace winrt::MainApplication::implementation
 
         void BP_Import_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void BP_Export_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+       
+        void GenericSorting_SelectionChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::SelectionChangedEventArgs const& args);
 
         PasswordManager::LoginDataFileType SelectedExportDataType();
         MainApplication::DataSortMode SelectedSortingMode();
@@ -25,9 +27,13 @@ namespace winrt::MainApplication::implementation
         event_token ExportPressed(MainApplication::SingleVoidDelegate const& handler);
         void ExportPressed(event_token const& token) noexcept;
 
+        event_token SortingChanged(MainApplication::SingleVoidDelegate const& handler);
+        void SortingChanged(event_token const& token) noexcept;
+
     private:
         event<MainApplication::SingleVoidDelegate> m_import_pressed;
         event<MainApplication::SingleVoidDelegate> m_export_pressed;
+        event<MainApplication::SingleVoidDelegate> m_sorting_changed;        
     };
 }
 

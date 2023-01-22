@@ -27,6 +27,11 @@ namespace winrt::MainApplication::implementation
         m_export_pressed();
     }
 
+    void MainApplication::implementation::LoginDataListMenu::GenericSorting_SelectionChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::SelectionChangedEventArgs const& args)
+    {
+        m_sorting_changed();
+    }
+
     PasswordManager::LoginDataFileType LoginDataListMenu::SelectedExportDataType()
     {
         const hstring selectedValue = unbox_value<hstring>(CB_ExportMode().SelectedItem());
@@ -101,5 +106,15 @@ namespace winrt::MainApplication::implementation
     void LoginDataListMenu::ExportPressed(event_token const& token) noexcept
     {
         m_export_pressed.remove(token);
+    }
+
+    event_token MainApplication::implementation::LoginDataListMenu::SortingChanged(MainApplication::SingleVoidDelegate const& handler)
+    {
+        return m_sorting_changed.add(handler);
+    }
+
+    void MainApplication::implementation::LoginDataListMenu::SortingChanged(event_token const& token) noexcept
+    {
+        m_sorting_changed.remove(token);
     }
 }

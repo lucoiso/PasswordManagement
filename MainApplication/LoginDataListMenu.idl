@@ -17,5 +17,7 @@ namespace MainApplication
 
         event MainApplication.SingleVoidDelegate ImportPressed;
         event MainApplication.SingleVoidDelegate ExportPressed;
+
+        event MainApplication.SingleVoidDelegate SortingChanged;
     }
 }

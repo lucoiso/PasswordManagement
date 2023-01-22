@@ -66,6 +66,59 @@ namespace winrt::MainApplication::implementation
 
     void MainApplication::implementation::LoginDataListView::TB_Search_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::TextChangedEventArgs const& args)
     {
+        UpdateFilteredData();
+    }
+
+    void MainApplication::implementation::LoginDataListView::Sort(DataSortMode const& mode, DataSortOrientation const& orientation)
+    {
+		std::vector<PasswordManager::LoginData> local_data(m_data.Size());
+		m_data.GetMany(0u, local_data);
+        m_data.Clear();
+        
+        std::sort(local_data.begin(), local_data.end(), [&](const PasswordManager::LoginData& lhs, const PasswordManager::LoginData& rhs) -> bool {
+            const auto filter_orientation = [&](const hstring& left_string, const hstring& right_string) -> bool
+            {
+                switch (orientation)
+                {
+                    case DataSortOrientation::Ascending:
+                        return left_string < right_string;
+
+                    case DataSortOrientation::Descending:
+                        return left_string > right_string;
+
+                    default:
+                        return false;
+                }
+            };
+
+            switch (mode)
+            {
+                case DataSortMode::Name:
+                    return filter_orientation(lhs.Name(), rhs.Name());
+
+                case DataSortMode::Url:
+                    return filter_orientation(lhs.Url(), rhs.Url());
+
+                case DataSortMode::Username:
+                    return filter_orientation(lhs.Username(), rhs.Username());
+
+                default:
+                    return false;
+            }
+        });
+
+		m_data = single_threaded_vector(std::move(local_data));
+
+        UpdateFilteredData();
+    }
+    
+    bool MainApplication::implementation::LoginDataListView::MatchSearch(const PasswordManager::LoginData& data) const
+    {
+        return Helper::StringContains(data.Name(), m_current_search) || Helper::StringContains(data.Url(), m_current_search) || Helper::StringContains(data.Username(), m_current_search);
+    }
+
+    void MainApplication::implementation::LoginDataListView::UpdateFilteredData()
+    {
         m_current_search = TB_Search().Text();
         m_filtered_data.Clear();
 
@@ -78,11 +131,6 @@ namespace winrt::MainApplication::implementation
         }
 
         UpdateEntriesIndicator();
-    }
-    
-    bool MainApplication::implementation::LoginDataListView::MatchSearch(const PasswordManager::LoginData& data) const
-    {
-        return Helper::StringContains(data.Name(), m_current_search) || Helper::StringContains(data.Url(), m_current_search) || Helper::StringContains(data.Username(), m_current_search);
     }
 
     void MainApplication::implementation::LoginDataListView::UpdateEntriesIndicator()

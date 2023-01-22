@@ -157,7 +157,7 @@ namespace winrt::PasswordManager::implementation
 
 			const unsigned int separatorIndex = static_cast<unsigned int>(std_line.find(':'));
 			const std::string key = std_line.substr(0, separatorIndex);
-			const std::string value = std_line.substr(separatorIndex + 2, std_line.size() - separatorIndex - 1);
+			const std::string value = std_line.substr(separatorIndex + 2u, std_line.size() - separatorIndex - 1);
 
 			if (key == "Website name")
 			{
@@ -181,9 +181,17 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteTextDataAsync([[maybe_unused]] const Windows::Storage::StorageFile& file, [[maybe_unused]] const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
-		throw hresult_not_implemented(L"not implemented yet");
+		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
+		lines.Append(L"Websites\n");
+
+		for (const PasswordManager::LoginData& iterator : data)
+		{
+			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::TXT));
+		}
+
+		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
 	}
 
 	void LoginDataManager::ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)

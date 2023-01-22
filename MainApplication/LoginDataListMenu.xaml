@@ -12,21 +12,29 @@
     mc:Ignorable="d">
 
 	<Grid ColumnDefinitions="160, 160, 160" RowDefinitions ="Auto, Auto, Auto">
-		<ComboBox IsEnabled="false" x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="0" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">
+		<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="0" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
 			<x:String>Name</x:String>
 			<x:String>Url</x:String>
 			<x:String>Username</x:String>
 		</ComboBox>
 		
-		<ComboBox IsEnabled="false" x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" SelectedIndex="0" Grid.Row="0" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
+		<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" SelectedIndex="0" Grid.Row="0" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
 			<x:String>Ascending</x:String>
 			<x:String>Descending</x:String>
 		</ComboBox>
 
 		<ComboBox x:Name="CB_ExportMode" PlaceholderText="Export Mode" Grid.Row="2" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
-			<x:String>.txt</x:String>
-			<x:String>.csv</x:String>
-			<x:String>.bin</x:String>
+			<ComboBoxItem ToolTipService.ToolTip="Kapersky's Password Manager format">
+				<x:String>.txt</x:String>
+			</ComboBoxItem>
+			
+			<ComboBoxItem ToolTipService.ToolTip="Google and Microsoft format">
+				<x:String>.csv</x:String>
+			</ComboBoxItem>
+			
+			<ComboBoxItem ToolTipService.ToolTip="Binary and encoded format">
+				<x:String>.bin</x:String>
+			</ComboBoxItem>
 		</ComboBox>
 		
 		<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Import</Button>

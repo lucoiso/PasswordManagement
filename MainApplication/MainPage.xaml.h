@@ -26,9 +26,11 @@ namespace winrt::MainApplication::implementation
         event_token m_data_update_token;
         event_token m_data_import_token;
         event_token m_data_export_token;
+        event_token m_data_sort_token;
 
         void BindDataUpdate();
         void BindDataLoad();
+        void BindDataSorting();
     };
 }
 

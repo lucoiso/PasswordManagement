@@ -18,6 +18,8 @@ namespace winrt::MainApplication::implementation
 
         void TB_Search_TextChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args);
 
+        void Sort(DataSortMode const& mode, DataSortOrientation const& orientation);
+
     private:
         Windows::Foundation::Collections::IVector<PasswordManager::LoginData> m_data;
         Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_filtered_data;
@@ -26,6 +28,7 @@ namespace winrt::MainApplication::implementation
 
     protected:
 		bool MatchSearch(const PasswordManager::LoginData& data) const;
+		void UpdateFilteredData();
         void UpdateEntriesIndicator();
     };
 }

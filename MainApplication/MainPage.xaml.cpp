@@ -25,6 +25,7 @@ namespace winrt::MainApplication::implementation
         { // Event bindings
             BindDataUpdate();
             BindDataLoad();
+            BindDataSorting();
         }
 
         LoadLocalDataAsync();
@@ -120,5 +121,15 @@ namespace winrt::MainApplication::implementation
         };
 
         m_data_export_token = MO_DataOptions().ExportPressed(export_data_lambda);
+    }
+
+    void MainApplication::implementation::MainPage::BindDataSorting()
+    {
+        const auto sort_data_lambda = [this]()
+        {
+            LI_LoginData().Sort(MO_DataOptions().SelectedSortingMode(), MO_DataOptions().SelectedSortingOrientation());
+        };
+
+        m_data_sort_token = MO_DataOptions().SortingChanged(sort_data_lambda);
     }
 }

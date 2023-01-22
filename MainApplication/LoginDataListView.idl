@@ -14,5 +14,7 @@ namespace MainApplication
         void InsertDataInList(PasswordManager.LoginData data);
         Windows.Foundation.Collections.IObservableVector<PasswordManager.LoginData> FilteredData{ get; };
         Windows.Foundation.Collections.IVector<PasswordManager.LoginData> Data{ get; };
+
+		void Sort(DataSortMode mode, DataSortOrientation orientation);
     }
 }
