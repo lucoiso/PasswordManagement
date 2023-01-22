@@ -89,6 +89,7 @@
     <None Include="packages.config">
       <Filter>Settings</Filter>
     </None>
+    <None Include="MainApplication_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

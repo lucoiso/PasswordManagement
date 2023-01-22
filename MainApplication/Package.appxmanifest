@@ -8,12 +8,12 @@
 
   <Identity
     Name="0cc11ab5-e527-41f5-8d75-4f9a086f0860"
-    Publisher="CN=lucas"
+    Publisher="CN=Lucas Vilas-Bôas"
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>MainApplication</DisplayName>
-    <PublisherDisplayName>lucas</PublisherDisplayName>
+    <DisplayName>Password Manager</DisplayName>
+    <PublisherDisplayName>Lucas Vilas-Bôas</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,13 +31,15 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="MainApplication"
-        Description="MainApplication"
+        DisplayName="Password Manager"
+        Description="Work in Progress Password Manager by Lucas Vilas-Bôas"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/></uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>

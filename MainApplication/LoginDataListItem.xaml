@@ -21,7 +21,7 @@
 				<TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Data.Url, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Url, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Text="Username:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="2" Text="{x:Bind Data.Username, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+				<TextBlock Grid.Column="1" Grid.Row="2" Text="{x:Bind Data.Username, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Username, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="3" Text="Password:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
 				<TextBlock Grid.Column="1" Grid.Row="3" Text="{x:Bind Password, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>

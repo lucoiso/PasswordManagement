@@ -17,12 +17,12 @@ namespace winrt::MainApplication::implementation
         InitializeComponent();
     }
 
-    void LoginDataListMenu::BP_Import_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    void LoginDataListMenu::BP_Import_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
         m_import_pressed();
     }
 
-    void LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    void LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
         m_export_pressed();
     }

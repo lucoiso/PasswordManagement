@@ -12,7 +12,7 @@ namespace winrt::MainApplication::implementation
     {
         MainPage();
 
-        void InitializeSubobjects();
+        void LI_LoginData_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
     protected:
         Windows::Foundation::IAsyncAction PerformDataImportAsync();

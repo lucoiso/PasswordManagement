@@ -18,16 +18,15 @@ namespace winrt::MainApplication::implementation
     MainPage::MainPage()
     {
         InitializeComponent();
-        InitializeSubobjects();
     }
 
-    void MainPage::InitializeSubobjects()
+    void MainApplication::implementation::MainPage::LI_LoginData_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
         { // Event bindings
             BindDataUpdate();
             BindDataLoad();
         }
-        
+
         LoadLocalDataAsync();
     }
 
