@@ -16,6 +16,7 @@ namespace winrt::MainApplication::implementation
         void Data(PasswordManager::LoginData const& value);
 
         void BT_TogglePassword_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         hstring Password() const;
 

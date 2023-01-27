@@ -38,6 +38,39 @@ namespace winrt::MainApplication::implementation
         m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
     }
 
+    void CopyContentToClipboard(const hstring& content)
+    {
+        Windows::ApplicationModel::DataTransfer::DataPackage data;
+        data.SetText(content);
+
+        Windows::ApplicationModel::DataTransfer::Clipboard::SetContent(data);
+    }
+
+    void LoginDataListItem::BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    {
+		const auto button = sender.as<Microsoft::UI::Xaml::Controls::Button>();
+		const auto tag = button.Tag().as<hstring>();
+
+		if (tag == L"Username")
+		{
+			CopyContentToClipboard(m_data.Username());
+		}
+		else if (tag == L"Password")
+		{
+			CopyContentToClipboard(m_data.Password());
+		}
+		else if (tag == L"Url")
+		{
+			CopyContentToClipboard(m_data.Url());
+		}
+        
+		Controls::Flyout flyout;
+        Controls::TextBlock info;
+        info.Text(L"Copied to clipboard!");
+		flyout.Content(info);
+        flyout.ShowAt(button);
+    }
+
     hstring MainApplication::implementation::LoginDataListItem::Password() const
     {
         return m_show_password ? m_data.Password() : L"****************";

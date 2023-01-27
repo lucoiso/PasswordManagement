@@ -26,10 +26,24 @@
 				<TextBlock Grid.Column="0" Grid.Row="3" Text="Password:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
 				<TextBlock Grid.Column="1" Grid.Row="3" Text="{x:Bind Password, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
 			</Grid>
-			
-			<Button x:Name="BT_TogglePassword" Margin="4" Click="BT_TogglePassword_Clicked" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True" Padding="4">
-				<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7B3;" FontSize="16"/>
-			</Button>
+
+			<Grid ColumnDefinitions="32, 32" RowDefinitions ="32, 32" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+				<Button x:Name="BT_TogglePassword" Grid.Column="0" Grid.Row="0" Click="BT_TogglePassword_Clicked" Padding="4" ToolTipService.ToolTip="Show/Hide Password">
+					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7B3;" FontSize="16"/>
+				</Button>
+
+				<Button Tag="Url" Grid.Column="1" Grid.Row="0" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Url to Clipboard">
+					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8C8;" FontSize="16"/>
+				</Button>
+
+				<Button Tag="Username" Grid.Column="0" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Login to Clipboard">
+					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EE;" FontSize="16"/>
+				</Button>
+
+				<Button Tag="Password" Grid.Column="1" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Password to Clipboard">
+					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EF;" FontSize="16"/>
+				</Button>
+			</Grid>
 		</RelativePanel>
 	</Border>
 </UserControl>

@@ -4,4 +4,4 @@
 
 #pragma once
 
-constexpr bool ALLOW_DEBBUGGING = true;
+constexpr bool ALLOW_DEBBUGGING = false;
