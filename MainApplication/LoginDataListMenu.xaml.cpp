@@ -34,7 +34,7 @@ namespace winrt::MainApplication::implementation
 
     PasswordManager::LoginDataFileType LoginDataListMenu::SelectedExportDataType()
     {
-        const hstring selectedValue = unbox_value<hstring>(CB_ExportMode().SelectedItem());
+        const hstring selectedValue = unbox_value<hstring>(unbox_value<Controls::ComboBoxItem>(CB_ExportMode().SelectedItem()).Content());
 
         if (selectedValue == L".txt")
         {

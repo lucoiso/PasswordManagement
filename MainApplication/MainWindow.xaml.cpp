@@ -26,37 +26,37 @@ namespace winrt::MainApplication::implementation
     }
 
     template<typename ContentTy>
-	Controls::ContentDialog CreateContentDialog(const XamlRoot& root, const bool& can_close, const hstring& Title, const ContentTy& content)
-	{
-		Controls::ContentDialog dialog;
+    Controls::ContentDialog CreateContentDialog(const XamlRoot& root, const bool& can_close, const hstring& Title, const ContentTy& content)
+    {
+        Controls::ContentDialog dialog;
         dialog.XamlRoot(root);
         dialog.Title(box_value(Title));
-		dialog.Content(box_value(content));
-        
+        dialog.Content(box_value(content));
+
         if (can_close)
         {
             dialog.CloseButtonText(L"Close");
         }
-        
-		return dialog;
-	}
+
+        return dialog;
+    }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeContentAsync()
     {
         Controls::ProgressBar progress_bar;
         progress_bar.IsIndeterminate(true);
 
-		const auto loading_dialog = CreateContentDialog(Content().XamlRoot(), false, L"Loading...", progress_bar);
+        const auto loading_dialog = CreateContentDialog(Content().XamlRoot(), false, L"Loading...", progress_bar);
         loading_dialog.ShowAsync();
 
-        const auto emit_error = [this, &loading_dialog] () -> Windows::Foundation::IAsyncAction {
+        const auto emit_error = [this, &loading_dialog]() -> Windows::Foundation::IAsyncAction {
             loading_dialog.Hide();
-            
+
             const Controls::ContentDialog error_dialog = CreateContentDialog(Content().XamlRoot(), true, L"An error has occurred", L"Your device does not support the required features to run this application. Please enable Windows Hello! in your device settings.");
             co_await error_dialog.ShowAsync();
             Application::Current().Exit();
         };
-        
+
         if (!(co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync()))
         {
             co_await emit_error();
@@ -64,19 +64,19 @@ namespace winrt::MainApplication::implementation
         }
 
         const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
-        
+
         if (username.empty())
         {
             co_await emit_error();
             co_return;
         }
-            
-		switch ((co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting)).Status())
+
+        switch ((co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting)).Status())
         {
-		    case Windows::Security::Credentials::KeyCredentialStatus::Success:
-				FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
-			    break;
-                
+            case Windows::Security::Credentials::KeyCredentialStatus::Success:
+                FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
+                break;
+
             default:
                 Application::Current().Exit();
         }
