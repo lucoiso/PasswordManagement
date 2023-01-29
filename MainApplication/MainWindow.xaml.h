@@ -15,6 +15,12 @@ namespace winrt::MainApplication::implementation
         void FR_MainFrame_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         Windows::Foundation::IAsyncAction InitializeContentAsync();
+
+        HWND GetWindowHandle();
+        
+    private:
+        Microsoft::UI::Windowing::AppWindow GetAppWindow();
+        Microsoft::UI::Windowing::AppWindow m_app_window{ nullptr };
     };
 }
 

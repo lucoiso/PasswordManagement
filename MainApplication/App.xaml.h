@@ -16,7 +16,7 @@ namespace winrt::MainApplication::implementation
 
         Microsoft::UI::Xaml::Window Window() const;
 
-        static HWND GetWindowHandle();
+        static HWND GetCurrentWindowHandle();
 
     private:
         Microsoft::UI::Xaml::Window m_window{ nullptr };

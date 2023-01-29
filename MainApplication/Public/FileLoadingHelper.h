@@ -18,7 +18,7 @@ namespace winrt::Helper
     Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> LoadPasswordDataFilesAsync()
     {
         Windows::Storage::Pickers::FileOpenPicker file_picker;
-        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetWindowHandle());
+        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetCurrentWindowHandle());
 
         file_picker.FileTypeFilter().Append(L".txt");
         file_picker.FileTypeFilter().Append(L".csv");
@@ -30,7 +30,7 @@ namespace winrt::Helper
     Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode)
     {
         Windows::Storage::Pickers::FileSavePicker file_picker;
-        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetWindowHandle());
+        file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetCurrentWindowHandle());
 
         auto file_types = single_threaded_vector<hstring>();
 

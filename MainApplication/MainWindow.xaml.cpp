@@ -8,6 +8,10 @@
 #include "MainWindow.g.cpp"
 
 #include "MainPage.xaml.h"
+#include "App.xaml.h"
+
+#include <Microsoft.UI.Xaml.Window.h>
+#include <winrt/Microsoft.UI.Interop.h>
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -17,7 +21,14 @@ namespace winrt::MainApplication::implementation
     MainWindow::MainWindow()
     {
         InitializeComponent();
-        Title(L"Password Manager");
+
+        m_app_window = GetAppWindow();
+        m_app_window.SetIcon(L"Icon.ico");
+        m_app_window.Title(L"Password Manager");
+		m_app_window.TitleBar().BackgroundColor(Windows::UI::Colors::Black());
+        m_app_window.TitleBar().ForegroundColor(Windows::UI::Colors::White());
+        m_app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
+        m_app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
     }
 
     void MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
@@ -82,5 +93,24 @@ namespace winrt::MainApplication::implementation
         }
 
         loading_dialog.Hide();
+    }
+    
+    HWND MainWindow::GetWindowHandle()
+    {
+        const auto windowNative{ this->try_as<IWindowNative>() };
+        check_bool(windowNative);
+
+        HWND output{ 0 };
+        windowNative->get_WindowHandle(&output);
+
+        return output;
+    }
+    
+    Microsoft::UI::Windowing::AppWindow MainWindow::GetAppWindow()
+    {
+        const Microsoft::UI::WindowId CurrentWindowID = Microsoft::UI::GetWindowIdFromWindow(GetWindowHandle());
+        Microsoft::UI::Windowing::AppWindow CurrentAppWindow = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(CurrentWindowID);
+
+        return CurrentAppWindow;
     }
 }

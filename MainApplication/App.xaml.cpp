@@ -7,8 +7,6 @@
 #include "App.xaml.h"
 #include "MainWindow.xaml.h"
 
-#include <Microsoft.UI.Xaml.Window.h>
-
 using namespace winrt;
 using namespace Windows::Foundation;
 using namespace Microsoft::UI::Xaml;
@@ -44,16 +42,7 @@ Window MainApplication::implementation::App::Window() const
     return m_window;
 }
 
-HWND MainApplication::implementation::App::GetWindowHandle()
-{    
-    const Microsoft::UI::Xaml::Window currentWindow = Application::Current().try_as<App>()->Window();
-    check_bool(currentWindow);
-
-    auto windowNative{ currentWindow.try_as<IWindowNative>() };
-    check_bool(windowNative);
-
-    HWND output{ 0 };
-    windowNative->get_WindowHandle(&output);
-
-    return output;
+HWND MainApplication::implementation::App::GetCurrentWindowHandle()
+{
+    return Application::Current().as<App>()->Window().as<MainWindow>()->GetWindowHandle();
 }
