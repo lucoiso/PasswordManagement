@@ -42,6 +42,8 @@ namespace winrt::Helper
 
                 default: break;
             }
+
+            co_return false;
         }
 
         co_return true;
