@@ -21,6 +21,7 @@
 #include <winrt/Windows.Security.Credentials.h>
 #include <winrt/Windows.System.h>
 #include <winrt/Windows.UI.Xaml.Interop.h>
+#include <winrt/Microsoft.UI.Xaml.Hosting.h>
 
 #include <winrt/Microsoft.UI.Composition.h>
 #include <winrt/Microsoft.UI.Xaml.h>

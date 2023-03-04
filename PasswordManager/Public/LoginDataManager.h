@@ -20,18 +20,19 @@ namespace winrt::PasswordManager::implementation
 
     private:
         event<Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams>> m_data_updated;
+        Windows::Security::Cryptography::Core::CryptographicKey* m_cryptographic_key;
 
     protected:
         void PushData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataFileType& type);
 
-        void ReadBinaryData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text);
-        Windows::Foundation::IAsyncAction WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
+        Windows::Foundation::IAsyncAction ReadBinaryData(const Windows::Storage::StorageFile& file);
+        Windows::Foundation::IAsyncAction WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data);
 
         void ReadTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text);
-        Windows::Foundation::IAsyncAction WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
+        void WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
 
         void ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text);
-        Windows::Foundation::IAsyncAction WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
+        void WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
 
 		void ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type);
     };

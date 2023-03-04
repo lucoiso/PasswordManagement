@@ -52,7 +52,7 @@
 						EntryPoint="Windows.FullTrustApplication">
 					<uap5:StartupTask
 					  TaskId="lucoiso_passman_startuptask_id"
-					  Enabled="false"
+					  Enabled="true"
 					  DisplayName="Password Manager" />
 				</uap5:Extension>
 			</Extensions>

@@ -29,6 +29,11 @@ namespace winrt::MainApplication::implementation
         m_app_window.TitleBar().ForegroundColor(Windows::UI::Colors::White());
         m_app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
         m_app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
+
+        m_app_window.Closing([this]([[maybe_unused]] const auto& sender, const auto& args) { 
+            args.Cancel(true);
+            m_app_window.Hide();
+        });
     }
 
     void MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
@@ -68,28 +73,39 @@ namespace winrt::MainApplication::implementation
             Application::Current().Exit();
         };
 
-        if (!(co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync()))
+        if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); !local_settings.Values().HasKey(L"password_set"))
         {
-            co_await emit_error();
-            co_return;
-        }
+            // A senha ainda não foi inserida. Solicitar a senha do Credential Manager.
+            if (!(co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync()))
+            {
+                co_await emit_error();
+                co_return;
+            }
 
-        const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
+            const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
 
-        if (username.empty())
-        {
-            co_await emit_error();
-            co_return;
-        }
+            if (username.empty())
+            {
+                co_await emit_error();
+                co_return;
+            }
 
-        switch ((co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting)).Status())
-        {
+            switch ((co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting)).Status())
+            {
             case Windows::Security::Credentials::KeyCredentialStatus::Success:
+                // Armazenar a chave de configuração indicando que a senha foi inserida com sucesso.
+                local_settings.Values().Insert(L"password_set", box_value(true));
                 FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
                 break;
 
             default:
                 Application::Current().Exit();
+            }
+        }
+        else
+        {
+            // A senha já foi inserida. Não solicitar novamente.
+            FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
         }
 
         loading_dialog.Hide();

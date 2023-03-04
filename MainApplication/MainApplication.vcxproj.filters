@@ -63,10 +63,8 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <Filter>Settings</Filter>
-    </None>
     <None Include="MainApplication_TemporaryKey.pfx" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -97,24 +95,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Icon.png" />
-    <Image Include="Assets\Square44x44Logo.scale-200.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\BadgeLogo.scale-200.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Assets\StoreLogo.scale-200.png">
-      <Filter>Assets</Filter>
-    </Image>
+    <Image Include="Assets\AppLogo_Original.png" />
+    <Image Include="Assets\BadgeLogo.scale-400.png" />
+    <Image Include="Assets\SplashScreen.scale-400.png" />
+    <Image Include="Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Image Include="Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Image Include="Assets\Square44x44Logo.scale-400.png" />
+    <Image Include="Assets\Square44x44Logo.targetsize-256.png" />
+    <Image Include="Assets\StoreLogo.scale-400.png" />
+    <Image Include="Icon.ico" />
   </ItemGroup>
 </Project>

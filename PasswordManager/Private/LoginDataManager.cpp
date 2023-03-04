@@ -25,15 +25,18 @@ namespace winrt::PasswordManager::implementation
 		{
 			throw hresult_invalid_argument(L"file is unavailable");
 		}
-		const hstring fileType = file.FileType();
 
-		const auto fileContent = (co_await Windows::Storage::FileIO::ReadLinesAsync(file)).GetView();
+		const hstring fileType = file.FileType();
 		
 		if (fileType == L".bin")
 		{
-			ReadBinaryData(fileContent);
+			ReadBinaryData(file);
+			co_return;
 		}
-		else if (fileType == L".txt")
+
+		const auto fileContent = (co_await Windows::Storage::FileIO::ReadLinesAsync(file)).GetView();
+
+		if (fileType == L".txt")
 		{
 			ReadTextData(fileContent);
 		}
@@ -93,19 +96,20 @@ namespace winrt::PasswordManager::implementation
 		m_data_updated(*this, make<PasswordManager::implementation::LoginUpdateEventParams>(data, type));
 	}
 
-	void LoginDataManager::ReadBinaryData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
+	Windows::Foundation::IAsyncAction LoginDataManager::ReadBinaryData(const Windows::Storage::StorageFile& file)
 	{
-		hstring fileContent;
-		for (const auto& iterator : file_text)
-		{
-			fileContent = fileContent + iterator;
-		}
-		
-		const auto decoded_buffer = Windows::Security::Cryptography::CryptographicBuffer::DecodeFromBase64String(fileContent);
-		fileContent = Windows::Security::Cryptography::CryptographicBuffer::ConvertBinaryToString(Windows::Security::Cryptography::BinaryStringEncoding::Utf8, decoded_buffer);
-		
+		const auto data_buffer = co_await Windows::Storage::FileIO::ReadBufferAsync(file);
+		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
+		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
+		const auto keyMaterial_64Value = localSettings.Values().Lookup(L"temporary_key_material").as<hstring>();
+		const auto keyMaterial = Windows::Security::Cryptography::CryptographicBuffer::DecodeFromBase64String(keyMaterial_64Value);
+		const auto key = provider.CreateSymmetricKey(keyMaterial);
+		const auto decrypted_buffer = Windows::Security::Cryptography::Core::CryptographicEngine::Decrypt(key, data_buffer, nullptr);
+
+		const hstring fileContent = Windows::Security::Cryptography::CryptographicBuffer::ConvertBinaryToString(Windows::Security::Cryptography::BinaryStringEncoding::Utf8, decrypted_buffer);
+
 		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
-			
+
 		const std::string std_content = to_string(fileContent);
 		std::string line;
 		for (auto iterator = std_content.begin(); iterator != std_content.end(); ++iterator)
@@ -122,7 +126,7 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
 	{
 		hstring fileContent = L"name,url,username,password";
 		for (const auto& iterator : data)
@@ -131,9 +135,16 @@ namespace winrt::PasswordManager::implementation
 		}
 		
 		const auto data_buffer = Windows::Security::Cryptography::CryptographicBuffer::ConvertStringToBinary(fileContent, Windows::Security::Cryptography::BinaryStringEncoding::Utf8);
-		const hstring encodedContent = Windows::Security::Cryptography::CryptographicBuffer::EncodeToBase64String(data_buffer);
+		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
+		const auto keyMaterial = Windows::Security::Cryptography::CryptographicBuffer::GenerateRandom(provider.BlockLength());
+		const auto key = provider.CreateSymmetricKey(keyMaterial);
+		const auto encrypted_buffer = Windows::Security::Cryptography::Core::CryptographicEngine::Encrypt(key, data_buffer, nullptr);
 
-		co_await Windows::Storage::FileIO::WriteTextAsync(file, encodedContent);
+		co_await Windows::Storage::FileIO::WriteBufferAsync(file, encrypted_buffer);
+
+		const auto exportedKeyMaterial = Windows::Security::Cryptography::CryptographicBuffer::EncodeToBase64String(keyMaterial);
+		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
+		localSettings.Values().Insert(L"temporary_key_material", box_value(exportedKeyMaterial));
 	}
 
 	void LoginDataManager::ReadTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
@@ -181,7 +192,7 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	void LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
 		lines.Append(L"Websites\n");
@@ -191,7 +202,7 @@ namespace winrt::PasswordManager::implementation
 			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::TXT));
 		}
 
-		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
+		Windows::Storage::FileIO::WriteLinesAsync(file, lines);
 	}
 
 	void LoginDataManager::ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
@@ -204,7 +215,7 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	void LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
 		lines.Append(L"name,url,username,password");
@@ -214,7 +225,7 @@ namespace winrt::PasswordManager::implementation
 			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::CSV));
 		}
 
-		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
+		Windows::Storage::FileIO::WriteLinesAsync(file, lines);
 	}
 	
 	void LoginDataManager::ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type)
