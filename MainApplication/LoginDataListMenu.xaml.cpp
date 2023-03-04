@@ -97,6 +97,7 @@ namespace winrt::MainApplication::implementation
     {
         if (!CB_ExportMode().SelectedItem())
         {
+            Helper::CreateContentDialog(Content().XamlRoot(), L"Error", L"There's no selected export mode.", false, true).ShowAsync();
             return PasswordManager::LoginDataFileType::Undefined;
         }
 
@@ -122,6 +123,7 @@ namespace winrt::MainApplication::implementation
     {
         if (!CB_SortingMode().SelectedItem())
         {
+            Helper::CreateContentDialog(Content().XamlRoot(), L"Error", L"There's no selected sorting mode.", false, true).ShowAsync();
             return DataSortMode::Undefined;
         }
 
@@ -147,6 +149,7 @@ namespace winrt::MainApplication::implementation
     {
         if (!CB_SortingOrientation().SelectedItem())
         {
+            Helper::CreateContentDialog(Content().XamlRoot(), L"Error", L"There's no selected sorting orientation.", false, true).ShowAsync();
             return DataSortOrientation::Undefined;
         }
 

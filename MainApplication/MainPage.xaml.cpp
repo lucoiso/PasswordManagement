@@ -7,6 +7,7 @@
 #include "MainPage.g.cpp"
 
 #include "FileLoadingHelper.h"
+#include "DialogHelper.h"
 
 #include <Helper.h>
 
@@ -51,51 +52,71 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction MainPage::PerformDataImportAsync()
     {
-        for (const auto& iterator : co_await Helper::LoadPasswordDataFilesAsync())
+        const auto data_files = co_await Helper::LoadPasswordDataFilesAsync();
+        for (const auto& iterator : data_files)
         {
             if (!iterator)
             {
                 continue;
             }
 
-            m_manager.ImportDataAsync(iterator);
+            co_await m_manager.ImportDataAsync(iterator);
         }
 
-        SaveLocalDataAsync();
+        if (data_files.Size() > 0)
+        {
+            SaveLocalDataAsync();
+        }
     }
 
     Windows::Foundation::IAsyncAction MainPage::PerformDataExportAsync()
     {
         if (const auto exported_file = co_await Helper::SavePasswordDataFileAsync(MO_DataOptions().SelectedExportDataType()))
         {
-            m_manager.ExportDataAsync(exported_file, LI_LoginData().Data().GetView());
+            co_await m_manager.ExportDataAsync(exported_file, LI_LoginData().Data().GetView());
         }
     }
 
     Windows::Foundation::IAsyncAction MainPage::LoadLocalDataAsync()
     {
-        try
+        Controls::ProgressBar progress_bar;
+        progress_bar.IsIndeterminate(true);
+        const auto loading_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Loading...", progress_bar, false, false);
+
+        loading_dialog.ShowAsync();
         {
-            m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync());
+            try
+            {
+                co_await m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync());
+            }
+            catch (const hresult_error& e)
+            {
+                Helper::PrintDebugLine(e.message());
+            }
         }
-        catch (const hresult_error& e)
-        {
-            Helper::PrintDebugLine(e.message());
-        }
+        loading_dialog.Hide();
 
         co_return;
     }
 
     Windows::Foundation::IAsyncAction MainPage::SaveLocalDataAsync()
     {
-        try
+        Controls::ProgressBar progress_bar;
+        progress_bar.IsIndeterminate(true);
+        const auto loading_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Loading...", progress_bar, false, false);
+
+        loading_dialog.ShowAsync();
         {
-            m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), LI_LoginData().Data().GetView());
+            try
+            {
+                co_await m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), LI_LoginData().Data().GetView());
+            }
+            catch (const hresult_error& e)
+            {
+                Helper::PrintDebugLine(e.message());
+            }
         }
-        catch (const hresult_error& e)
-        {
-            Helper::PrintDebugLine(e.message());
-        }
+        loading_dialog.Hide();
 
         co_return;
     }
