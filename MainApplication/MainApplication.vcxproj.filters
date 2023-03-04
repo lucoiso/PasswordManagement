@@ -73,6 +73,15 @@
     <ClInclude Include="Public\FileLoadingHelper.h">
       <Filter>Development\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Public\SecurityHelper.h">
+      <Filter>Development\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\DialogHelper.h">
+      <Filter>Development\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\CastingHelper.h">
+      <Filter>Development\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
@@ -93,6 +102,9 @@
     <Page Include="LoginDataListItem.xaml">
       <Filter>Development\Xaml\Controls</Filter>
     </Page>
+    <Page Include="LoginDataEditor.xaml">
+      <Filter>Development\Xaml\Controls</Filter>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\AppLogo_Original.png" />
@@ -104,5 +116,8 @@
     <Image Include="Assets\Square44x44Logo.targetsize-256.png" />
     <Image Include="Assets\StoreLogo.scale-400.png" />
     <Image Include="Icon.ico" />
+    <Image Include="Assets\ApplicationBackground.jpg">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

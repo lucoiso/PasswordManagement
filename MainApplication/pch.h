@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
@@ -21,9 +21,12 @@
 #include <winrt/Windows.Security.Credentials.h>
 #include <winrt/Windows.System.h>
 #include <winrt/Windows.UI.Xaml.Interop.h>
-#include <winrt/Microsoft.UI.Xaml.Hosting.h>
+#include <winrt/Windows.ApplicationModel.Activation.h>
+#include <winrt/Windows.UI.ViewManagement.Core.h>
 
 #include <winrt/Microsoft.UI.Composition.h>
+#include <winrt/Windows.UI.Composition.Desktop.h>
+#include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
 #include <winrt/Microsoft.UI.Xaml.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
@@ -35,6 +38,8 @@
 #include <winrt/Microsoft.UI.Xaml.Shapes.h>
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include <winrt/Microsoft.UI.Windowing.h>
+#include <winrt/Microsoft.UI.Xaml.Hosting.h>
+#include <winrt/Microsoft.Windows.AppLifecycle.h>
 
 #include <wil/cppwinrt_helpers.h>
 

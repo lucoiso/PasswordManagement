@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
@@ -90,7 +90,7 @@ namespace winrt::PasswordManager::implementation
 
     bool LoginData::HasEmptyData() const
     {
-        return Helper::HasEmptyData(m_name, m_url, m_username, m_password);
+        return Helper::HasEmptyData(m_name, m_username, m_password);
     }
 
     void LoginData::resetLoginData()

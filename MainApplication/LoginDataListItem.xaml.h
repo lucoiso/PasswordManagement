@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
@@ -15,8 +15,11 @@ namespace winrt::MainApplication::implementation
         PasswordManager::LoginData Data() const;
         void Data(PasswordManager::LoginData const& value);
 
-        void BT_TogglePassword_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
-        void BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction BT_TogglePassword_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+
+        Windows::Foundation::IAsyncAction BT_Edit_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction BT_Delete_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         hstring Password() const;
 

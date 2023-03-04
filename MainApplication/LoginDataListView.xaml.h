@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
@@ -13,6 +13,9 @@ namespace winrt::MainApplication::implementation
         LoginDataListView();
 
         void InsertDataInList(PasswordManager::LoginData const& data);
+        void RemoveDataFromList(PasswordManager::LoginData const& data);
+        void RemoveAllDataFromList();
+
         Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> FilteredData() const;
         Windows::Foundation::Collections::IVector<PasswordManager::LoginData> Data() const;
 

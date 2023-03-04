@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
@@ -13,7 +13,7 @@ namespace winrt::MainApplication::implementation
         App();
         ~App();
 
-        void OnLaunched(Microsoft::UI::Xaml::LaunchActivatedEventArgs const&);
+        void OnLaunched(Microsoft::UI::Xaml::LaunchActivatedEventArgs const& args);
 
         Microsoft::UI::Xaml::Window Window() const;
 

@@ -1,11 +1,17 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
 
 #include "LoginDataListItem.xaml.h"
 #include "LoginDataListItem.g.cpp"
+
+#include "MainPage.xaml.h"
+
+#include "SecurityHelper.h"
+#include "CastingHelper.h"
+#include "DialogHelper.h"
 
 #include <Helper.h>
 
@@ -29,11 +35,19 @@ namespace winrt::MainApplication::implementation
         if (Helper::SetMemberValue(value, m_data))
         {
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Data" });
+            
+            m_show_password = false;
+            m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
         }
     }
 
-    void MainApplication::implementation::LoginDataListItem::BT_TogglePassword_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction MainApplication::implementation::LoginDataListItem::BT_TogglePassword_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
+        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        {
+			co_return;
+		}
+
         m_show_password = !m_show_password;
         m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
     }
@@ -46,7 +60,7 @@ namespace winrt::MainApplication::implementation
         Windows::ApplicationModel::DataTransfer::Clipboard::SetContent(data);
     }
 
-    void LoginDataListItem::BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction LoginDataListItem::BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
 		const auto button = sender.as<Microsoft::UI::Xaml::Controls::Button>();
 		const auto tag = button.Tag().as<hstring>();
@@ -57,6 +71,11 @@ namespace winrt::MainApplication::implementation
 		}
 		else if (tag == L"Password")
 		{
+            if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+            {
+                co_return;
+            }
+
 			CopyContentToClipboard(m_data.Password());
 		}
 		else if (tag == L"Url")
@@ -69,6 +88,58 @@ namespace winrt::MainApplication::implementation
         info.Text(L"Copied to clipboard!");
 		flyout.Content(info);
         flyout.ShowAt(button);
+    }
+
+    Windows::Foundation::IAsyncAction LoginDataListItem::BT_Edit_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        {
+            co_return;
+        }
+
+        MainApplication::LoginDataEditor editor;
+        editor.XamlRoot(XamlRoot());
+        editor.Data(Data());
+
+        switch ((co_await editor.ShowAsync()))
+        {
+            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            {
+                if (editor.Data().HasEmptyData())
+                {
+                    co_await Helper::CreateContentDialog(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true).ShowAsync();
+                }
+                else
+                {
+                    Data(editor.Data().Clone().as<PasswordManager::LoginData>());
+                }
+
+                break;
+            }
+
+            default: co_return;
+        }
+    }
+
+    Windows::Foundation::IAsyncAction LoginDataListItem::BT_Delete_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        {
+            co_return;
+        }
+
+        auto confirm_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Delete Data", L"Confirm process?", true, true);        
+
+        switch ((co_await confirm_dialog.ShowAsync()))
+        {
+            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            {
+                if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                {
+                    MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>());
+                }
+            }
+        }
     }
 
     hstring MainApplication::implementation::LoginDataListItem::Password() const

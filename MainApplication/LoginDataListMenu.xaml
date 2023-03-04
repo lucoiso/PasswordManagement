@@ -11,7 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid ColumnDefinitions="160, 160, 160" RowDefinitions ="Auto, Auto, Auto">
+	<Grid ColumnDefinitions="160, 160, 160" RowDefinitions ="Auto, Auto, Auto, Auto">
 		<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="0" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
 			<x:String>Name</x:String>
 			<x:String>Url</x:String>
@@ -31,13 +31,15 @@
 			<ComboBoxItem ToolTipService.ToolTip="Google and Microsoft format">
 				<x:String>.csv</x:String>
 			</ComboBoxItem>
-			
-			<ComboBoxItem ToolTipService.ToolTip="Binary and encoded format">
-				<x:String>.bin</x:String>
-			</ComboBoxItem>
+
+			<!-- <ComboBoxItem ToolTipService.ToolTip="Internal format - DEBUGGING ONLY"> -->
+			<!-- 	<x:String>.bin</x:String> -->
+			<!-- </ComboBoxItem> -->
 		</ComboBox>
 		
 		<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Import</Button>
+		<Button x:Name="BP_Add" Click="BP_Add_Click" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">Add Data</Button>
 		<Button x:Name="BP_Export" Click="BP_Export_Click" Grid.Row="2" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Export</Button>
+		<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">Clear Data</Button>
 	</Grid>
 </UserControl>

@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
@@ -29,6 +29,24 @@ namespace winrt::MainApplication::implementation
         }
 
         LoadLocalDataAsync();
+    }
+
+    void MainPage::AddLoginData(PasswordManager::LoginData const& data)
+    {
+        LI_LoginData().InsertDataInList(data);
+        SaveLocalDataAsync();
+    }
+
+    void MainPage::RemoveLoginData(PasswordManager::LoginData const& data)
+    {
+        LI_LoginData().RemoveDataFromList(data);
+        SaveLocalDataAsync();
+    }
+
+    void MainPage::RemoveAllLoginData()
+    {
+        LI_LoginData().RemoveAllDataFromList();
+		SaveLocalDataAsync();
     }
 
     Windows::Foundation::IAsyncAction MainPage::PerformDataImportAsync()

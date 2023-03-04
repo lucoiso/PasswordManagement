@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 import "ModuleInterface.idl";
@@ -12,6 +12,9 @@ namespace MainApplication
         LoginDataListView();
 
         void InsertDataInList(PasswordManager.LoginData data);
+        void RemoveDataFromList(PasswordManager.LoginData data);
+        void RemoveAllDataFromList();
+
         Windows.Foundation.Collections.IObservableVector<PasswordManager.LoginData> FilteredData{ get; };
         Windows.Foundation.Collections.IVector<PasswordManager.LoginData> Data{ get; };
 

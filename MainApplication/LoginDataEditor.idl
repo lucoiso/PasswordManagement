@@ -5,8 +5,9 @@
 namespace MainApplication
 {
     [default_interface]
-    runtimeclass MainWindow : Microsoft.UI.Xaml.Window
+    runtimeclass LoginDataEditor : Microsoft.UI.Xaml.Controls.ContentDialog
     {
-        MainWindow();
+        LoginDataEditor();
+        PasswordManager.LoginData Data;
     }
 }

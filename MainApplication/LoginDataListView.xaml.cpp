@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
@@ -52,6 +52,33 @@ namespace winrt::MainApplication::implementation
 		push_data(m_filtered_data, [this](const PasswordManager::LoginData& data) { return MatchSearch(data); });
         
         UpdateEntriesIndicator();
+    }
+
+    void LoginDataListView::RemoveDataFromList(PasswordManager::LoginData const& data)
+    {
+        PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
+        check_bool(newData != nullptr);
+
+        const auto remove_data = [&newData](const auto& container)
+        {
+            if (const auto matchingIterator = std::find_if(container.begin(), container.end(), [newData](const PasswordManager::LoginData& element) { return element.Equals(newData); });
+                matchingIterator != container.end())
+            {
+				container.RemoveAt(static_cast<unsigned int>(std::distance(container.begin(), matchingIterator)));
+			}
+		};
+
+		remove_data(m_data);
+		remove_data(m_filtered_data);
+
+		UpdateEntriesIndicator();
+    }
+
+    void LoginDataListView::RemoveAllDataFromList()
+    {
+        m_data.Clear();
+		m_filtered_data.Clear();
+		UpdateEntriesIndicator();
     }
 
     Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> MainApplication::implementation::LoginDataListView::FilteredData() const

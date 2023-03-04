@@ -1,0 +1,24 @@
+﻿<!-- Author: Lucas Oliveira Vilas-Bôas -->
+<!-- Year: 2022 -->
+<!-- Repository: https://github.com/lucoiso/PasswordManagement -->
+
+<ContentDialog
+    x:Class="MainApplication.LoginDataEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MainApplication"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+	Title="Login Data Editor"
+	PrimaryButtonText="Confirm"
+	CloseButtonText="Cancel"
+	CornerRadius="8">
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBox x:Name="TB_Name" PlaceholderText="Name" MinWidth="300" Margin="4" TextChanged="TB_Name_TextChanged" />
+		<TextBox x:Name="TB_Url" PlaceholderText="Url" MinWidth="300" Margin="4" TextChanged="TB_Url_TextChanged" />
+		<TextBox x:Name="TB_Username" PlaceholderText="Username" MinWidth="300" Margin="4" TextChanged="TB_Username_TextChanged" />
+		<PasswordBox x:Name="TB_Password" PlaceholderText="Password" MinWidth="300" Margin="4" PasswordChanged="TB_Password_PasswordChanged" />
+    </StackPanel>
+</ContentDialog>

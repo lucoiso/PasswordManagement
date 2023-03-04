@@ -13,7 +13,7 @@
     mc:Ignorable="d">
 
 	<StackPanel Orientation="Vertical">
-			<TextBox x:Name="TB_Search" PlaceholderText="Search" MinWidth="600" Margin="4" TextChanged="TB_Search_TextChanged"/>
+		<TextBox x:Name="TB_Search" PlaceholderText="Search" MinWidth="600" Margin="4" TextChanged="TB_Search_TextChanged"/>
 		
 		<ListView x:Name="LV_DataList" Margin="4" Height="600" Width="600" CornerRadius="4" ItemsSource="{x:Bind FilteredData}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="None">
 			<ListView.ItemTemplate>

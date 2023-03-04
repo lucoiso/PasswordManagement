@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
@@ -7,13 +7,14 @@
 #include "LoginDataManager.h"
 #include "LoginDataManager.g.cpp"
 
-#include "Helper.h"
+#include "LoginData.h"
 #include "LoginUpdateEventParams.h"
 
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <LoginData.h>
+#include <Helper.h>
+#include <Constants.h>
 
 using namespace winrt;
 
@@ -128,7 +129,7 @@ namespace winrt::PasswordManager::implementation
 
 	Windows::Foundation::IAsyncAction LoginDataManager::WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
 	{
-		hstring fileContent = L"name,url,username,password";
+		hstring fileContent = to_hstring(PASSWORD_DATA_CSV_HEADER);
 		for (const auto& iterator : data)
 		{
 			fileContent = fileContent + L"\n" + iterator.GetDataAsString(PasswordManager::LoginDataFileType::BIN);
@@ -218,7 +219,7 @@ namespace winrt::PasswordManager::implementation
 	void LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
-		lines.Append(L"name,url,username,password");
+		lines.Append(to_hstring(PASSWORD_DATA_CSV_HEADER));
 
 		for (const PasswordManager::LoginData& iterator : data)
 		{
@@ -232,7 +233,7 @@ namespace winrt::PasswordManager::implementation
 	{
 		const std::string std_line = to_string(line);
 
-		if (Helper::StringContains(std_line, "name,url,username,password"))
+		if (Helper::StringContains(std_line, to_string(PASSWORD_DATA_CSV_HEADER).substr(0, to_string(PASSWORD_DATA_CSV_HEADER).size() - 1)))
 		{
 			return;
 		}

@@ -75,7 +75,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <PackageCertificateThumbprint>BC72E0B61F2F5C464C16BED80742D46028CE909D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>EB9F904489C803C2AEE2C7CE82835DF8882910D1</PackageCertificateThumbprint>
     <PackageCertificateKeyFile>MainApplication_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
   </PropertyGroup>
@@ -147,6 +147,10 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LoginDataEditor.xaml.h">
+      <DependentUpon>LoginDataEditor.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
     <ClInclude Include="LoginDataListItem.xaml.h">
       <DependentUpon>LoginDataListItem.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -169,12 +173,19 @@
     <ClInclude Include="App.xaml.h">
       <DependentUpon>App.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="Public\CastingHelper.h" />
+    <ClInclude Include="Public\DialogHelper.h" />
     <ClInclude Include="Public\FileLoadingHelper.h" />
+    <ClInclude Include="Public\SecurityHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LoginDataEditor.xaml.cpp">
+      <DependentUpon>LoginDataEditor.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="LoginDataListItem.xaml.cpp">
       <DependentUpon>LoginDataListItem.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -205,6 +216,10 @@
     <Midl Include="App.idl">
       <SubType>Code</SubType>
       <DependentUpon>App.xaml</DependentUpon>
+    </Midl>
+    <Midl Include="LoginDataEditor.idl">
+      <DependentUpon>LoginDataEditor.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Midl>
     <Midl Include="LoginDataListItem.idl">
       <DependentUpon>LoginDataListItem.xaml</DependentUpon>
@@ -246,6 +261,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="LoginDataEditor.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="LoginDataListItem.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -259,6 +277,7 @@
     <Page Include="MainWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Assets\ApplicationBackground.jpg" />
     <Image Include="Assets\AppLogo_Original.png" />
     <Image Include="Assets\BadgeLogo.scale-400.png" />
     <Image Include="Assets\SplashScreen.scale-400.png" />

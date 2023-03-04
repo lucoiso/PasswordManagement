@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
@@ -15,7 +15,7 @@ using namespace winrt::MainApplication;
 
 namespace winrt::Helper
 {
-    Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> LoadPasswordDataFilesAsync()
+    inline Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> LoadPasswordDataFilesAsync()
     {
         Windows::Storage::Pickers::FileOpenPicker file_picker;
         file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetCurrentWindowHandle());
@@ -27,7 +27,7 @@ namespace winrt::Helper
         return file_picker.PickMultipleFilesAsync();
     }
 
-    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode)
+    inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode)
     {
         Windows::Storage::Pickers::FileSavePicker file_picker;
         file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetCurrentWindowHandle());
@@ -36,21 +36,21 @@ namespace winrt::Helper
 
         switch (export_mode)
         {
-            case PasswordManager::LoginDataFileType::CSV:
-                file_types.Append(L".csv");
-                break;
+        case PasswordManager::LoginDataFileType::CSV:
+            file_types.Append(L".csv");
+            break;
 
-            case PasswordManager::LoginDataFileType::TXT:
-                file_types.Append(L".txt");
-                break;
+        case PasswordManager::LoginDataFileType::TXT:
+            file_types.Append(L".txt");
+            break;
 
-            case PasswordManager::LoginDataFileType::BIN:
-                file_types.Append(L".bin");
-                break;
+        case PasswordManager::LoginDataFileType::BIN:
+            file_types.Append(L".bin");
+            break;
 
-            default:
-                throw hresult_not_implemented(L"not implemented yet");
-                break;
+        default:
+            throw hresult_not_implemented(L"not implemented yet");
+            break;
         }
 
         file_picker.FileTypeChoices().Insert(L"Password Data", file_types);
@@ -58,7 +58,7 @@ namespace winrt::Helper
         return file_picker.PickSaveFileAsync();
     }
 
-    Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> GetLocalDataFileAsync()
+    inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> GetLocalDataFileAsync()
     {
         try
         {

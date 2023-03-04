@@ -1,11 +1,18 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
 
 #include "LoginDataListMenu.xaml.h"
 #include "LoginDataListMenu.g.cpp"
+
+#include "LoginDataEditor.xaml.h"
+#include "MainPage.xaml.h"
+
+#include "SecurityHelper.h"
+#include "DialogHelper.h"
+#include "CastingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -22,9 +29,63 @@ namespace winrt::MainApplication::implementation
         m_import_pressed();
     }
 
-    void LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
+        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        {
+            co_return;
+        }
+
         m_export_pressed();
+    }
+
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Add_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        MainApplication::LoginDataEditor editor;
+        editor.XamlRoot(XamlRoot());
+
+        switch ((co_await editor.ShowAsync()))
+        {
+            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            {
+                if (editor.Data().HasEmptyData())
+                {
+                    co_await Helper::CreateContentDialog(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true).ShowAsync();
+                }
+                else
+                {
+                    if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(Parent()); MainPage)
+                    {
+                        MainPage.AddLoginData(editor.Data());
+                    }
+                }
+
+				break;
+			}
+
+            default: co_return;
+        }
+    }
+
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Clear_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        {
+            co_return;
+        }
+
+        auto confirm_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Delete All Data", L"Confirm process?", true, true);
+
+        switch ((co_await confirm_dialog.ShowAsync()))
+        {
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        {
+            if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+            {
+                MainPage.RemoveAllLoginData();
+            }
+        }
+        }
     }
 
     void MainApplication::implementation::LoginDataListMenu::GenericSorting_SelectionChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::SelectionChangedEventArgs const& args)
@@ -34,6 +95,11 @@ namespace winrt::MainApplication::implementation
 
     PasswordManager::LoginDataFileType LoginDataListMenu::SelectedExportDataType()
     {
+        if (!CB_ExportMode().SelectedItem())
+        {
+            return PasswordManager::LoginDataFileType::Undefined;
+        }
+
         const hstring selectedValue = unbox_value<hstring>(unbox_value<Controls::ComboBoxItem>(CB_ExportMode().SelectedItem()).Content());
 
         if (selectedValue == L".txt")
@@ -54,6 +120,11 @@ namespace winrt::MainApplication::implementation
 
     DataSortMode LoginDataListMenu::SelectedSortingMode()
     {
+        if (!CB_SortingMode().SelectedItem())
+        {
+            return DataSortMode::Undefined;
+        }
+
         const hstring selectedValue = unbox_value<hstring>(CB_SortingMode().SelectedItem());
 
         if (selectedValue == L"Name")
@@ -74,6 +145,11 @@ namespace winrt::MainApplication::implementation
 
     DataSortOrientation LoginDataListMenu::SelectedSortingOrientation()
     {
+        if (!CB_SortingOrientation().SelectedItem())
+        {
+            return DataSortOrientation::Undefined;
+        }
+
         const hstring selectedValue = unbox_value<hstring>(CB_SortingOrientation().SelectedItem());
 
         if (selectedValue == L"Ascending")

@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #pragma once
@@ -13,6 +13,11 @@ namespace winrt::MainApplication::implementation
         MainPage();
 
         void LI_LoginData_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+
+        void AddLoginData(PasswordManager::LoginData const& data);
+        void RemoveLoginData(PasswordManager::LoginData const& data);
+
+        void RemoveAllLoginData();
 
     protected:
         Windows::Foundation::IAsyncAction PerformDataImportAsync();

@@ -12,6 +12,14 @@
     mc:Ignorable="d">
 
 	<ScrollViewer HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
-		<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
+		<ScrollViewer.Background>
+			<ImageBrush ImageSource="Assets/ApplicationBackground.jpg" />
+		</ScrollViewer.Background>
+
+		<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded">
+			<Frame.Background>
+				<AcrylicBrush TintOpacity="0.75" TintLuminosityOpacity="0.25" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
+			</Frame.Background>
+		</Frame>
 	</ScrollViewer>
 </Window>

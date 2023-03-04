@@ -1,5 +1,5 @@
 // Author: Lucas Oliveira Vilas-Bôas
-// Year: 2022
+// Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
 #include "pch.h"
@@ -11,10 +11,10 @@
 #include <windowsx.h>
 #include <shellapi.h>
 
-// Defina uma mensagem personalizada para o menu de contexto
-#define WM_TRAYICON (WM_USER + 1)
+#include <Helper.h>
+#include <Constants.h>
 
-// Declarar um identificador exclusivo para o ícone da bandeja do sistema
+#define WM_TRAYICON (WM_USER + 1)
 #define ID_TRAYICON 1
 
 using namespace winrt;
@@ -43,21 +43,33 @@ App::App()
 
 winrt::MainApplication::implementation::App::~App()
 {
-    if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); local_settings.Values().HasKey(L"password_set"))
+    if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); local_settings.Values().HasKey(SECURITY_KEY_SET_ID))
     {
-        local_settings.Values().Remove(L"password_set");
+        local_settings.Values().Remove(SECURITY_KEY_SET_ID);
     }
 
     RemoveTrayIcon();
 }
 
-void App::OnLaunched(LaunchActivatedEventArgs const&)
-{
+void App::OnLaunched(LaunchActivatedEventArgs const& args)
+{    
+    if (const auto app_instance = Microsoft::Windows::AppLifecycle::AppInstance::FindOrRegisterForKey(APP_INSTANCE_KEY); !app_instance.IsCurrent())
+    {
+        SendMessage(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME), WM_SHOWWINDOW, FALSE, 0);
+        Exit();
+        return;
+    }
+
     m_window = make<MainWindow>();
-    m_window.Activate();
 
     if (!AddTrayIcon())
     {
+        Helper::PrintDebugLine(L"Failed to add System Tray Icon");
+    }
+
+    if (args.UWPLaunchActivatedEventArgs().Kind() == Windows::ApplicationModel::Activation::ActivationKind::Launch)
+    {
+        m_window.Activate();
     }
 }
 
@@ -75,10 +87,36 @@ LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 {
     switch (uMsg)
     {
+        case WM_SHOWWINDOW:
+        {
+            if (!Application::Current().as<App>()->Window().Visible())
+            {
+                Application::Current().as<App>()->Window().Activate();
+            }
+            break;
+        }
+
         case WM_TRAYICON:
         {
             switch (lParam)
             {
+                case WM_LBUTTONUP:
+                {
+                    static DWORD last_click_time;
+                    DWORD current_tick_time = GetTickCount();
+
+                    if (current_tick_time - last_click_time < 1000)
+                    {
+                        if (!Application::Current().as<App>()->Window().Visible())
+                        {
+                            Application::Current().as<App>()->Window().Activate();
+                        }
+                    }
+
+                    last_click_time = current_tick_time;
+                    break;
+                }
+
                 case WM_RBUTTONDOWN:
                 {
                     HMENU hMenu = CreatePopupMenu();
@@ -99,22 +137,33 @@ LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
                             {
                                 Application::Current().as<App>()->Window().Activate();
                             }
+
                             break;
 
                         case 2:
-                            Application::Current().Exit();
+                            try
+                            {
+                                Application::Current().Exit();
+                            }
+                            catch (...)
+                            {
+                            }
                             break;
-                    }
 
-                    break;
+                        default: break;
+                        }
+
+                        break;
                 }
 
                 default: break;
             }
         }
 
-        default: return DefWindowProc(hwnd, uMsg, wParam, lParam);;
-    }    
+        default: break;
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 BOOL App::InitNotifyIconData()
@@ -123,10 +172,10 @@ BOOL App::InitNotifyIconData()
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.lpfnWndProc = TrayIconCallback;
     wc.hInstance = GetModuleHandle(NULL);
-    wc.lpszClassName = L"TrayIconCallback";
+    wc.lpszClassName = TRAYICON_CLASSNAME;
     RegisterClassEx(&wc);
 
-    m_tray_hwnd = CreateWindowEx(0, wc.lpszClassName, wc.lpszClassName, WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, wc.hInstance, NULL);
+    m_tray_hwnd = CreateWindowEx(0, TRAYICON_CLASSNAME, TRAYICON_CLASSNAME, WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, wc.hInstance, NULL);
 
     NOTIFYICONDATA notify_icon_data;
     notify_icon_data.cbSize = sizeof(NOTIFYICONDATA);
@@ -136,15 +185,15 @@ BOOL App::InitNotifyIconData()
     notify_icon_data.uCallbackMessage = WM_TRAYICON;
 
     HICON hIcon = NULL;
-    ExtractIconEx(L"Icon.ico", 0, NULL, &hIcon, 1);
+    ExtractIconEx(ICON_NAME, 0, NULL, &hIcon, 1);
     notify_icon_data.hIcon = hIcon;
-    wcscpy_s(notify_icon_data.szTip, L"Password Manager");
+    wcscpy_s(notify_icon_data.szTip, APP_NAME);
 
     Shell_NotifyIcon(NIM_ADD, &notify_icon_data);
 
     auto dispatcher_queue = Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
     auto Timer = dispatcher_queue.CreateTimer();
-    Timer.Interval(TimeSpan(std::chrono::seconds(1)));
+    Timer.Interval(TimeSpan(std::chrono::milliseconds(500)));
     Timer.Tick([this](auto&&, auto&&)
     {
 		MSG msg = { 0 };
@@ -181,3 +230,4 @@ BOOL App::RemoveTrayIcon()
 }
 
 #undef WM_TRAYICON
+#undef ID_TRAYICON
