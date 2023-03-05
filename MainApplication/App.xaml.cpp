@@ -18,9 +18,9 @@
 #include "DialogHelper.h"
 
 constexpr auto WM_TRAYICON = (WM_USER + 1);
-constexpr auto WM_ACTIVATE_WINDOW = (WM_USER + 2);
-constexpr auto WM_ACTIVATE_GENERATOR = (WM_USER + 3);
-constexpr auto WM_ACTIVATE_SETTINGS = (WM_USER + 4);
+constexpr auto WM_TOGGLE_WINDOW = (WM_USER + 2);
+constexpr auto WM_TOGGLE_GENERATOR = (WM_USER + 3);
+constexpr auto WM_TOGGLE_SETTINGS = (WM_USER + 4);
 constexpr auto WM_EXIT_APPLICATION = (WM_USER + 5);
 
 constexpr auto ID_TRAYICON = (WM_USER + 6);
@@ -101,13 +101,18 @@ HWND MainApplication::implementation::App::GetCurrentWindowHandle()
     return Application::Current().as<App>()->Window().as<MainWindow>()->GetWindowHandle();
 }
 
-void App::ActivateWindow()
+void App::ToggleWindow()
 {
     try
     {
-        if (!Application::Current().as<App>()->Window().Visible())
+        auto application = Application::Current().as<App>();
+        if (!application->Window().Visible())
         {
-            Application::Current().as<App>()->Window().Activate();
+            application->Window().Activate();
+        }
+        else
+        {
+            application->Window().as<MainWindow>()->GetAppWindow().Hide();
         }
     }
     catch (...)
@@ -168,7 +173,7 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
 
             if (current_tick_time - last_click_time < 1000)
             {
-                SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
+                SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
             }
 
             last_click_time = current_tick_time;
@@ -180,7 +185,7 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
         {
             HMENU hMenu = CreatePopupMenu();
 
-            AppendMenu(hMenu, MF_STRING, ID_TOGGLE_APPLICATION_VISIBILITY, Application::Current().as<App>()->Window().Visible() ? L"Minimize" : L"Show");
+            AppendMenu(hMenu, MF_STRING, ID_TOGGLE_APPLICATION_VISIBILITY, Application::Current().as<App>()->Window().Visible() ? L"Hide" : L"Show");
             // AppendMenu(hMenu, MF_STRING, ID_TOGGLE_GENERATOR_VISIBILITY, L"Open Generator");
             // AppendMenu(hMenu, MF_STRING, ID_TOGGLE_SETTINGS_VISIBILITY, L"Settings");
             AppendMenu(hMenu, MF_STRING, ID_CLOSE_APPLICATION, L"Exit");
@@ -195,15 +200,15 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
             switch (menuItem)
             {
                 case ID_TOGGLE_APPLICATION_VISIBILITY:
-                    SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
+                    SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
                     break;
 
                 case ID_TOGGLE_GENERATOR_VISIBILITY:
-                    SendMessage(hwnd, WM_ACTIVATE_GENERATOR, 0, 0);
+                    SendMessage(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
                     break;
 
                 case ID_TOGGLE_SETTINGS_VISIBILITY:
-                    SendMessage(hwnd, WM_ACTIVATE_SETTINGS, 0, 0);
+                    SendMessage(hwnd, WM_TOGGLE_SETTINGS, 0, 0);
                     break;
 
                 case ID_CLOSE_APPLICATION:
@@ -225,11 +230,11 @@ void ProcessHotKey(HWND hwnd, WPARAM wParam)
     switch (wParam)
     {
         case ID_APPLICATIONWINDOW_SHORTCUT:
-            SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
+            SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
             break;
 
         case ID_GENERATORWINDOW_SHORTCUT:
-            SendMessage(hwnd, WM_ACTIVATE_GENERATOR, 0, 0);
+            SendMessage(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
             break;
 
         default: break;
@@ -240,15 +245,15 @@ LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 {
     switch (uMsg)
     {
-        case WM_ACTIVATE_WINDOW:
-            App::ActivateWindow();
+        case WM_TOGGLE_WINDOW:
+            App::ToggleWindow();
             break;
 
-        case WM_ACTIVATE_GENERATOR:
+        case WM_TOGGLE_GENERATOR:
             Helper::InvokeGeneratorDialog(Application::Current().as<App>()->Window().Content().XamlRoot());
             break;
 
-        case WM_ACTIVATE_SETTINGS:
+        case WM_TOGGLE_SETTINGS:
             Helper::InvokeSettingsDialog(Application::Current().as<App>()->Window().Content().XamlRoot());
             break;
 

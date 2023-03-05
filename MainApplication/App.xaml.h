@@ -21,7 +21,7 @@ namespace winrt::MainApplication::implementation
 
         static HWND GetCurrentWindowHandle();
 
-        static void ActivateWindow();
+        static void ToggleWindow();
 
         static void RestartApplication();
         static void CloseApplication();

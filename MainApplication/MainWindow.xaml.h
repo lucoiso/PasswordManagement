@@ -18,10 +18,7 @@ namespace winrt::MainApplication::implementation
         void BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         HWND GetWindowHandle();
-        
-    private:
         Microsoft::UI::Windowing::AppWindow GetAppWindow();
-        Microsoft::UI::Windowing::AppWindow m_app_window{ nullptr };
     };
 }
 

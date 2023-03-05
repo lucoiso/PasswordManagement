@@ -31,20 +31,20 @@ namespace winrt::MainApplication::implementation
     {
         InitializeComponent();
 
-        m_app_window = GetAppWindow();
-        m_app_window.SetIcon(ICON_NAME);
-        m_app_window.Title(APP_NAME);
-		m_app_window.TitleBar().BackgroundColor(Windows::UI::Colors::Black());
-        m_app_window.TitleBar().ForegroundColor(Windows::UI::Colors::White());
-        m_app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
-        m_app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
+        auto app_window = GetAppWindow();
+        app_window.SetIcon(ICON_NAME);
+        app_window.Title(APP_NAME);
+		app_window.TitleBar().BackgroundColor(Windows::UI::Colors::Black());
+        app_window.TitleBar().ForegroundColor(Windows::UI::Colors::White());
+        app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
+        app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
 
-        m_app_window.Closing([this]([[maybe_unused]] const auto& sender, const auto& args) 
+        app_window.Closing([this, app_window]([[maybe_unused]] const auto& sender, const auto& args)
         { 
             if (Helper::GetSettingValue<bool>(SETTING_ENABLE_SYSTEM_TRAY))
             {
                 args.Cancel(true);
-                m_app_window.Hide();
+                app_window.Hide();
             }
         });
     }
