@@ -34,10 +34,17 @@ namespace winrt::MainApplication::implementation
         auto app_window = GetAppWindow();
         app_window.SetIcon(ICON_NAME);
         app_window.Title(APP_NAME);
-		app_window.TitleBar().BackgroundColor(Windows::UI::Colors::Black());
-        app_window.TitleBar().ForegroundColor(Windows::UI::Colors::White());
-        app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
-        app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
+
+        try
+        {
+            app_window.TitleBar().BackgroundColor(Windows::UI::Colors::Black());
+            app_window.TitleBar().ForegroundColor(Windows::UI::Colors::White());
+            app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
+            app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
+        }
+        catch (...)
+        {
+        }
 
         app_window.Closing([this, app_window]([[maybe_unused]] const auto& sender, const auto& args)
         { 
