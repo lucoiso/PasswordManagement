@@ -1,5 +1,5 @@
 <!-- Author: Lucas Oliveira Vilas-Bôas -->
-<!-- Year: 2022 -->
+<!-- Year: 2023 -->
 <!-- Repository: https://github.com/lucoiso/PasswordManagement -->
 
 <Window
@@ -16,10 +16,16 @@
 			<ImageBrush ImageSource="Assets/ApplicationBackground.jpg" />
 		</ScrollViewer.Background>
 
-		<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded">
-			<Frame.Background>
+		<Grid>
+			<Grid.Background>
 				<AcrylicBrush TintOpacity="0.75" TintLuminosityOpacity="0.25" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
-			</Frame.Background>
-		</Frame>
+			</Grid.Background>
+			
+			<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
+
+			<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Open Application Settings" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+				<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" FontSize="16"/>
+			</Button>
+		</Grid>
 	</ScrollViewer>
 </Window>

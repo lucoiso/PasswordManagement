@@ -14,8 +14,24 @@
 #include <Helper.h>
 #include <Constants.h>
 
-#define WM_TRAYICON (WM_USER + 1)
-#define ID_TRAYICON 1
+#include "SettingsHelper.h"
+#include "DialogHelper.h"
+
+constexpr auto WM_TRAYICON = (WM_USER + 1);
+constexpr auto WM_ACTIVATE_WINDOW = (WM_USER + 2);
+constexpr auto WM_ACTIVATE_GENERATOR = (WM_USER + 3);
+constexpr auto WM_ACTIVATE_SETTINGS = (WM_USER + 4);
+constexpr auto WM_EXIT_APPLICATION = (WM_USER + 5);
+
+constexpr auto ID_TRAYICON = (WM_USER + 6);
+
+constexpr auto ID_APPLICATIONWINDOW_SHORTCUT = (WM_USER + 7);
+constexpr auto ID_GENERATORWINDOW_SHORTCUT = (WM_USER + 8);
+
+constexpr auto ID_OPEN_APPLICATION = (WM_USER + 9);
+constexpr auto ID_OPEN_GENERATOR = (WM_USER + 10);
+constexpr auto ID_OPEN_SETTINGS = (WM_USER + 11);
+constexpr auto ID_CLOSE_APPLICATION = (WM_USER + 12);
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -41,33 +57,35 @@ App::App()
 #endif
 }
 
-winrt::MainApplication::implementation::App::~App()
+App::~App()
 {
-    if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); local_settings.Values().HasKey(SECURITY_KEY_SET_ID))
-    {
-        local_settings.Values().Remove(SECURITY_KEY_SET_ID);
-    }
+    Helper::ClearSecurityIds();
 
     RemoveTrayIcon();
+    UnregisterKeyboardShortcuts();
 }
 
-void App::OnLaunched(LaunchActivatedEventArgs const& args)
+Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivatedEventArgs const& args)
 {    
-    if (const auto app_instance = Microsoft::Windows::AppLifecycle::AppInstance::FindOrRegisterForKey(APP_INSTANCE_KEY); !app_instance.IsCurrent())
+    const auto app_instance = Microsoft::Windows::AppLifecycle::AppInstance::FindOrRegisterForKey(APP_INSTANCE_KEY);
+
+    if (!CheckSingleInstance(app_instance))
     {
-        SendMessage(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME), WM_SHOWWINDOW, FALSE, 0);
-        Exit();
-        return;
+        co_return;
     }
 
+    co_await Helper::InitializeSettings();
+
+    AddTrayIcon();
+    RegisterKeyboardShortcuts();
+    InitializeWindow(app_instance.GetActivatedEventArgs().Kind());
+}
+
+void winrt::MainApplication::implementation::App::InitializeWindow(const Microsoft::Windows::AppLifecycle::ExtendedActivationKind& activation_kind)
+{
     m_window = make<MainWindow>();
 
-    if (!AddTrayIcon())
-    {
-        Helper::PrintDebugLine(L"Failed to add System Tray Icon");
-    }
-
-    if (args.UWPLaunchActivatedEventArgs().Kind() == Windows::ApplicationModel::Activation::ActivationKind::Launch)
+    if (activation_kind != Microsoft::Windows::AppLifecycle::ExtendedActivationKind::StartupTask)
     {
         m_window.Activate();
     }
@@ -83,151 +101,213 @@ HWND MainApplication::implementation::App::GetCurrentWindowHandle()
     return Application::Current().as<App>()->Window().as<MainWindow>()->GetWindowHandle();
 }
 
+void App::ActivateWindow()
+{
+    try
+    {
+        if (!Application::Current().as<App>()->Window().Visible())
+        {
+            Application::Current().as<App>()->Window().Activate();
+        }
+    }
+    catch (...)
+    {
+    }
+}
+
+void App::RestartApplication()
+{
+    try
+    {
+        Microsoft::Windows::AppLifecycle::AppInstance::GetCurrent().Restart(L"DESIRED_RESTART");
+    }
+    catch (...)
+    {
+    }
+}
+
+void App::CloseApplication()
+{
+    try
+    {
+        Application::Current().Exit();
+    }
+    catch (...)
+    {
+    }
+}
+
+bool App::CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstance& instance)
+{
+    if (!instance.IsCurrent())
+    {
+        SendMessage(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME), WM_SHOWWINDOW, 0, 0);
+        
+        try
+        {
+            Exit();
+        }
+        catch (...)
+        {
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
+{
+    switch (lParam)
+    {
+        case WM_LBUTTONUP:
+        {
+            static DWORD64 last_click_time;
+            DWORD64 current_tick_time = GetTickCount64();
+
+            if (current_tick_time - last_click_time < 1000)
+            {
+                SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
+            }
+
+            last_click_time = current_tick_time;
+
+            break;
+        }
+
+        case WM_RBUTTONDOWN:
+        {
+            HMENU hMenu = CreatePopupMenu();
+
+            AppendMenu(hMenu, MF_STRING, ID_OPEN_APPLICATION, L"Open Application");
+            AppendMenu(hMenu, MF_STRING, ID_OPEN_GENERATOR, L"Open Generator");
+            AppendMenu(hMenu, MF_STRING, ID_OPEN_SETTINGS, L"Settings");
+            AppendMenu(hMenu, MF_STRING, ID_CLOSE_APPLICATION, L"Close");
+
+            POINT cursorPos;
+            GetCursorPos(&cursorPos);
+
+            const int menuItem = TrackPopupMenu(hMenu, TPM_RETURNCMD | TPM_NONOTIFY, cursorPos.x, cursorPos.y, 0, hwnd, nullptr);
+
+            DestroyMenu(hMenu);
+
+            switch (menuItem)
+            {
+                case ID_OPEN_APPLICATION:
+                    SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
+                    break;
+
+                case ID_OPEN_GENERATOR:
+                    SendMessage(hwnd, WM_ACTIVATE_GENERATOR, 0, 0);
+                    break;
+
+                case ID_OPEN_SETTINGS:
+                    SendMessage(hwnd, WM_ACTIVATE_SETTINGS, 0, 0);
+                    break;
+
+                case ID_CLOSE_APPLICATION:
+                    SendMessage(hwnd, WM_EXIT_APPLICATION, 0, 0);
+                    break;
+
+                default: break;
+            }
+
+            break;
+        }
+
+        default: break;
+    }
+}
+
+void ProcessHotKey(HWND hwnd, WPARAM wParam)
+{
+    switch (wParam)
+    {
+        case ID_APPLICATIONWINDOW_SHORTCUT:
+            SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
+            break;
+
+        case ID_GENERATORWINDOW_SHORTCUT:
+            SendMessage(hwnd, WM_ACTIVATE_GENERATOR, 0, 0);
+            break;
+
+        default: break;
+    }
+}
+
 LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-        case WM_SHOWWINDOW:
-        {
-            if (!Application::Current().as<App>()->Window().Visible())
-            {
-                Application::Current().as<App>()->Window().Activate();
-            }
+        case WM_ACTIVATE_WINDOW:
+            App::ActivateWindow();
             break;
-        }
+
+        case WM_ACTIVATE_GENERATOR:
+            Helper::InvokeGeneratorDialog(Application::Current().as<App>()->Window().Content().XamlRoot());
+            break;
+
+        case WM_ACTIVATE_SETTINGS:
+            Helper::InvokeSettingsDialog(Application::Current().as<App>()->Window().Content().XamlRoot());
+            break;
+
+        case WM_EXIT_APPLICATION:
+            App::CloseApplication();
+            break;
 
         case WM_TRAYICON:
-        {
-            switch (lParam)
-            {
-                case WM_LBUTTONUP:
-                {
-                    static DWORD last_click_time;
-                    DWORD current_tick_time = GetTickCount();
+            ProcessTrayIconMessage(hwnd, lParam);
+            break;
 
-                    if (current_tick_time - last_click_time < 1000)
-                    {
-                        if (!Application::Current().as<App>()->Window().Visible())
-                        {
-                            Application::Current().as<App>()->Window().Activate();
-                        }
-                    }
-
-                    last_click_time = current_tick_time;
-                    break;
-                }
-
-                case WM_RBUTTONDOWN:
-                {
-                    HMENU hMenu = CreatePopupMenu();
-                    AppendMenu(hMenu, MF_STRING, 1, L"Open");
-                    AppendMenu(hMenu, MF_STRING, 2, L"Close");
-
-                    POINT cursorPos;
-                    GetCursorPos(&cursorPos);
-
-                    int menuItem = TrackPopupMenu(hMenu, TPM_RETURNCMD | TPM_NONOTIFY, cursorPos.x, cursorPos.y, 0, hwnd, NULL);
-
-                    DestroyMenu(hMenu);
-
-                    switch (menuItem)
-                    {
-                        case 1:
-                            if (!Application::Current().as<App>()->Window().Visible())
-                            {
-                                Application::Current().as<App>()->Window().Activate();
-                            }
-
-                            break;
-
-                        case 2:
-                            try
-                            {
-                                Application::Current().Exit();
-                            }
-                            catch (...)
-                            {
-                            }
-                            break;
-
-                        default: break;
-                        }
-
-                        break;
-                }
-
-                default: break;
-            }
-        }
-
-        default: break;
+        case WM_HOTKEY:
+            ProcessHotKey(hwnd, wParam);
+            break;
     }
 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-BOOL App::InitNotifyIconData()
+void App::AddTrayIcon()
 {
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.lpfnWndProc = TrayIconCallback;
-    wc.hInstance = GetModuleHandle(NULL);
+    wc.hInstance = GetModuleHandle(nullptr);
     wc.lpszClassName = TRAYICON_CLASSNAME;
     RegisterClassEx(&wc);
 
-    m_tray_hwnd = CreateWindowEx(0, TRAYICON_CLASSNAME, TRAYICON_CLASSNAME, WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, NULL, NULL, wc.hInstance, NULL);
+    m_tray_hwnd = CreateWindowEx(0, TRAYICON_CLASSNAME, TRAYICON_CLASSNAME, WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, nullptr, nullptr, wc.hInstance, nullptr);
 
-    NOTIFYICONDATA notify_icon_data;
-    notify_icon_data.cbSize = sizeof(NOTIFYICONDATA);
-    notify_icon_data.hWnd = m_tray_hwnd;
-    notify_icon_data.uID = ID_TRAYICON;
-    notify_icon_data.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
-    notify_icon_data.uCallbackMessage = WM_TRAYICON;
+    m_notify_icon_data.cbSize = sizeof(NOTIFYICONDATA);
+    m_notify_icon_data.hWnd = m_tray_hwnd;
+    m_notify_icon_data.uID = ID_TRAYICON;
+    m_notify_icon_data.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+    m_notify_icon_data.uCallbackMessage = WM_TRAYICON;
 
-    HICON hIcon = NULL;
-    ExtractIconEx(ICON_NAME, 0, NULL, &hIcon, 1);
-    notify_icon_data.hIcon = hIcon;
-    wcscpy_s(notify_icon_data.szTip, APP_NAME);
+    HICON hIcon = nullptr;
+    ExtractIconEx(ICON_NAME, 0, nullptr, &hIcon, 1);
+    m_notify_icon_data.hIcon = hIcon;
+    wcscpy_s(m_notify_icon_data.szTip, APP_NAME);
 
-    Shell_NotifyIcon(NIM_ADD, &notify_icon_data);
-
-    auto dispatcher_queue = Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
-    auto Timer = dispatcher_queue.CreateTimer();
-    Timer.Interval(TimeSpan(std::chrono::milliseconds(500)));
-    Timer.Tick([this](auto&&, auto&&)
-    {
-		MSG msg = { 0 };
-        while (PeekMessage(&msg, m_tray_hwnd, 0, 0, PM_REMOVE))
-        {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-	});
-
-    return 0;
+    Shell_NotifyIcon(NIM_ADD, &m_notify_icon_data);
 }
 
-BOOL App::AddTrayIcon()
+
+void App::RemoveTrayIcon()
 {
-    if (!InitNotifyIconData())
-    {
-        return FALSE;
-    }
-
-    return TRUE;
+    DestroyIcon(m_notify_icon_data.hIcon);
+    Shell_NotifyIcon(NIM_DELETE, &m_notify_icon_data);
 }
 
-BOOL App::RemoveTrayIcon()
+void App::RegisterKeyboardShortcuts()
 {
-    DestroyIcon(nid.hIcon);
-
-    if (!Shell_NotifyIcon(NIM_DELETE, &nid))
-    {
-        return FALSE;
-    }
-
-    return TRUE;
+    RegisterHotKey(m_tray_hwnd, ID_APPLICATIONWINDOW_SHORTCUT, MOD_CONTROL | MOD_ALT, 0x4E);
+    RegisterHotKey(m_tray_hwnd, ID_GENERATORWINDOW_SHORTCUT, MOD_CONTROL | MOD_ALT, 0x4D);
 }
 
-#undef WM_TRAYICON
-#undef ID_TRAYICON
+void App::UnregisterKeyboardShortcuts()
+{
+    UnregisterHotKey(m_tray_hwnd, ID_APPLICATIONWINDOW_SHORTCUT);
+    UnregisterHotKey(m_tray_hwnd, ID_GENERATORWINDOW_SHORTCUT);
+}

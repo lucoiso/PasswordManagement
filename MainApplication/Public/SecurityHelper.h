@@ -7,6 +7,7 @@
 #include "pch.h"
 
 #include "DialogHelper.h"
+#include "SettingsHelper.h"
 
 #include <Constants.h>
 
@@ -14,38 +15,41 @@ using namespace winrt::MainApplication;
 
 namespace winrt::Helper
 {
-	inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials(const Microsoft::UI::Xaml::XamlRoot& root)
-	{
-        if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); !local_settings.Values().HasKey(SECURITY_KEY_SET_ID))
+    inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials(const Microsoft::UI::Xaml::XamlRoot& root)
+    {
+        if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_WINDOWS_HELLO))
         {
-            // A senha ainda não foi inserida. Solicitar a senha do Credential Manager.
-            if (!(co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync()))
-            {
-                co_await CreateContentDialog(root, L"Error", L"Windows Hello! wasn't configured in the current platform.", false, true).ShowAsync();
-                co_return false;
-            }
-
-            const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
-
-            if (username.empty())
-            {
-                co_await CreateContentDialog(root, L"Error", L"Can't get the account name for the current user.", false, true).ShowAsync();
-                co_return false;
-            }
-
-            switch ((co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting)).Status())
-            {
-                case Windows::Security::Credentials::KeyCredentialStatus::Success:
-                    // Armazenar a chave de configuração indicando que a senha foi inserida com sucesso.
-                    local_settings.Values().Insert(SECURITY_KEY_SET_ID, box_value(true));
-                    co_return true;
-
-                default: break;
-            }
-
-            co_return false;
+            co_return true;
         }
 
-        co_return true;
-	}
+        if (!(co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync()))
+        {
+            if (!Helper::HasSettingKey(INVALID_SECURITY_ENVIRONMENT_ID))
+            {
+                co_await CreateContentDialog(root, L"Error", L"Windows Hello! wasn't configured in the current platform. Consider enabling this functionality to improve security.", false, true).ShowAsync();
+                Helper::InsertSettingValue(INVALID_SECURITY_ENVIRONMENT_ID, true);
+            }
+
+            co_return true;
+        }
+
+        if (Helper::HasSettingKey(SECURITY_KEY_SET_ID))
+        {
+            co_return true;
+        }
+
+        const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
+        const auto credentials_request = co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting);
+
+        switch (credentials_request.Status())
+        {
+            case Windows::Security::Credentials::KeyCredentialStatus::Success:
+                Helper::InsertSettingValue(SECURITY_KEY_SET_ID, true);
+                co_return true;
+
+            default: break;
+        }
+
+        co_return false;
+    }
 }

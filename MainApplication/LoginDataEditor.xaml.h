@@ -20,6 +20,8 @@ namespace winrt::MainApplication::implementation
         void TB_Username_TextChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args);
         void TB_Password_PasswordChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
+        void BT_GeneratePassword_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+
     private:
         PasswordManager::LoginData m_data;
     };

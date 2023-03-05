@@ -1,5 +1,5 @@
 ﻿<!-- Author: Lucas Oliveira Vilas-Bôas -->
-<!-- Year: 2022 -->
+<!-- Year: 2023 -->
 <!-- Repository: https://github.com/lucoiso/PasswordManagement -->
 
 <ContentDialog
@@ -19,6 +19,11 @@
 		<TextBox x:Name="TB_Name" PlaceholderText="Name" MinWidth="300" Margin="4" TextChanged="TB_Name_TextChanged" />
 		<TextBox x:Name="TB_Url" PlaceholderText="Url" MinWidth="300" Margin="4" TextChanged="TB_Url_TextChanged" />
 		<TextBox x:Name="TB_Username" PlaceholderText="Username" MinWidth="300" Margin="4" TextChanged="TB_Username_TextChanged" />
-		<PasswordBox x:Name="TB_Password" PlaceholderText="Password" MinWidth="300" Margin="4" PasswordChanged="TB_Password_PasswordChanged" />
+		<StackPanel Orientation="Horizontal">
+			<PasswordBox x:Name="TB_Password" PlaceholderText="Password" MinWidth="300" Margin="4" PasswordChanged="TB_Password_PasswordChanged" />
+			<Button x:Name="BP_GeneratePassword" Click="BT_GeneratePassword_Click" Padding="4" ToolTipService.ToolTip="Generate Password">
+				<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE875;" FontSize="16"/>
+			</Button>
+		</StackPanel>
     </StackPanel>
 </ContentDialog>

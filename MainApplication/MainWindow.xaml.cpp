@@ -11,6 +11,7 @@
 #include "App.xaml.h"
 
 #include "DialogHelper.h"
+#include "SettingsHelper.h"
 
 #include <Constants.h>
 
@@ -34,21 +35,28 @@ namespace winrt::MainApplication::implementation
         m_app_window.TitleBar().ButtonBackgroundColor(Windows::UI::Colors::Black());
         m_app_window.TitleBar().ButtonForegroundColor(Windows::UI::Colors::White());
 
-        m_app_window.Closing([this]([[maybe_unused]] const auto& sender, const auto& args) { 
-            args.Cancel(true);
-            m_app_window.Hide();
+        m_app_window.Closing([this]([[maybe_unused]] const auto& sender, const auto& args) 
+        { 
+            if (Helper::GetSettingValue<bool>(SETTING_ENABLE_SYSTEM_TRAY))
+            {
+                args.Cancel(true);
+                m_app_window.Hide();
+            }
         });
     }
 
     void MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
-        Controls::ProgressBar progress_bar;
-        progress_bar.IsIndeterminate(true);
-        const auto loading_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Loading...", progress_bar, false, false);
+        const auto loading_dialog = Helper::CreateLoadingDialog(Content().XamlRoot());
 
         loading_dialog.ShowAsync();
         InitializeContentAsync();
         loading_dialog.Hide();
+    }
+
+    void MainWindow::BT_Settings_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        Helper::InvokeSettingsDialog(Content().XamlRoot());
     }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeContentAsync()

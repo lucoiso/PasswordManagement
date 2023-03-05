@@ -7,6 +7,8 @@
 #include "LoginDataEditor.xaml.h"
 #include "LoginDataEditor.g.cpp"
 
+#include "PasswordGenerator.xaml.h"
+
 #include <Helper.h>
 
 using namespace winrt;
@@ -55,5 +57,19 @@ namespace winrt::MainApplication::implementation
     void LoginDataEditor::TB_Password_PasswordChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         m_data.Password(TB_Password().Password());
+    }
+
+    void LoginDataEditor::BT_GeneratePassword_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        Controls::Flyout flyout;        
+        auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
+
+        generator_content.OnClose([flyout]()
+        {
+            flyout.Hide();
+        });
+
+        flyout.Content(generator_content);
+        flyout.ShowAt(BP_GeneratePassword());
     }
 }

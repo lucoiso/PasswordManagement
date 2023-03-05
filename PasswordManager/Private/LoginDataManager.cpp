@@ -102,7 +102,7 @@ namespace winrt::PasswordManager::implementation
 		const auto data_buffer = co_await Windows::Storage::FileIO::ReadBufferAsync(file);
 		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
 		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
-		const auto keyMaterial_64Value = localSettings.Values().Lookup(L"temporary_key_material").as<hstring>();
+		const auto keyMaterial_64Value = localSettings.Values().Lookup(KEY_MATERIAL_TEMP_ID).as<hstring>();
 		const auto keyMaterial = Windows::Security::Cryptography::CryptographicBuffer::DecodeFromBase64String(keyMaterial_64Value);
 		const auto key = provider.CreateSymmetricKey(keyMaterial);
 		const auto decrypted_buffer = Windows::Security::Cryptography::Core::CryptographicEngine::Decrypt(key, data_buffer, nullptr);
@@ -145,7 +145,7 @@ namespace winrt::PasswordManager::implementation
 
 		const auto exportedKeyMaterial = Windows::Security::Cryptography::CryptographicBuffer::EncodeToBase64String(keyMaterial);
 		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
-		localSettings.Values().Insert(L"temporary_key_material", box_value(exportedKeyMaterial));
+		localSettings.Values().Insert(KEY_MATERIAL_TEMP_ID, box_value(exportedKeyMaterial));
 	}
 
 	void LoginDataManager::ReadTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)

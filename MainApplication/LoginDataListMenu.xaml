@@ -1,5 +1,5 @@
 ﻿<!-- Author: Lucas Oliveira Vilas-Bôas -->
-<!-- Year: 2022 -->
+<!-- Year: 2023 -->
 <!-- Repository: https://github.com/lucoiso/PasswordManagement -->
 
 <UserControl
@@ -40,6 +40,7 @@
 		<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Import</Button>
 		<Button x:Name="BP_Add" Click="BP_Add_Click" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">Add Data</Button>
 		<Button x:Name="BP_Export" Click="BP_Export_Click" Grid.Row="2" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Export</Button>
+		<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Open Generator</Button>
 		<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">Clear Data</Button>
 	</Grid>
 </UserControl>

@@ -13,6 +13,7 @@ namespace winrt::MainApplication::implementation
         MainWindow();
         
         void FR_MainFrame_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         Windows::Foundation::IAsyncAction InitializeContentAsync();
 

@@ -1,12 +1,13 @@
-// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2023
+// Repository: https://github.com/lucoiso/PasswordManagement
 
 namespace PasswordGenerator
 {
     [default_interface]
-    runtimeclass Class
+    runtimeclass Generator
     {
-        Class();
-        Int32 MyProperty;
+        Generator();
+        static Windows.Foundation.IAsyncOperation<String> GeneratePassword();
     }
 }

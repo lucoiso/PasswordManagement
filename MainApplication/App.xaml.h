@@ -13,21 +13,33 @@ namespace winrt::MainApplication::implementation
         App();
         ~App();
 
-        void OnLaunched(Microsoft::UI::Xaml::LaunchActivatedEventArgs const& args);
+        Windows::Foundation::IAsyncAction OnLaunched(Microsoft::UI::Xaml::LaunchActivatedEventArgs const& args);
+
+        void InitializeWindow(const Microsoft::Windows::AppLifecycle::ExtendedActivationKind& activation_kind);
 
         Microsoft::UI::Xaml::Window Window() const;
 
         static HWND GetCurrentWindowHandle();
+
+        static void ActivateWindow();
+
+        static void RestartApplication();
+        static void CloseApplication();
+
+        bool CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstance& instance);
 
     private:
         Microsoft::UI::Xaml::Window m_window{ nullptr };
 
         HWND m_tray_hwnd;
         
-        NOTIFYICONDATA nid = {};
+        NOTIFYICONDATA m_notify_icon_data = {};
         static LRESULT CALLBACK TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-        BOOL InitNotifyIconData();
-        BOOL AddTrayIcon();
-        BOOL RemoveTrayIcon();
+
+        void AddTrayIcon();
+        void RemoveTrayIcon();
+
+        void RegisterKeyboardShortcuts();
+        void UnregisterKeyboardShortcuts();
     };
 }

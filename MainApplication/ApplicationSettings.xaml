@@ -1,0 +1,24 @@
+﻿<!-- Author: Lucas Oliveira Vilas-Bôas -->
+<!-- Year: 2023 -->
+<!-- Repository: https://github.com/lucoiso/PasswordManagement -->
+
+<ContentDialog
+    x:Class="MainApplication.ApplicationSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MainApplication"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+	Title="Settings"
+	PrimaryButtonText="Save and Restart"
+	SecondaryButtonText="Save"
+	CloseButtonText="Cancel"
+	CornerRadius="8">
+
+	<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="Panel_Loaded">
+		<ToggleSwitch x:Name="TS_WindowsHello" OnContent="Enable Windows Hello" OffContent="Enable Windows Hello" Margin="4" />
+		<ToggleSwitch x:Name="TS_SystemTray" OnContent="Enable System Tray Icon" OffContent="Enable System Tray Icon" Margin="4" />
+		<ToggleSwitch x:Name="TS_Shortcuts" OnContent="Enable Shortcuts" OffContent="Enable Shortcuts" Margin="4" />
+	</StackPanel>
+</ContentDialog>

@@ -31,7 +31,7 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
-        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        if (!CB_ExportMode().SelectedItem() || !(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
         }
@@ -67,6 +67,11 @@ namespace winrt::MainApplication::implementation
         }
     }
 
+    void LoginDataListMenu::BP_Generator_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        Helper::InvokeGeneratorDialog(XamlRoot());
+    }
+
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Clear_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
@@ -74,17 +79,17 @@ namespace winrt::MainApplication::implementation
             co_return;
         }
 
-        auto confirm_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Delete All Data", L"Confirm process?", true, true);
+        auto confirm_dialog = Helper::CreateContentDialog(XamlRoot(), L"Delete All Data", L"Confirm process?", true, true);
 
         switch ((co_await confirm_dialog.ShowAsync()))
         {
-        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-        {
-            if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
             {
-                MainPage.RemoveAllLoginData();
+                if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                {
+                    MainPage.RemoveAllLoginData();
+                }
             }
-        }
         }
     }
 
@@ -97,7 +102,7 @@ namespace winrt::MainApplication::implementation
     {
         if (!CB_ExportMode().SelectedItem())
         {
-            Helper::CreateContentDialog(Content().XamlRoot(), L"Error", L"There's no selected export mode.", false, true).ShowAsync();
+            Helper::CreateContentDialog(XamlRoot(), L"Error", L"There's no selected export mode.", false, true).ShowAsync();
             return PasswordManager::LoginDataFileType::Undefined;
         }
 
@@ -123,7 +128,7 @@ namespace winrt::MainApplication::implementation
     {
         if (!CB_SortingMode().SelectedItem())
         {
-            Helper::CreateContentDialog(Content().XamlRoot(), L"Error", L"There's no selected sorting mode.", false, true).ShowAsync();
+            Helper::CreateContentDialog(XamlRoot(), L"Error", L"There's no selected sorting mode.", false, true).ShowAsync();
             return DataSortMode::Undefined;
         }
 
@@ -149,7 +154,7 @@ namespace winrt::MainApplication::implementation
     {
         if (!CB_SortingOrientation().SelectedItem())
         {
-            Helper::CreateContentDialog(Content().XamlRoot(), L"Error", L"There's no selected sorting orientation.", false, true).ShowAsync();
+            Helper::CreateContentDialog(XamlRoot(), L"Error", L"There's no selected sorting orientation.", false, true).ShowAsync();
             return DataSortOrientation::Undefined;
         }
 

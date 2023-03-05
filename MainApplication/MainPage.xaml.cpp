@@ -79,10 +79,7 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction MainPage::LoadLocalDataAsync()
     {
-        Controls::ProgressBar progress_bar;
-        progress_bar.IsIndeterminate(true);
-        const auto loading_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Loading...", progress_bar, false, false);
-
+        const auto loading_dialog = Helper::CreateLoadingDialog(Content().XamlRoot());
         loading_dialog.ShowAsync();
         {
             try
@@ -101,10 +98,7 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction MainPage::SaveLocalDataAsync()
     {
-        Controls::ProgressBar progress_bar;
-        progress_bar.IsIndeterminate(true);
-        const auto loading_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Loading...", progress_bar, false, false);
-
+        const auto loading_dialog = Helper::CreateLoadingDialog(Content().XamlRoot());
         loading_dialog.ShowAsync();
         {
             try
