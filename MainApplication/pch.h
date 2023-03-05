@@ -22,10 +22,13 @@
 #include <winrt/Windows.System.h>
 #include <winrt/Windows.UI.Xaml.Interop.h>
 #include <winrt/Windows.ApplicationModel.Activation.h>
+#include <winrt/Windows.ApplicationModel.Store.h>
+#include <winrt/Windows.ApplicationModel.Store.LicenseManagement.h>
 #include <winrt/Windows.UI.ViewManagement.Core.h>
+#include <winrt/Windows.UI.Composition.Desktop.h>
+#include <winrt/Windows.Globalization.DateTimeFormatting.h>
 
 #include <winrt/Microsoft.UI.Composition.h>
-#include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Microsoft.UI.Composition.SystemBackdrops.h>
 #include <winrt/Microsoft.UI.Xaml.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>

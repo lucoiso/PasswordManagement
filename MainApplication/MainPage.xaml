@@ -12,7 +12,7 @@
     mc:Ignorable="d">
 
 	<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-		<local:LoginDataListView x:Name="LI_LoginData" Loaded="LI_LoginData_Loaded"/>
-		<local:LoginDataListMenu x:Name="MO_DataOptions"/>
+		<local:LoginDataListView x:Name="LI_LoginData" Loaded="LI_LoginData_Loaded" EnableLicenseTools="{x:Bind EnableLicenseTools}"/>
+		<local:LoginDataListMenu x:Name="MO_DataOptions" EnableLicenseTools="{x:Bind EnableLicenseTools}"/>
 	</StackPanel>
 </Page>

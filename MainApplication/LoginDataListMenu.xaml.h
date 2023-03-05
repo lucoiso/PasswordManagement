@@ -12,6 +12,9 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListMenu();
 
+        bool EnableLicenseTools() const;
+        void EnableLicenseTools(bool value);
+
         void BP_Import_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BP_Export_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BP_Add_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
@@ -34,9 +37,10 @@ namespace winrt::MainApplication::implementation
         void SortingChanged(event_token const& token) noexcept;
 
     private:
+        bool m_enable_license_tools{ false };
         event<MainApplication::SingleVoidDelegate> m_import_pressed;
         event<MainApplication::SingleVoidDelegate> m_export_pressed;
-        event<MainApplication::SingleVoidDelegate> m_sorting_changed;        
+        event<MainApplication::SingleVoidDelegate> m_sorting_changed;
     };
 }
 

@@ -10,20 +10,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-	Title="Login Data Editor"
-	PrimaryButtonText="Confirm"
-	CloseButtonText="Cancel"
-	CornerRadius="8">
+    Title="Login Data Editor"
+    PrimaryButtonText="Confirm"
+    CloseButtonText="Cancel"
+    CornerRadius="8">
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-		<TextBox x:Name="TB_Name" PlaceholderText="Name" MinWidth="300" Margin="4" TextChanged="TB_Name_TextChanged" />
-		<TextBox x:Name="TB_Url" PlaceholderText="Url" MinWidth="300" Margin="4" TextChanged="TB_Url_TextChanged" />
-		<TextBox x:Name="TB_Username" PlaceholderText="Username" MinWidth="300" Margin="4" TextChanged="TB_Username_TextChanged" />
-		<StackPanel Orientation="Horizontal">
-			<PasswordBox x:Name="TB_Password" PlaceholderText="Password" MinWidth="300" Margin="4" PasswordChanged="TB_Password_PasswordChanged" />
-			<Button x:Name="BP_GeneratePassword" Click="BT_GeneratePassword_Click" Padding="4" ToolTipService.ToolTip="Generate Password">
+	<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" MaxWidth="500">
+		<TextBox x:Name="TB_Name" PlaceholderText="Name" Margin="4" TextChanged="TB_Name_TextChanged" />
+		<TextBox x:Name="TB_Url" PlaceholderText="Url" Margin="4" TextChanged="TB_Url_TextChanged" />
+		<TextBox x:Name="TB_Username" PlaceholderText="Username" Margin="4" TextChanged="TB_Username_TextChanged" />
+		<StackPanel Orientation="Horizontal" Width="300">
+			<PasswordBox x:Name="TB_Password" PlaceholderText="Password" Margin="4" PasswordChanged="TB_Password_PasswordChanged" Width="262" />
+			<Button x:Name="BP_GeneratePassword" Click="BT_GeneratePassword_Click" Padding="4" ToolTipService.ToolTip="Generate Password" Width="Auto">
 				<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE875;" FontSize="16"/>
 			</Button>
 		</StackPanel>
-    </StackPanel>
+	</StackPanel>
 </ContentDialog>
+

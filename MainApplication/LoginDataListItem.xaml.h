@@ -12,6 +12,8 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListItem();
 
+        bool EnableLicenseTools() const;
+
         PasswordManager::LoginData Data() const;
         void Data(PasswordManager::LoginData const& value);
 

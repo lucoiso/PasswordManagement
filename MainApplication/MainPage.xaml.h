@@ -12,6 +12,8 @@ namespace winrt::MainApplication::implementation
     {
         MainPage();
 
+        bool EnableLicenseTools() const;
+
         void LI_LoginData_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         void AddLoginData(PasswordManager::LoginData const& data);
@@ -27,6 +29,8 @@ namespace winrt::MainApplication::implementation
         Windows::Foundation::IAsyncAction SaveLocalDataAsync();
 
     private:
+        bool m_enable_license_tools{ false };
+
         PasswordManager::LoginDataManager m_manager;
         event_token m_data_update_token;
         event_token m_data_import_token;

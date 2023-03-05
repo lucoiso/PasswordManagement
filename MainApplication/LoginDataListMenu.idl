@@ -11,6 +11,8 @@ namespace MainApplication
     {
         LoginDataListMenu();
 
+        Boolean EnableLicenseTools;
+
         PasswordManager.LoginDataFileType SelectedExportDataType{ get; };        
         DataSortMode SelectedSortingMode{ get; };        
         DataSortOrientation SelectedSortingOrientation{ get; };

@@ -44,11 +44,11 @@
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EF;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit Password Data">
+				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit Password Data" IsEnabled="{x:Bind EnableLicenseTools}" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70F;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete Password Data">
+				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete Password Data" IsEnabled="{x:Bind EnableLicenseTools}" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74D;" FontSize="16"/>
 				</Button>
 			</Grid>

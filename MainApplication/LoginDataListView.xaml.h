@@ -12,6 +12,9 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListView();
 
+        bool EnableLicenseTools() const;
+        void EnableLicenseTools(bool value);
+
         void InsertDataInList(PasswordManager::LoginData const& data);
         void RemoveDataFromList(PasswordManager::LoginData const& data);
         void RemoveAllDataFromList();
@@ -24,6 +27,7 @@ namespace winrt::MainApplication::implementation
         void Sort(DataSortMode const& mode, DataSortOrientation const& orientation);
 
     private:
+        bool m_enable_license_tools{ false };
         Windows::Foundation::Collections::IVector<PasswordManager::LoginData> m_data;
         Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_filtered_data;
 

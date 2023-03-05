@@ -11,6 +11,8 @@ namespace MainApplication
     {
         LoginDataListView();
 
+        Boolean EnableLicenseTools;
+
         void InsertDataInList(PasswordManager.LoginData data);
         void RemoveDataFromList(PasswordManager.LoginData data);
         void RemoveAllDataFromList();

@@ -8,6 +8,7 @@
 
 #include "FileLoadingHelper.h"
 #include "DialogHelper.h"
+#include "SecurityHelper.h"
 
 #include <Helper.h>
 
@@ -19,6 +20,13 @@ namespace winrt::MainApplication::implementation
     MainPage::MainPage()
     {
         InitializeComponent();
+
+        m_enable_license_tools = Helper::HasLicenseActive();
+    }
+
+    bool MainPage::EnableLicenseTools() const
+    {
+        return m_enable_license_tools;
     }
 
     void MainApplication::implementation::MainPage::LI_LoginData_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)

@@ -15,6 +15,12 @@ using namespace winrt::MainApplication;
 
 namespace winrt::Helper
 {
+    inline bool HasLicenseActive()
+    {
+        auto current_information = Windows::ApplicationModel::Store::CurrentApp::LicenseInformation();
+        return current_information.IsActive() || current_information.IsTrial();
+    }
+
     inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials(const Microsoft::UI::Xaml::XamlRoot& root)
     {
         if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_WINDOWS_HELLO))

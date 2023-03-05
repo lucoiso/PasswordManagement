@@ -22,6 +22,16 @@ namespace winrt::MainApplication::implementation
         m_filtered_data = single_threaded_observable_vector<PasswordManager::LoginData>();
     }
 
+    bool LoginDataListView::EnableLicenseTools() const
+    {
+        return m_enable_license_tools;
+    }
+
+    void LoginDataListView::EnableLicenseTools(bool value)
+    {
+        Helper::SetMemberValue(value, m_enable_license_tools);
+    }
+
     void LoginDataListView::InsertDataInList(PasswordManager::LoginData const& data)
     {
         PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();

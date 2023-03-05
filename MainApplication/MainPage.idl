@@ -9,6 +9,8 @@ namespace MainApplication
     {
         MainPage();
 
+        Boolean EnableLicenseTools{ get; };
+
         void AddLoginData(PasswordManager.LoginData data);
         void RemoveLoginData(PasswordManager.LoginData data);
         void RemoveAllLoginData();

@@ -28,9 +28,9 @@ constexpr auto ID_TRAYICON = (WM_USER + 6);
 constexpr auto ID_APPLICATIONWINDOW_SHORTCUT = (WM_USER + 7);
 constexpr auto ID_GENERATORWINDOW_SHORTCUT = (WM_USER + 8);
 
-constexpr auto ID_OPEN_APPLICATION = (WM_USER + 9);
-constexpr auto ID_OPEN_GENERATOR = (WM_USER + 10);
-constexpr auto ID_OPEN_SETTINGS = (WM_USER + 11);
+constexpr auto ID_TOGGLE_APPLICATION_VISIBILITY = (WM_USER + 9);
+constexpr auto ID_TOGGLE_GENERATOR_VISIBILITY = (WM_USER + 10);
+constexpr auto ID_TOGGLE_SETTINGS_VISIBILITY = (WM_USER + 11);
 constexpr auto ID_CLOSE_APPLICATION = (WM_USER + 12);
 
 using namespace winrt;
@@ -66,7 +66,7 @@ App::~App()
 }
 
 Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivatedEventArgs const& args)
-{    
+{
     const auto app_instance = Microsoft::Windows::AppLifecycle::AppInstance::FindOrRegisterForKey(APP_INSTANCE_KEY);
 
     if (!CheckSingleInstance(app_instance))
@@ -180,10 +180,10 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
         {
             HMENU hMenu = CreatePopupMenu();
 
-            AppendMenu(hMenu, MF_STRING, ID_OPEN_APPLICATION, L"Open Application");
-            AppendMenu(hMenu, MF_STRING, ID_OPEN_GENERATOR, L"Open Generator");
-            AppendMenu(hMenu, MF_STRING, ID_OPEN_SETTINGS, L"Settings");
-            AppendMenu(hMenu, MF_STRING, ID_CLOSE_APPLICATION, L"Close");
+            AppendMenu(hMenu, MF_STRING, ID_TOGGLE_APPLICATION_VISIBILITY, Application::Current().as<App>()->Window().Visible() ? L"Minimize" : L"Show");
+            // AppendMenu(hMenu, MF_STRING, ID_TOGGLE_GENERATOR_VISIBILITY, L"Open Generator");
+            // AppendMenu(hMenu, MF_STRING, ID_TOGGLE_SETTINGS_VISIBILITY, L"Settings");
+            AppendMenu(hMenu, MF_STRING, ID_CLOSE_APPLICATION, L"Exit");
 
             POINT cursorPos;
             GetCursorPos(&cursorPos);
@@ -194,15 +194,15 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
 
             switch (menuItem)
             {
-                case ID_OPEN_APPLICATION:
+                case ID_TOGGLE_APPLICATION_VISIBILITY:
                     SendMessage(hwnd, WM_ACTIVATE_WINDOW, 0, 0);
                     break;
 
-                case ID_OPEN_GENERATOR:
+                case ID_TOGGLE_GENERATOR_VISIBILITY:
                     SendMessage(hwnd, WM_ACTIVATE_GENERATOR, 0, 0);
                     break;
 
-                case ID_OPEN_SETTINGS:
+                case ID_TOGGLE_SETTINGS_VISIBILITY:
                     SendMessage(hwnd, WM_ACTIVATE_SETTINGS, 0, 0);
                     break;
 
@@ -270,6 +270,11 @@ LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 
 void App::AddTrayIcon()
 {
+    if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_SYSTEM_TRAY))
+    {
+        return;
+    }
+
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.lpfnWndProc = TrayIconCallback;
@@ -293,7 +298,6 @@ void App::AddTrayIcon()
     Shell_NotifyIcon(NIM_ADD, &m_notify_icon_data);
 }
 
-
 void App::RemoveTrayIcon()
 {
     DestroyIcon(m_notify_icon_data.hIcon);
@@ -302,6 +306,11 @@ void App::RemoveTrayIcon()
 
 void App::RegisterKeyboardShortcuts()
 {
+    if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_SHORTCUTS))
+    {
+        return;
+    }
+
     RegisterHotKey(m_tray_hwnd, ID_APPLICATIONWINDOW_SHORTCUT, MOD_CONTROL | MOD_ALT, 0x4E);
     RegisterHotKey(m_tray_hwnd, ID_GENERATORWINDOW_SHORTCUT, MOD_CONTROL | MOD_ALT, 0x4D);
 }

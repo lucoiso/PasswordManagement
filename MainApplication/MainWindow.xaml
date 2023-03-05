@@ -23,9 +23,12 @@
 			
 			<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
 
-			<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Open Application Settings" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" FontSize="16"/>
-			</Button>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+				<TextBlock x:Name="TB_LicenseData" Style="{StaticResource BaseTextBlockStyle}" VerticalAlignment="Center" />
+				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Open Application Settings" Margin="8">
+					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" FontSize="16"/>
+				</Button>
+			</StackPanel>
 		</Grid>
 	</ScrollViewer>
 </Window>

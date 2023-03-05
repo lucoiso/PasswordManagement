@@ -12,8 +12,12 @@
 
 #include "DialogHelper.h"
 #include "SettingsHelper.h"
+#include "SecurityHelper.h"
 
 #include <Constants.h>
+#include <iomanip>
+#include <locale>
+#include <codecvt>
 
 #include <Microsoft.UI.Xaml.Window.h>
 #include <winrt/Microsoft.UI.Interop.h>
@@ -45,24 +49,45 @@ namespace winrt::MainApplication::implementation
         });
     }
 
-    void MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
-        const auto loading_dialog = Helper::CreateLoadingDialog(Content().XamlRoot());
+        InitializeLicenseInformation();
 
-        loading_dialog.ShowAsync();
-        InitializeContentAsync();
-        loading_dialog.Hide();
+        if (!Helper::HasLicenseActive())
+        {
+            co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Your license has expired", L"The application will limit the features to export & view only.", false, true).ShowAsync();
+        }
+
+        FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
+    }
+
+    void MainWindow::InitializeLicenseInformation()
+    {
+        auto current_license_information = Windows::ApplicationModel::Store::CurrentAppSimulator::LicenseInformation();
+        
+        std::string mode = "License Mode: ";
+        if (current_license_information.IsTrial())
+        {
+            mode += "Trial";
+        }
+        else if (current_license_information.IsActive())
+        {
+            mode += "Full";
+        }
+        else
+        {
+            mode += "Invalid";
+        }
+
+        const auto formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortDate();
+        const std::string expiration = "Expiration Date: " + to_string(formatter.Format(current_license_information.ExpirationDate()));
+
+        TB_LicenseData().Text(to_hstring(mode + ". " + expiration));
     }
 
     void MainWindow::BT_Settings_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         Helper::InvokeSettingsDialog(Content().XamlRoot());
-    }
-
-    Windows::Foundation::IAsyncAction MainWindow::InitializeContentAsync()
-    {
-        FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
-        co_return;
     }
     
     HWND MainWindow::GetWindowHandle()

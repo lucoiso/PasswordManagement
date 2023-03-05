@@ -25,6 +25,11 @@ namespace winrt::MainApplication::implementation
         InitializeComponent();
     }
 
+    bool LoginDataListItem::EnableLicenseTools() const
+    {
+        return Helper::GetParent<MainApplication::MainPage>(*this).EnableLicenseTools();
+    }
+
     PasswordManager::LoginData MainApplication::implementation::LoginDataListItem::Data() const
     {
         return m_data;

@@ -14,6 +14,8 @@
 #include "DialogHelper.h"
 #include "CastingHelper.h"
 
+#include <Helper.h>
+
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -22,6 +24,16 @@ namespace winrt::MainApplication::implementation
     LoginDataListMenu::LoginDataListMenu()
     {
         InitializeComponent();
+    }
+
+    bool LoginDataListMenu::EnableLicenseTools() const
+    {
+        return m_enable_license_tools;
+    }
+
+    void LoginDataListMenu::EnableLicenseTools(bool value)
+    {
+        Helper::SetMemberValue(value, m_enable_license_tools);
     }
 
     void LoginDataListMenu::BP_Import_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
