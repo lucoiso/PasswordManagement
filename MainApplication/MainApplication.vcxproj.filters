@@ -63,9 +63,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <None Include="MainApplication_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Package.StoreAssociation.xml" />
+    <None Include="MainApplication_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
