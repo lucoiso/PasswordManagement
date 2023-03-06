@@ -40,7 +40,7 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::Url() const
     {
-        return m_url;
+        return L"http://" + m_url + L"/";
     }
 
     void LoginData::Url(hstring const& value)
@@ -101,11 +101,11 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::GetDataAsString_CSV_Internal() const
     {
-        return m_name + L"," + m_url + L"," + m_username + L"," + m_password;
+        return Name() + L"," + Url() + L"," + Username() + L"," + Password();
     }
 
     hstring LoginData::GetDataAsString_TXT_Internal() const
     {
-        return L"Website name: " + m_name + L"\nWebsite URL: " + m_url + L"\nLogin name: \nLogin: " + m_username + L"\nPassword: " + m_password + L"\nComment: \n\n---\n\n";
+        return L"Website name: " + Name() + L"\nWebsite URL: " + Url() + L"\nLogin name: \nLogin: " + Username() + L"\nPassword: " + Password() + L"\nComment: \n\n---\n\n";
     }
 }
