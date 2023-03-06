@@ -75,7 +75,12 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeLicenseInformation()
     {
-        auto current_license_information = co_await Helper::GetAddonSubscriptionInfo();
+        if constexpr (ENABLE_DEBBUGGING)
+        {
+            TB_LicenseData().Text(L"License Status: Debug");
+        }
+
+        const auto current_license_information = co_await Helper::GetAddonSubscriptionInfo();
         
         if (!current_license_information)
         {
