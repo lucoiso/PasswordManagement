@@ -125,7 +125,7 @@ namespace winrt::PasswordManager::implementation
 		std::string line;
 		for (auto iterator = std_content.begin(); iterator != std_content.end(); ++iterator)
 		{
-			if (*iterator == '\n' || iterator == std_content.end() - 1)
+			if (*iterator == '\n')
 			{
 				ProcessCsvLine(to_hstring(line), newData, PasswordManager::LoginDataFileType::BIN);
 				line.clear();
@@ -146,7 +146,9 @@ namespace winrt::PasswordManager::implementation
 		{
 			fileContent = fileContent + L"\n" + iterator.GetDataAsString(PasswordManager::LoginDataFileType::BIN);
 		}
-		
+
+		fileContent = fileContent + L"\n";
+
 		const auto data_buffer = Windows::Security::Cryptography::CryptographicBuffer::ConvertStringToBinary(fileContent, Windows::Security::Cryptography::BinaryStringEncoding::Utf8);
 		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
 		const auto keyMaterial = Windows::Security::Cryptography::CryptographicBuffer::GenerateRandom(provider.BlockLength());
@@ -255,7 +257,7 @@ namespace winrt::PasswordManager::implementation
 
 		const std::string std_line = to_string(line);
 
-		if (Helper::StringContains(std_line, to_string(PASSWORD_DATA_CSV_HEADER).substr(0, to_string(PASSWORD_DATA_CSV_HEADER).size() - 1)))
+		if (Helper::StringContains(std_line, to_string(PASSWORD_DATA_CSV_HEADER)))
 		{
 			return;
 		}
