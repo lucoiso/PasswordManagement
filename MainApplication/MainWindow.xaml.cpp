@@ -65,7 +65,7 @@ namespace winrt::MainApplication::implementation
         const bool has_license = co_await Helper::HasLicenseActive();
         if (!has_license)
         {
-            const auto dialog_result = co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true).ShowAsync();
+            const auto dialog_result = co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true, L"Open Store", L"Close").ShowAsync();
             if (dialog_result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary)
             {
                 co_await LaunchUri(to_hstring(APP_SUBSCRIPTION_URI));

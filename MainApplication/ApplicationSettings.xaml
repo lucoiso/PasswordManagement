@@ -20,5 +20,7 @@
 		<ToggleSwitch x:Name="TS_WindowsHello" OnContent="Enable Windows Hello" OffContent="Enable Windows Hello" Margin="4" />
 		<ToggleSwitch x:Name="TS_SystemTray" OnContent="Enable System Tray Icon" OffContent="Enable System Tray Icon" Margin="4" />
 		<ToggleSwitch x:Name="TS_Shortcuts" OnContent="Enable Shortcuts" OffContent="Enable Shortcuts" Margin="4" />
+		
+		<Button x:Name="BP_Reset" Click="BP_Reset_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Reset to Defaults</Button>
 	</StackPanel>
 </ContentDialog>

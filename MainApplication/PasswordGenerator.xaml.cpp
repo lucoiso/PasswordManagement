@@ -24,18 +24,12 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         InitializeSettingsProperties();
+        m_initialized = true;
     }
 
     Windows::Foundation::IAsyncAction PasswordGenerator::BP_Generate_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
-
-        Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_LOWERCASE, CB_EnableLowerCase().IsChecked());
-        Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_UPPERCASE, CB_EnableUpperCase().IsChecked());
-        Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_NUMBERS, CB_EnableNumbers().IsChecked());
-        Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS, CB_EnableCustomCharacters().IsChecked());
-        Helper::InsertSettingValue(SETTING_GENERATOR_PASSWORD_SIZE, static_cast<int>(SL_PasswordSize().Value()));
-        Helper::InsertSettingValue(SETTING_GENERATOR_CUSTOM_CHARACTERS, TB_CustomCharacters().Text());
 
         const hstring generated_password = co_await winrt::PasswordGenerator::Generator::GeneratePassword();
         TB_Password().Text(generated_password);
@@ -64,6 +58,44 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         m_close();
+    }
+
+    void PasswordGenerator::Generator_Data_Changed([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        if (!m_initialized)
+        {
+            return;
+        }
+
+        LUPASS_LOG_FUNCTION();
+
+        const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
+        const auto tag = element.Tag().as<hstring>();
+
+        if (tag == L"LowerCase_C")
+        {
+            Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_LOWERCASE, CB_EnableLowerCase().IsChecked());
+        }
+        else if (tag == L"UpperCase_C")
+        {
+            Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_UPPERCASE, CB_EnableUpperCase().IsChecked());
+        }
+        else if (tag == L"Numbers_C")
+        {
+            Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_NUMBERS, CB_EnableNumbers().IsChecked());
+        }
+        else if (tag == L"CustomCharacters_C")
+        {
+            Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS, CB_EnableCustomCharacters().IsChecked());
+        }
+        else if (tag == L"CustomCharacters_T")
+        {
+            Helper::InsertSettingValue(SETTING_GENERATOR_CUSTOM_CHARACTERS, TB_CustomCharacters().Text());
+        }
+        else if (tag == L"Password_S")
+        {
+            Helper::InsertSettingValue(SETTING_GENERATOR_PASSWORD_SIZE, static_cast<int>(SL_PasswordSize().Value()));
+        }
     }
 
     void PasswordGenerator::InitializeSettingsProperties()

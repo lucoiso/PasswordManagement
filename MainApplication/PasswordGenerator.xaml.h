@@ -18,6 +18,8 @@ namespace winrt::MainApplication::implementation
         void BP_Copy_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void BP_Close_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
+        void Generator_Data_Changed(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+
         void InitializeSettingsProperties();
 
         event_token OnClose(MainApplication::SingleVoidDelegate const& handler);
@@ -25,6 +27,7 @@ namespace winrt::MainApplication::implementation
 
     private:
         event<MainApplication::SingleVoidDelegate> m_close;
+        bool m_initialized{ false };
     };
 }
 

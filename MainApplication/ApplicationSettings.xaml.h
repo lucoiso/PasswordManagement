@@ -13,6 +13,7 @@ namespace winrt::MainApplication::implementation
         ApplicationSettings();
 
         void Panel_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction BP_Reset_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         Windows::Foundation::IAsyncAction InitializeSettingsProperties();
         void SaveSettings();

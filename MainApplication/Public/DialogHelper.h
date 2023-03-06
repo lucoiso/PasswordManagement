@@ -16,7 +16,7 @@ using namespace winrt::MainApplication;
 namespace winrt::Helper
 {
     template<typename ContentTy>
-    inline Microsoft::UI::Xaml::Controls::ContentDialog CreateContentDialog(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy& content, const bool add_confirm = true, const bool& can_close = true)
+    inline Microsoft::UI::Xaml::Controls::ContentDialog CreateContentDialog(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy& content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close")
     {
         LUPASS_LOG_FUNCTION();
 
@@ -27,13 +27,13 @@ namespace winrt::Helper
 
         if (add_confirm)
         {
-			dialog.PrimaryButtonText(L"Confirm");
+			dialog.PrimaryButtonText(confirm_text);
             dialog.DefaultButton(Microsoft::UI::Xaml::Controls::ContentDialogButton::Primary);
 		}
 
         if (can_close)
         {
-            dialog.CloseButtonText(L"Close");
+            dialog.CloseButtonText(close_text);
         }
 
         return dialog;

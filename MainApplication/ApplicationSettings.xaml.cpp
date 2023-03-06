@@ -8,6 +8,7 @@
 #include "ApplicationSettings.g.cpp"
 
 #include "App.xaml.h"
+#include "DialogHelper.h"
 #include "SettingsHelper.h"
 
 using namespace winrt;
@@ -41,6 +42,22 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         InitializeSettingsProperties();
+    }
+
+    Windows::Foundation::IAsyncAction ApplicationSettings::BP_Reset_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        Hide();
+        auto confirm_dialog = Helper::CreateContentDialog(XamlRoot(), L"Reset to Defaults", L"This operation will reset all settings to default. It will not delete login data, only application settings. Proceed?", true, true);
+
+        switch ((co_await confirm_dialog.ShowAsync()))
+        {
+            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            {
+                confirm_dialog.Hide();
+                Helper::SetSettingsToDefault();
+                App::RestartApplication();
+            }
+        }
     }
 
     Windows::Foundation::IAsyncAction ApplicationSettings::InitializeSettingsProperties()
