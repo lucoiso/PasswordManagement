@@ -40,7 +40,7 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::Url() const
     {
-        return L"http://" + m_url + L"/";
+        return L"https://" + m_url + L"/";
     }
 
     void LoginData::Url(hstring const& value)
