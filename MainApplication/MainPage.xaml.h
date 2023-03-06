@@ -21,12 +21,12 @@ namespace winrt::MainApplication::implementation
 
         void RemoveAllLoginData();
 
+        Windows::Foundation::IAsyncAction LoadLocalDataAsync();
+        Windows::Foundation::IAsyncAction SaveLocalDataAsync();
+
     protected:
         Windows::Foundation::IAsyncAction PerformDataImportAsync();
         Windows::Foundation::IAsyncAction PerformDataExportAsync();
-
-        Windows::Foundation::IAsyncAction LoadLocalDataAsync();
-        Windows::Foundation::IAsyncAction SaveLocalDataAsync();
 
     private:
         bool m_enable_license_tools{ false };

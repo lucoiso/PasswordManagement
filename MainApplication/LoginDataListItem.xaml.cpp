@@ -123,6 +123,10 @@ namespace winrt::MainApplication::implementation
                 else
                 {
                     Data(editor.Data().Clone().as<PasswordManager::LoginData>());
+                    if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                    {
+                        co_await MainPage.SaveLocalDataAsync();
+                    }
                 }
 
                 break;

@@ -14,5 +14,8 @@ namespace MainApplication
         void AddLoginData(PasswordManager.LoginData data);
         void RemoveLoginData(PasswordManager.LoginData data);
         void RemoveAllLoginData();
+
+        Windows.Foundation.IAsyncAction LoadLocalDataAsync();
+        Windows.Foundation.IAsyncAction SaveLocalDataAsync();
     }
 }
