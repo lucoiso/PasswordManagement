@@ -4,6 +4,9 @@
 
 #pragma once
 
+#ifndef LUPASS_CASTING_HELPER_H
+#define LUPASS_CASTING_HELPER_H
+
 #include "pch.h"
 
 using namespace winrt::MainApplication;
@@ -32,3 +35,4 @@ namespace winrt::Helper
         return GetParent<ParentTy>(parent);
     }
 }
+#endif

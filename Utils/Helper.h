@@ -4,13 +4,27 @@
 
 #pragma once
 
-#include "Constants.h"
+#ifndef LUPASS_HELPER_H
+#define LUPASS_HELPER_H
 
-#include <string>
-#include <hstring.h>
+#include "Constants.h"
+#include <winrt/base.h>
+
+using namespace winrt;
 
 namespace winrt::Helper
 {
+	inline void PrintDebugLine(const hstring& message)
+	{
+		if constexpr (ENABLE_DEBBUGGING)
+		{
+			const hstring output = L"APPLICATION: " + hstring(APP_NAME) + L"; VERSION: " + hstring(APP_VERSION) + L"; TIME: " + to_hstring(__TIME__) + L"; MESSAGE: " + message + L"\n";
+			OutputDebugStringW(output.c_str());
+		}
+	}
+
+#define LUPASS_LOG_FUNCTION() if constexpr (ENABLE_DEBBUGGING) winrt::Helper::PrintDebugLine(hstring(to_hstring(__FILE__) + L":" + to_hstring(__LINE__) + L":" + to_hstring(__func__)))
+
 	template <typename T>
 	inline constexpr bool SetMemberValue(const T& value, T& member)
 	{
@@ -63,15 +77,6 @@ namespace winrt::Helper
 		return StringContains(to_string(string), to_string(find), caseSensitive);
 	}
 
-	inline void PrintDebugLine(const hstring& message)
-	{
-		if constexpr (ENABLE_DEBBUGGING)
-		{
-			OutputDebugStringW(message.c_str());
-			OutputDebugStringW(L"\n");
-		}
-	}
-
 	inline const hstring GetCleanUrlString(const hstring& value)
 	{
 		std::string new_url = to_string(value);
@@ -108,3 +113,4 @@ namespace winrt::Helper
 		return to_hstring(new_url);
 	}
 }
+#endif

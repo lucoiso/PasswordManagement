@@ -24,7 +24,7 @@
 			<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<TextBlock x:Name="TB_LicenseData" Style="{StaticResource BaseTextBlockStyle}" VerticalAlignment="Center" />
+				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" Click="HB_LicenseData_Click"/>
 				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Open Application Settings" Margin="8">
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;" FontSize="16"/>
 				</Button>

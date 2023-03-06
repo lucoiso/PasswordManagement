@@ -16,6 +16,22 @@ namespace winrt::MainApplication::implementation
         Windows::Foundation::IAsyncAction InitializeLicenseInformation();
 
         void BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction HB_LicenseData_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+
+        template<typename UriTy>
+        inline Windows::Foundation::IAsyncAction LaunchUri(const UriTy& uri)
+        {
+            LUPASS_LOG_FUNCTION();
+
+            if constexpr (std::is_base_of<UriTy, hstring>::value)
+            {
+                co_await Windows::System::Launcher::LaunchUriAsync(Windows::Foundation::Uri(uri));
+            }
+            else
+            {
+				co_await Windows::System::Launcher::LaunchUriAsync(uri);
+			}
+        }
 
         HWND GetWindowHandle();
         Microsoft::UI::Windowing::AppWindow GetAppWindow();

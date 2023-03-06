@@ -7,8 +7,6 @@
 #include "LoginDataListView.xaml.h"
 #include "LoginDataListView.g.cpp"
 
-#include <Helper.h>
-
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -34,6 +32,8 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListView::InsertDataInList(PasswordManager::LoginData const& data)
     {
+        LUPASS_LOG_FUNCTION();
+
         PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
 		check_bool(newData != nullptr);
         
@@ -66,6 +66,8 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListView::RemoveDataFromList(PasswordManager::LoginData const& data)
     {
+        LUPASS_LOG_FUNCTION();
+
         PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
         check_bool(newData != nullptr);
 
@@ -86,6 +88,8 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListView::RemoveAllDataFromList()
     {
+        LUPASS_LOG_FUNCTION();
+
         m_data.Clear();
 		m_filtered_data.Clear();
 		UpdateEntriesIndicator();
@@ -103,11 +107,15 @@ namespace winrt::MainApplication::implementation
 
     void MainApplication::implementation::LoginDataListView::TB_Search_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::TextChangedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         UpdateFilteredData();
     }
 
     void MainApplication::implementation::LoginDataListView::Sort(DataSortMode const& mode, DataSortOrientation const& orientation)
     {
+        LUPASS_LOG_FUNCTION();
+
 		std::vector<PasswordManager::LoginData> local_data(m_data.Size());
 		m_data.GetMany(0u, local_data);
         m_data.Clear();
@@ -151,11 +159,15 @@ namespace winrt::MainApplication::implementation
     
     bool MainApplication::implementation::LoginDataListView::MatchSearch(const PasswordManager::LoginData& data) const
     {
+        LUPASS_LOG_FUNCTION();
+
         return Helper::StringContains(data.Name(), m_current_search) || Helper::StringContains(data.Url(), m_current_search) || Helper::StringContains(data.Username(), m_current_search);
     }
 
     void MainApplication::implementation::LoginDataListView::UpdateFilteredData()
     {
+        LUPASS_LOG_FUNCTION();
+
         m_current_search = TB_Search().Text();
         m_filtered_data.Clear();
 
@@ -172,6 +184,8 @@ namespace winrt::MainApplication::implementation
 
     void MainApplication::implementation::LoginDataListView::UpdateEntriesIndicator()
     {
+        LUPASS_LOG_FUNCTION();
+
         TB_TotalEntriesNum().Text(L"Total Entries: " + to_hstring(m_data.Size()));
         TB_FilteredEntriesNum().Text(L"Filtered Entries: " + to_hstring(m_filtered_data.Size()));
     }

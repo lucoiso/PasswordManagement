@@ -14,8 +14,6 @@
 #include "DialogHelper.h"
 #include "CastingHelper.h"
 
-#include <Helper.h>
-
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -38,11 +36,15 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListMenu::BP_Import_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         m_import_pressed();
     }
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!CB_ExportMode().SelectedItem() || !(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
@@ -53,6 +55,8 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Add_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         MainApplication::LoginDataEditor editor;
         editor.XamlRoot(XamlRoot());
 
@@ -81,11 +85,15 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataListMenu::BP_Generator_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         Helper::InvokeGeneratorDialog(XamlRoot());
     }
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Clear_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
@@ -99,6 +107,7 @@ namespace winrt::MainApplication::implementation
             {
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
+                    confirm_dialog.Hide();
                     MainPage.RemoveAllLoginData();
                 }
             }
@@ -107,14 +116,18 @@ namespace winrt::MainApplication::implementation
 
     void MainApplication::implementation::LoginDataListMenu::GenericSorting_SelectionChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Controls::SelectionChangedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         m_sorting_changed();
     }
 
     PasswordManager::LoginDataFileType LoginDataListMenu::SelectedExportDataType()
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!CB_ExportMode().SelectedItem())
         {
-            Helper::CreateContentDialog(XamlRoot(), L"Error", L"There's no selected export mode.", false, true).ShowAsync();
+            Helper::CreateContentDialog(XamlRoot(), L"Error", L"Invalid export mode.", false, true).ShowAsync();
             return PasswordManager::LoginDataFileType::Undefined;
         }
 
@@ -138,9 +151,11 @@ namespace winrt::MainApplication::implementation
 
     DataSortMode LoginDataListMenu::SelectedSortingMode()
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!CB_SortingMode().SelectedItem())
         {
-            Helper::CreateContentDialog(XamlRoot(), L"Error", L"There's no selected sorting mode.", false, true).ShowAsync();
+            Helper::CreateContentDialog(XamlRoot(), L"Error", L"Invalid sorting mode.", false, true).ShowAsync();
             return DataSortMode::Undefined;
         }
 
@@ -164,9 +179,11 @@ namespace winrt::MainApplication::implementation
 
     DataSortOrientation LoginDataListMenu::SelectedSortingOrientation()
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!CB_SortingOrientation().SelectedItem())
         {
-            Helper::CreateContentDialog(XamlRoot(), L"Error", L"There's no selected sorting orientation.", false, true).ShowAsync();
+            Helper::CreateContentDialog(XamlRoot(), L"Error", L"Invalid sorting orientation.", false, true).ShowAsync();
             return DataSortOrientation::Undefined;
         }
 
@@ -186,11 +203,15 @@ namespace winrt::MainApplication::implementation
 
     event_token LoginDataListMenu::ImportPressed(MainApplication::SingleVoidDelegate const& handler)
     {
+        LUPASS_LOG_FUNCTION();
+
         return m_import_pressed.add(handler);
     }
 
     void LoginDataListMenu::ImportPressed(event_token const& token) noexcept
     {
+        LUPASS_LOG_FUNCTION();
+
         m_import_pressed.remove(token);
     }
 
@@ -201,16 +222,22 @@ namespace winrt::MainApplication::implementation
     
     void LoginDataListMenu::ExportPressed(event_token const& token) noexcept
     {
+        LUPASS_LOG_FUNCTION();
+
         m_export_pressed.remove(token);
     }
 
     event_token MainApplication::implementation::LoginDataListMenu::SortingChanged(MainApplication::SingleVoidDelegate const& handler)
     {
+        LUPASS_LOG_FUNCTION();
+
         return m_sorting_changed.add(handler);
     }
 
     void MainApplication::implementation::LoginDataListMenu::SortingChanged(event_token const& token) noexcept
     {
+        LUPASS_LOG_FUNCTION();
+
         m_sorting_changed.remove(token);
     }
 }

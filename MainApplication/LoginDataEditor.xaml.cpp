@@ -9,8 +9,6 @@
 
 #include "PasswordGenerator.xaml.h"
 
-#include <Helper.h>
-
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -41,26 +39,36 @@ namespace winrt::MainApplication::implementation
 
     void LoginDataEditor::TB_Name_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         m_data.Name(TB_Name().Text());
     }
 
     void LoginDataEditor::TB_Url_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         m_data.Url(TB_Url().Text());
     }
 
     void LoginDataEditor::TB_Username_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         m_data.Username(TB_Username().Text());
     }
 
     void LoginDataEditor::TB_Password_PasswordChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         m_data.Password(TB_Password().Password());
     }
 
     void LoginDataEditor::BT_GeneratePassword_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         Controls::Flyout flyout;        
         auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
 

@@ -14,7 +14,7 @@
 	  Version="1.0.0.0" />
 
 	<Properties>
-		<DisplayName>Lupass Manager</DisplayName>
+		<DisplayName>Lupass</DisplayName>
 		<PublisherDisplayName>Lucas Oliveira Vilas-Bôas</PublisherDisplayName>
 		<Logo>Assets\StoreLogo.png</Logo>
 	</Properties>
@@ -33,8 +33,8 @@
 		  Executable="$targetnametoken$.exe"
 		  EntryPoint="$targetentrypoint$">
 			<uap:VisualElements
-			  DisplayName="Lupass Manager"
-			  Description="Lupass Manager is a software designed for offline password management and password generation. The software is developed using Windows App SDK, C++/WinRT and WinUI 3. The application offers users a secure and convenient way to store their passwords and sensitive information locally on their device, without the need for an internet connection. In addition, Lupass Manager provides a password generator tool, allowing users to create strong and unique passwords that are difficult to guess or crack. With Lupass Manager, users can easily manage their passwords and keep their sensitive information safe and secure."
+			  DisplayName="Lupass"
+			  Description="Lupass is a software designed for offline password management and password generation. The software is developed using Windows App SDK, C++/WinRT and WinUI 3. The application offers users a secure and convenient way to store their passwords and sensitive information locally on their device, without the need for an internet connection. In addition, Lupass Manager provides a password generator tool, allowing users to create strong and unique passwords that are difficult to guess or crack. With Lupass Manager, users can easily manage their passwords and keep their sensitive information safe and secure."
 			  BackgroundColor="transparent"
 			  Square150x150Logo="Assets\Square150x150Logo.png"
 			  Square44x44Logo="Assets\Square44x44Logo.png">
@@ -52,9 +52,9 @@
 						Executable="MainApplication.exe"
 						EntryPoint="Windows.FullTrustApplication">
 					<uap5:StartupTask
-					  TaskId="lucoiso_passman_startuptask_id"
+					  TaskId="LUCOISO_LUPASS_PASSWORD_MANAGER_STARTUPTASK"
 					  Enabled="true"
-					  DisplayName="Password Manager" />
+					  DisplayName="Lupass" />
 				</uap5:Extension>
 			</Extensions>
 		</Application>

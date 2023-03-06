@@ -17,11 +17,15 @@ namespace winrt::PasswordManager::implementation
 
     PasswordManager::LoginData LoginUpdateEventParams::Data() const
     {
+        LUPASS_LOG_FUNCTION();
+
         return m_data;
     }
 
     PasswordManager::LoginDataFileType LoginUpdateEventParams::Type() const
     {
+        LUPASS_LOG_FUNCTION();
+
         return m_type;
     }
 }

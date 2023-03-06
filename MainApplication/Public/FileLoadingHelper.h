@@ -4,12 +4,13 @@
 
 #pragma once
 
+#ifndef LUPASS_FILELOADING_HELPER_H
+#define LUPASS_FILELOADING_HELPER_H
+
 #include "pch.h"
 
 #include <ShObjIdl_core.h>
 #include <App.xaml.h>
-
-#include <Helper.h>
 
 using namespace winrt::MainApplication;
 
@@ -17,6 +18,8 @@ namespace winrt::Helper
 {
     inline Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile>> LoadPasswordDataFilesAsync()
     {
+        LUPASS_LOG_FUNCTION();
+
         Windows::Storage::Pickers::FileOpenPicker file_picker;
         file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetCurrentWindowHandle());
 
@@ -29,6 +32,8 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode)
     {
+        LUPASS_LOG_FUNCTION();
+
         Windows::Storage::Pickers::FileSavePicker file_picker;
         file_picker.as<IInitializeWithWindow>()->Initialize(MainApplication::implementation::App::GetCurrentWindowHandle());
 
@@ -60,6 +65,8 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> GetLocalDataFileAsync()
     {
+        LUPASS_LOG_FUNCTION();
+
         try
         {
             const Windows::Storage::StorageFolder localAppDir = Windows::Storage::ApplicationData::Current().LocalFolder();
@@ -80,3 +87,4 @@ namespace winrt::Helper
         co_return nullptr;
     }
 }
+#endif

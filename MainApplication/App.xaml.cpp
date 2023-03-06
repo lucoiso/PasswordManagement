@@ -11,9 +11,6 @@
 #include <windowsx.h>
 #include <shellapi.h>
 
-#include <Helper.h>
-#include <Constants.h>
-
 #include "SettingsHelper.h"
 #include "DialogHelper.h"
 
@@ -67,6 +64,8 @@ App::~App()
 
 Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivatedEventArgs const& args)
 {
+    LUPASS_LOG_FUNCTION();
+
     const auto app_instance = Microsoft::Windows::AppLifecycle::AppInstance::FindOrRegisterForKey(APP_INSTANCE_KEY);
 
     if (!CheckSingleInstance(app_instance))
@@ -83,6 +82,8 @@ Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivat
 
 void winrt::MainApplication::implementation::App::InitializeWindow(const Microsoft::Windows::AppLifecycle::ExtendedActivationKind& activation_kind)
 {
+    LUPASS_LOG_FUNCTION();
+
     m_window = make<MainWindow>();
 
     if (activation_kind != Microsoft::Windows::AppLifecycle::ExtendedActivationKind::StartupTask)
@@ -93,16 +94,22 @@ void winrt::MainApplication::implementation::App::InitializeWindow(const Microso
 
 Window MainApplication::implementation::App::Window() const
 {
+    LUPASS_LOG_FUNCTION();
+
     return m_window;
 }
 
 HWND MainApplication::implementation::App::GetCurrentWindowHandle()
 {
+    LUPASS_LOG_FUNCTION();
+
     return Application::Current().as<App>()->Window().as<MainWindow>()->GetWindowHandle();
 }
 
 void App::ToggleWindow()
 {
+    LUPASS_LOG_FUNCTION();
+
     try
     {
         auto application = Application::Current().as<App>();
@@ -115,45 +122,55 @@ void App::ToggleWindow()
             application->Window().as<MainWindow>()->GetAppWindow().Hide();
         }
     }
-    catch (...)
+    catch (const hresult_error& e)
     {
+        Helper::PrintDebugLine(e.message());
     }
 }
 
 void App::RestartApplication()
 {
+    LUPASS_LOG_FUNCTION();
+
     try
     {
         Microsoft::Windows::AppLifecycle::AppInstance::GetCurrent().Restart(L"DESIRED_RESTART");
     }
-    catch (...)
+    catch (const hresult_error& e)
     {
+        Helper::PrintDebugLine(e.message());
     }
 }
 
 void App::CloseApplication()
 {
+    LUPASS_LOG_FUNCTION();
+
     try
     {
         Application::Current().Exit();
     }
-    catch (...)
+    catch (const hresult_error& e)
     {
+        Helper::PrintDebugLine(e.message());
     }
 }
 
 bool App::CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstance& instance)
 {
+    LUPASS_LOG_FUNCTION();
+
     if (!instance.IsCurrent())
     {
         SendMessage(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME), WM_SHOWWINDOW, 0, 0);
-        
+
         try
         {
             Exit();
         }
-        catch (...)
+        catch (const hresult_error& e)
         {
+            Helper::PrintDebugLine(e.message());
         }
 
         return false;
@@ -164,6 +181,8 @@ bool App::CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstanc
 
 void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
 {
+    LUPASS_LOG_FUNCTION();
+
     switch (lParam)
     {
         case WM_LBUTTONUP:
@@ -227,6 +246,8 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
 
 void ProcessHotKey(HWND hwnd, WPARAM wParam)
 {
+    LUPASS_LOG_FUNCTION();
+
     switch (wParam)
     {
         case ID_APPLICATIONWINDOW_SHORTCUT:
@@ -243,6 +264,8 @@ void ProcessHotKey(HWND hwnd, WPARAM wParam)
 
 LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    LUPASS_LOG_FUNCTION();
+
     switch (uMsg)
     {
         case WM_TOGGLE_WINDOW:
@@ -275,6 +298,8 @@ LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 
 void App::AddTrayIcon()
 {
+    LUPASS_LOG_FUNCTION();
+
     if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_SYSTEM_TRAY))
     {
         return;
@@ -305,12 +330,16 @@ void App::AddTrayIcon()
 
 void App::RemoveTrayIcon()
 {
+    LUPASS_LOG_FUNCTION();
+
     DestroyIcon(m_notify_icon_data.hIcon);
     Shell_NotifyIcon(NIM_DELETE, &m_notify_icon_data);
 }
 
 void App::RegisterKeyboardShortcuts()
 {
+    LUPASS_LOG_FUNCTION();
+
     if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_SHORTCUTS))
     {
         return;
@@ -322,6 +351,8 @@ void App::RegisterKeyboardShortcuts()
 
 void App::UnregisterKeyboardShortcuts()
 {
+    LUPASS_LOG_FUNCTION();
+
     UnregisterHotKey(m_tray_hwnd, ID_APPLICATIONWINDOW_SHORTCUT);
     UnregisterHotKey(m_tray_hwnd, ID_GENERATORWINDOW_SHORTCUT);
 }

@@ -4,12 +4,13 @@
 
 #pragma once
 
+#ifndef LUPASS_SECURITY_HELPER_H
+#define LUPASS_SECURITY_HELPER_H
+
 #include "pch.h"
 
 #include "DialogHelper.h"
 #include "SettingsHelper.h"
-
-#include <Constants.h>
 
 using namespace winrt::MainApplication;
 
@@ -17,6 +18,8 @@ namespace winrt::Helper
 {
     inline Windows::Foundation::IAsyncOperation<Windows::Services::Store::StoreLicense> GetAddonSubscriptionInfo()
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto context = Windows::Services::Store::StoreContext::GetDefault();
         const auto license = co_await context.GetAppLicenseAsync();
 
@@ -25,6 +28,8 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncOperation<bool> HasLicenseActive()
     {
+        LUPASS_LOG_FUNCTION();
+
         if constexpr (ENABLE_DEBBUGGING)
         {
             co_return true;
@@ -41,6 +46,8 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials(const Microsoft::UI::Xaml::XamlRoot& root)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_WINDOWS_HELLO))
         {
             co_return true;
@@ -77,3 +84,4 @@ namespace winrt::Helper
         co_return false;
     }
 }
+#endif

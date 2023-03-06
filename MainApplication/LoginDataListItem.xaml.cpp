@@ -13,8 +13,6 @@
 #include "CastingHelper.h"
 #include "DialogHelper.h"
 
-#include <Helper.h>
-
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -48,6 +46,8 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction MainApplication::implementation::LoginDataListItem::BT_TogglePassword_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
 			co_return;
@@ -59,6 +59,8 @@ namespace winrt::MainApplication::implementation
 
     void CopyContentToClipboard(const hstring& content)
     {
+        LUPASS_LOG_FUNCTION();
+
         Windows::ApplicationModel::DataTransfer::DataPackage data;
         data.SetText(content);
 
@@ -67,6 +69,8 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction LoginDataListItem::BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
 		const auto button = sender.as<Microsoft::UI::Xaml::Controls::Button>();
 		const auto tag = button.Tag().as<hstring>();
 
@@ -97,6 +101,8 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction LoginDataListItem::BT_Edit_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
@@ -128,12 +134,14 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction LoginDataListItem::BT_Delete_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
         }
 
-        auto confirm_dialog = Helper::CreateContentDialog(Content().XamlRoot(), L"Delete Data", L"Confirm process?", true, true);        
+        auto confirm_dialog = Helper::CreateContentDialog(XamlRoot(), L"Delete Data", L"Confirm process?", true, true);        
 
         switch ((co_await confirm_dialog.ShowAsync()))
         {

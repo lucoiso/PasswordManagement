@@ -4,6 +4,9 @@
 
 #pragma once
 
+#ifndef LUPASS_CONSTANTS_H
+#define LUPASS_CONSTANTS_H
+
 #ifndef _DEBUG
 #define _DEBUG 0
 #endif
@@ -12,8 +15,10 @@ constexpr bool ENABLE_DEBBUGGING = _DEBUG;
 
 constexpr wchar_t APP_INSTANCE_KEY[] = L"LUCOISO_PASS_MANAGER_INSTANCE_KEY";
 constexpr wchar_t APP_PRODUCT_ID[] = L"9NBM0FRN8VS7";
+constexpr wchar_t APP_PRODUCT_URI[] = L"ms-windows-store://pdp/?ProductId=9NBM0FRN8VS7";
 constexpr wchar_t APP_SUBSCRIPTION_PRODUCT_ID[] = L"9N6CXRRVCV2R";
-constexpr wchar_t APP_NAME[] = L"Lupass Manager";
+constexpr wchar_t APP_SUBSCRIPTION_URI[] = L"ms-windows-store://pdp/?ProductId=9N6CXRRVCV2R";
+constexpr wchar_t APP_NAME[] = L"Lupass";
 constexpr wchar_t ICON_NAME[] = L"Icon.ico";
 constexpr wchar_t APP_VERSION[] = L"v1.0.0";
 constexpr wchar_t TRAYICON_CLASSNAME[] = L"TrayIcon";
@@ -35,3 +40,5 @@ constexpr wchar_t SETTING_GENERATOR_ENABLE_NUMBERS[] = L"SETTING_GENERATOR_ENABL
 constexpr wchar_t SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS[] = L"SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS";
 constexpr wchar_t SETTING_GENERATOR_CUSTOM_CHARACTERS[] = L"SETTING_GENERATOR_CUSTOM_CHARACTERS";
 constexpr wchar_t SETTING_GENERATOR_PASSWORD_SIZE[] = L"SETTING_GENERATOR_PASSWORD_SIZE";
+
+#endif

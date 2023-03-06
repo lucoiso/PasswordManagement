@@ -47,3 +47,4 @@
 
 #include <winrt/PasswordManager.h>
 #include <winrt/PasswordGenerator.h>
+#include <Helper.h>

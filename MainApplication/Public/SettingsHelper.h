@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "pch.h"
+#ifndef LUPASS_SETTINGS_HELPER_H
+#define LUPASS_SETTINGS_HELPER_H
 
-#include <Constants.h>
+#include "pch.h"
 
 using namespace winrt::MainApplication;
 
@@ -15,6 +16,8 @@ namespace winrt::Helper
     template <typename SettingTy>
     inline SettingTy GetSettingValue(const hstring& key)
     {
+        LUPASS_LOG_FUNCTION();
+
         if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); local_settings.Values().HasKey(key))
         {
 			return local_settings.Values().Lookup(key).as<SettingTy>();
@@ -25,6 +28,8 @@ namespace winrt::Helper
 
     inline bool HasSettingKey(const hstring& key)
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings();
         return local_settings.Values().HasKey(key);
     }
@@ -32,12 +37,16 @@ namespace winrt::Helper
     template <typename SettingTy>
     inline void InsertSettingValue(const hstring& key, const SettingTy& value)
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings();
         local_settings.Values().Insert(key, box_value(value));
     }
 
     inline void RemoveSettingKey(const hstring& key)
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings();
 
         if (HasSettingKey(key))
@@ -48,6 +57,8 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncAction InitializeSettings()
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto initialize_setting = [](const hstring& key, const auto& value)
         {
             if (!HasSettingKey(key))
@@ -72,6 +83,8 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncAction SetSettingsToDefault()
     {
+        LUPASS_LOG_FUNCTION();
+
         InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, true);
         InsertSettingValue(SETTING_ENABLE_SHORTCUTS, true);
 
@@ -88,7 +101,10 @@ namespace winrt::Helper
 
     inline void ClearSecurityIds()
     {
+        LUPASS_LOG_FUNCTION();
+
         RemoveSettingKey(SECURITY_KEY_SET_ID);
         RemoveSettingKey(INVALID_SECURITY_ENVIRONMENT_ID);
     }
 }
+#endif

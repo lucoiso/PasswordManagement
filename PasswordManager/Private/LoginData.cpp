@@ -7,8 +7,6 @@
 #include "LoginData.h"
 #include "LoginData.g.cpp"
 
-#include "Helper.h"
-
 using namespace winrt;
 
 namespace winrt::PasswordManager::implementation
@@ -75,16 +73,16 @@ namespace winrt::PasswordManager::implementation
     {
         switch (inType)
         {
-        case PasswordManager::LoginDataFileType::CSV:
-        case PasswordManager::LoginDataFileType::BIN:
-            return GetDataAsString_CSV_Internal();
+            case PasswordManager::LoginDataFileType::CSV:
+            case PasswordManager::LoginDataFileType::BIN:
+                return GetDataAsString_CSV_Internal();
 
-        case PasswordManager::LoginDataFileType::TXT:
-            return GetDataAsString_TXT_Internal();
+            case PasswordManager::LoginDataFileType::TXT:
+                return GetDataAsString_TXT_Internal();
 
-        default:
-            throw hresult_not_implemented(L"not implemented yet");
-            break;
+            default:
+                throw hresult_not_implemented(L"not implemented yet");
+                break;
         }
     }
 

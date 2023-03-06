@@ -7,8 +7,6 @@
 #include "ApplicationSettings.xaml.h"
 #include "ApplicationSettings.g.cpp"
 
-#include <Helper.h>
-
 #include "App.xaml.h"
 #include "SettingsHelper.h"
 
@@ -40,11 +38,15 @@ namespace winrt::MainApplication::implementation
 
     void ApplicationSettings::Panel_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
+        LUPASS_LOG_FUNCTION();
+
         InitializeSettingsProperties();
     }
 
     Windows::Foundation::IAsyncAction ApplicationSettings::InitializeSettingsProperties()
     {
+        LUPASS_LOG_FUNCTION();
+
         if (!(co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync()))
         {
             TS_WindowsHello().IsOn(false);
@@ -61,6 +63,8 @@ namespace winrt::MainApplication::implementation
 
     void ApplicationSettings::SaveSettings()
     {
+        LUPASS_LOG_FUNCTION();
+
         Helper::InsertSettingValue(SETTING_ENABLE_WINDOWS_HELLO, TS_WindowsHello().IsOn());
 		Helper::InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, TS_SystemTray().IsOn());
         Helper::InsertSettingValue(SETTING_ENABLE_SHORTCUTS, TS_Shortcuts().IsOn());

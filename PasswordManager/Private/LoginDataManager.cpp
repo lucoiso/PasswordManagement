@@ -13,8 +13,6 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <Helper.h>
-#include <Constants.h>
 
 using namespace winrt;
 
@@ -22,6 +20,8 @@ namespace winrt::PasswordManager::implementation
 {
 	Windows::Foundation::IAsyncAction LoginDataManager::ImportDataAsync(const Windows::Storage::StorageFile& file)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		if (!file.IsAvailable())
 		{
 			throw hresult_invalid_argument(L"file is unavailable");
@@ -55,6 +55,8 @@ namespace winrt::PasswordManager::implementation
 
 	Windows::Foundation::IAsyncAction LoginDataManager::ExportDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		if (!file.IsAvailable())
 		{
 			throw hresult_invalid_argument(L"file is unavailable");
@@ -84,21 +86,29 @@ namespace winrt::PasswordManager::implementation
 
 	event_token LoginDataManager::LoginDataUpdated(Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams> const& handler)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		return m_data_updated.add(handler);
 	}
 
 	void LoginDataManager::LoginDataUpdated(event_token const& token) noexcept
 	{
+		LUPASS_LOG_FUNCTION();
+
 		m_data_updated.remove(token);
 	}
 
 	void LoginDataManager::PushData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataFileType& type)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		m_data_updated(*this, make<PasswordManager::implementation::LoginUpdateEventParams>(data, type));
 	}
 
 	Windows::Foundation::IAsyncAction LoginDataManager::ReadBinaryData(const Windows::Storage::StorageFile& file)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		const auto data_buffer = co_await Windows::Storage::FileIO::ReadBufferAsync(file);
 		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
 		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
@@ -129,6 +139,8 @@ namespace winrt::PasswordManager::implementation
 
 	Windows::Foundation::IAsyncAction LoginDataManager::WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		hstring fileContent = to_hstring(PASSWORD_DATA_CSV_HEADER);
 		for (const auto& iterator : data)
 		{
@@ -150,6 +162,8 @@ namespace winrt::PasswordManager::implementation
 
 	void LoginDataManager::ReadTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
 
 		for (const auto line : file_text)
@@ -195,6 +209,8 @@ namespace winrt::PasswordManager::implementation
 
 	void LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
+		LUPASS_LOG_FUNCTION();
+
 		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
 		lines.Append(L"Websites\n");
 
@@ -208,6 +224,8 @@ namespace winrt::PasswordManager::implementation
 
 	void LoginDataManager::ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
 
 		for (const auto line : file_text)
@@ -218,6 +236,8 @@ namespace winrt::PasswordManager::implementation
 
 	void LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
+		LUPASS_LOG_FUNCTION();
+
 		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
 		lines.Append(to_hstring(PASSWORD_DATA_CSV_HEADER));
 
@@ -231,6 +251,8 @@ namespace winrt::PasswordManager::implementation
 	
 	void LoginDataManager::ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type)
 	{
+		LUPASS_LOG_FUNCTION();
+
 		const std::string std_line = to_string(line);
 
 		if (Helper::StringContains(std_line, to_string(PASSWORD_DATA_CSV_HEADER).substr(0, to_string(PASSWORD_DATA_CSV_HEADER).size() - 1)))

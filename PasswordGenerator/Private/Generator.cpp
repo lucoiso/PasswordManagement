@@ -12,14 +12,14 @@
 #include <thread>
 #include <future>
 
-#include "Constants.h"
-
 using namespace winrt;
 
 namespace winrt::PasswordGenerator::implementation
 {
 	hstring GeneratePasswordInBackground()
 	{
+		LUPASS_LOG_FUNCTION();
+
 		const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings();
 		const bool enable_lowercase = local_settings.Values().TryLookup(SETTING_GENERATOR_ENABLE_LOWERCASE).as<bool>();
 		const bool enable_uppercase = local_settings.Values().TryLookup(SETTING_GENERATOR_ENABLE_UPPERCASE).as<bool>();
@@ -73,6 +73,8 @@ namespace winrt::PasswordGenerator::implementation
 
 	Windows::Foundation::IAsyncOperation<hstring> Generator::GeneratePassword()
 	{
+		LUPASS_LOG_FUNCTION();
+
 		std::future<hstring> password_future = std::async(std::launch::async, GeneratePasswordInBackground);
 		return co_await password_future;
 	}
