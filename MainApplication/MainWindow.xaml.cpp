@@ -62,28 +62,34 @@ namespace winrt::MainApplication::implementation
 
         if (!Helper::HasLicenseActive())
         {
-            co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Your license has expired", L"The application will limit the features to export & view only.", false, true).ShowAsync();
+            const auto dialog_result = co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true).ShowAsync();
+            if (dialog_result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary)
+            {
+                co_await Windows::System::Launcher::LaunchUriAsync(Windows::Foundation::Uri(to_hstring("ms-windows-store://pdp/?ProductId=" + to_string(APP_SUBSCRIPTION_PRODUCT_ID))));
+			}
         }
 
         FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
     }
 
-    void MainWindow::InitializeLicenseInformation()
+    Windows::Foundation::IAsyncAction MainWindow::InitializeLicenseInformation()
     {
-        auto current_license_information = Windows::ApplicationModel::Store::CurrentAppSimulator::LicenseInformation();
+        auto current_license_information = co_await Helper::GetAddonSubscriptionInfo();
         
-        std::string mode = "License Mode: ";
-        if (current_license_information.IsTrial())
+        if (!current_license_information)
         {
-            mode += "Trial";
+            TB_LicenseData().Text(L"License Status: Invalid");
+            co_return;
         }
-        else if (current_license_information.IsActive())
+
+        std::string mode = "License Status: ";
+        if (current_license_information.IsActive())
         {
-            mode += "Full";
+            mode += "Active";
         }
         else
         {
-            mode += "Invalid";
+            mode += "Inactive";
         }
 
         const auto formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortDate();

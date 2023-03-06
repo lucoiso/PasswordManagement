@@ -14,7 +14,7 @@ namespace winrt::MainApplication::implementation
 
         bool EnableLicenseTools() const;
 
-        void LI_LoginData_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction LI_LoginData_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         void AddLoginData(PasswordManager::LoginData const& data);
         void RemoveLoginData(PasswordManager::LoginData const& data);

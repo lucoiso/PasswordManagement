@@ -13,7 +13,7 @@ namespace winrt::MainApplication::implementation
         MainWindow();
         
         Windows::Foundation::IAsyncAction FR_MainFrame_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
-        void InitializeLicenseInformation();
+        Windows::Foundation::IAsyncAction InitializeLicenseInformation();
 
         void BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 

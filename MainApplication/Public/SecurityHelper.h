@@ -15,10 +15,23 @@ using namespace winrt::MainApplication;
 
 namespace winrt::Helper
 {
-    inline bool HasLicenseActive()
+    inline Windows::Foundation::IAsyncOperation<Windows::Services::Store::StoreLicense> GetAddonSubscriptionInfo()
     {
-        auto current_information = Windows::ApplicationModel::Store::CurrentApp::LicenseInformation();
-        return current_information.IsActive() || current_information.IsTrial();
+        const auto context = Windows::Services::Store::StoreContext::GetDefault();
+        const auto license = co_await context.GetAppLicenseAsync();
+
+        co_return license.AddOnLicenses().TryLookup(APP_SUBSCRIPTION_PRODUCT_ID);
+    }
+
+    inline Windows::Foundation::IAsyncOperation<bool> HasLicenseActive()
+    {
+        const auto license = co_await GetAddonSubscriptionInfo();
+        if (!license)
+        {
+            co_return false;
+        }
+
+        co_return license.IsActive();
     }
 
     inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials(const Microsoft::UI::Xaml::XamlRoot& root)
