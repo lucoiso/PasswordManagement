@@ -16,7 +16,7 @@
     CornerRadius="8">
 
 	<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" MaxWidth="500">
-		<TextBox x:Name="TB_Name" PlaceholderText="Name" Margin="4" TextChanged="TB_Name_TextChanged" />
+		<TextBox x:Name="TB_Name" PlaceholderText="Name (Optional)" Margin="4" TextChanged="TB_Name_TextChanged" />
 		<TextBox x:Name="TB_Url" PlaceholderText="Url" Margin="4" TextChanged="TB_Url_TextChanged" />
 		<TextBox x:Name="TB_Username" PlaceholderText="Username" Margin="4" TextChanged="TB_Username_TextChanged" />
 		<StackPanel Orientation="Horizontal" Width="300">
