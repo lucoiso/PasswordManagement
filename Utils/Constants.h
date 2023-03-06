@@ -11,7 +11,7 @@
 constexpr bool ALLOW_DEBBUGGING = _DEBUG;
 
 constexpr wchar_t APP_INSTANCE_KEY[] = L"LUCOISO_PASS_MANAGER_INSTANCE_KEY";
-constexpr wchar_t APP_NAME[] = L"Password Manager";
+constexpr wchar_t APP_NAME[] = L"Lupass Manager";
 constexpr wchar_t ICON_NAME[] = L"Icon.ico";
 constexpr wchar_t APP_VERSION[] = L"v1.0.0";
 constexpr wchar_t TRAYICON_CLASSNAME[] = L"TrayIcon";
