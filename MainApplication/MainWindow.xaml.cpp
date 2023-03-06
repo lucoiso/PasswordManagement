@@ -78,6 +78,7 @@ namespace winrt::MainApplication::implementation
         if constexpr (ENABLE_DEBBUGGING)
         {
             TB_LicenseData().Text(L"License Status: Debug");
+            co_return;
         }
 
         const auto current_license_information = co_await Helper::GetAddonSubscriptionInfo();
