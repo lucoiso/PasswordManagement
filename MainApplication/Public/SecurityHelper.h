@@ -25,6 +25,11 @@ namespace winrt::Helper
 
     inline Windows::Foundation::IAsyncOperation<bool> HasLicenseActive()
     {
+        if constexpr (ENABLE_DEBBUGGING)
+        {
+            co_return true;
+        }
+
         const auto license = co_await GetAddonSubscriptionInfo();
         if (!license)
         {

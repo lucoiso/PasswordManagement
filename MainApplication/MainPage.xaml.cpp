@@ -8,7 +8,6 @@
 
 #include "FileLoadingHelper.h"
 #include "DialogHelper.h"
-#include "SecurityHelper.h"
 
 #include <Helper.h>
 
@@ -27,9 +26,9 @@ namespace winrt::MainApplication::implementation
         return m_enable_license_tools;
     }
 
-    Windows::Foundation::IAsyncAction MainApplication::implementation::MainPage::LI_LoginData_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction MainPage::OnNavigatedTo(Microsoft::UI::Xaml::Navigation::NavigationEventArgs const& e)
     {
-        m_enable_license_tools = co_await Helper::HasLicenseActive();
+        m_enable_license_tools = unbox_value<bool>(e.Parameter());
 
         { // Event bindings
             BindDataUpdate();
@@ -37,7 +36,7 @@ namespace winrt::MainApplication::implementation
             BindDataSorting();
         }
 
-        LoadLocalDataAsync();
+        co_await LoadLocalDataAsync();
     }
 
     void MainPage::AddLoginData(PasswordManager::LoginData const& data)

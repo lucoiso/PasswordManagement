@@ -65,7 +65,7 @@ namespace winrt::Helper
 
 	inline void PrintDebugLine(const hstring& message)
 	{
-		if constexpr (ALLOW_DEBBUGGING)
+		if constexpr (ENABLE_DEBBUGGING)
 		{
 			OutputDebugStringW(message.c_str());
 			OutputDebugStringW(L"\n");

@@ -58,9 +58,10 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
-        InitializeLicenseInformation();
+        co_await InitializeLicenseInformation();
 
-        if (!Helper::HasLicenseActive())
+        const bool has_license = co_await Helper::HasLicenseActive();
+        if (!has_license)
         {
             const auto dialog_result = co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true).ShowAsync();
             if (dialog_result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary)
@@ -69,7 +70,7 @@ namespace winrt::MainApplication::implementation
 			}
         }
 
-        FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
+        FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>(), box_value(has_license));
     }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeLicenseInformation()
