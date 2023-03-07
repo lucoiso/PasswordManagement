@@ -55,6 +55,8 @@ namespace winrt::MainApplication::implementation
 
         m_show_password = !m_show_password;
         m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
+
+        FI_TogglePassword().Glyph(m_show_password ? L"\xE9A8" : L"\xE9A9");
     }
 
     void CopyContentToClipboard(const hstring& content)

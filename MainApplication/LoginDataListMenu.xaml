@@ -38,9 +38,9 @@
 		</ComboBox>
 		
 		<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Import</Button>
-		<Button x:Name="BP_Add" Click="BP_Add_Click" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Add Data</Button>
+		<Button x:Name="BP_Add" Click="BP_Add_Click" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Add</Button>
 		<Button x:Name="BP_Export" Click="BP_Export_Click" Grid.Row="2" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Export</Button>
-		<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Open Generator</Button>
-		<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Clear Data</Button>
+		<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Generator</Button>
+		<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Clear</Button>
 	</Grid>
 </UserControl>

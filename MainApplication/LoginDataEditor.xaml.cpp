@@ -65,6 +65,20 @@ namespace winrt::MainApplication::implementation
         m_data.Password(TB_Password().Password());
     }
 
+    void LoginDataEditor::BT_TogglePasswordView_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    {
+        if (TB_Password().PasswordRevealMode() == Microsoft::UI::Xaml::Controls::PasswordRevealMode::Hidden)
+        {
+            TB_Password().PasswordRevealMode(Microsoft::UI::Xaml::Controls::PasswordRevealMode::Visible);
+            FI_TogglePassword().Glyph(L"\xE9A8");
+        }
+        else
+        {
+            TB_Password().PasswordRevealMode(Microsoft::UI::Xaml::Controls::PasswordRevealMode::Hidden);
+            FI_TogglePassword().Glyph(L"\xE9A9");
+        }
+    }
+
     void LoginDataEditor::BT_GeneratePassword_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
