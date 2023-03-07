@@ -60,6 +60,7 @@ App::~App()
 
     RemoveTrayIcon();
     UnregisterKeyboardShortcuts();
+    UnregisterMouseHook();
 }
 
 Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivatedEventArgs const& args)
@@ -77,6 +78,7 @@ Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivat
 
     AddTrayIcon();
     RegisterKeyboardShortcuts();
+    RegisterMouseHook();
     InitializeWindow(app_instance.GetActivatedEventArgs().Kind());
 }
 
@@ -94,15 +96,11 @@ void winrt::MainApplication::implementation::App::InitializeWindow(const Microso
 
 Window MainApplication::implementation::App::Window() const
 {
-    LUPASS_LOG_FUNCTION();
-
     return m_window;
 }
 
 HWND MainApplication::implementation::App::GetCurrentWindowHandle()
 {
-    LUPASS_LOG_FUNCTION();
-
     return Application::Current().as<App>()->Window().as<MainWindow>()->GetWindowHandle();
 }
 
@@ -184,9 +182,47 @@ bool App::CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstanc
     return true;
 }
 
-void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
+void ProcessTrayIconMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    LUPASS_LOG_FUNCTION();
+    static HMENU menu{ nullptr };
+
+    const auto remove_menu = [&hwnd](HMENU& menu)
+    {
+        if (!menu)
+        {
+            return;
+        }
+
+        POINT pt;
+        if (!GetCursorPos(&pt))
+        {
+            return;
+        }
+
+        const int menu_item_count = GetMenuItemCount(menu);
+        bool is_in_menu = false;
+
+        for (int i = 0; i < menu_item_count; ++i)
+        {
+            RECT rc;
+            if (GetMenuItemRect(hwnd, menu, i, &rc))
+            {
+                if (pt.x >= rc.left && pt.x <= rc.right && pt.y >= rc.top && pt.y <= rc.bottom)
+                {
+                    is_in_menu = true;
+                    break;
+                }
+            }
+        }
+
+        if (!is_in_menu)
+        {
+            DestroyMenu(menu);
+            EndMenu();
+
+            menu = nullptr;
+        }
+    };
 
     switch (lParam)
     {
@@ -197,7 +233,7 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
 
             if (current_tick_time - last_click_time < 500)
             {
-                SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
+                SendMessageW(hwnd, WM_TOGGLE_WINDOW, 0, 0);
             }
 
             last_click_time = current_tick_time;
@@ -207,36 +243,37 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
 
         case WM_RBUTTONDOWN:
         {
-            HMENU hMenu = CreatePopupMenu();
+            menu = CreatePopupMenu();
 
-            AppendMenu(hMenu, MF_STRING, ID_TOGGLE_APPLICATION_VISIBILITY, Application::Current().as<App>()->Window().Visible() ? L"Hide" : L"Show");
-            // AppendMenu(hMenu, MF_STRING, ID_TOGGLE_GENERATOR_VISIBILITY, L"Open Generator");
-            // AppendMenu(hMenu, MF_STRING, ID_TOGGLE_SETTINGS_VISIBILITY, L"Settings");
-            AppendMenu(hMenu, MF_STRING, ID_CLOSE_APPLICATION, L"Exit");
+            AppendMenuW(menu, MF_STRING, ID_TOGGLE_APPLICATION_VISIBILITY, Application::Current().as<App>()->Window().Visible() ? L"Hide Application" : L"Show Application");
+            AppendMenuW(menu, MF_STRING, ID_TOGGLE_GENERATOR_VISIBILITY, L"Open Generator");
+            AppendMenuW(menu, MF_STRING, ID_TOGGLE_SETTINGS_VISIBILITY, L"Open Settings");
+            AppendMenuW(menu, MF_STRING, ID_CLOSE_APPLICATION, L"Exit Application");
 
-            POINT cursorPos;
-            GetCursorPos(&cursorPos);
+            POINT cursor_position;
+            GetCursorPos(&cursor_position);
 
-            const int menuItem = TrackPopupMenu(hMenu, TPM_RETURNCMD | TPM_NONOTIFY, cursorPos.x, cursorPos.y, 0, hwnd, nullptr);
+            const UINT menu_flags = TPM_RETURNCMD | TPM_NONOTIFY | TPM_RIGHTBUTTON | TPM_LEFTBUTTON;
+            const BOOL menu_item = TrackPopupMenuEx(menu, menu_flags, cursor_position.x, cursor_position.y, hwnd, nullptr);
 
-            DestroyMenu(hMenu);
-
-            switch (menuItem)
+            switch (menu_item)
             {
                 case ID_TOGGLE_APPLICATION_VISIBILITY:
-                    SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
+                    SendMessageW(hwnd, WM_TOGGLE_WINDOW, 0, 0);
                     break;
 
                 case ID_TOGGLE_GENERATOR_VISIBILITY:
-                    SendMessage(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
+                    SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
+                    SendMessageW(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
                     break;
 
                 case ID_TOGGLE_SETTINGS_VISIBILITY:
-                    SendMessage(hwnd, WM_TOGGLE_SETTINGS, 0, 0);
+                    SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
+                    SendMessageW(hwnd, WM_TOGGLE_SETTINGS, 0, 0);
                     break;
 
                 case ID_CLOSE_APPLICATION:
-                    SendMessage(hwnd, WM_EXIT_APPLICATION, 0, 0);
+                    SendMessageW(hwnd, WM_EXIT_APPLICATION, 0, 0);
                     break;
 
                 default: break;
@@ -245,22 +282,32 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
             break;
         }
 
+        case WM_LBUTTONDOWN:
+            remove_menu(menu);
+            break;
+
         default: break;
+    }
+
+    switch (wParam)
+    {
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+            remove_menu(menu);
+            break;
     }
 }
 
 void ProcessHotKey(HWND hwnd, WPARAM wParam)
 {
-    LUPASS_LOG_FUNCTION();
-
     switch (wParam)
     {
         case ID_APPLICATIONWINDOW_SHORTCUT:
-            SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
+            SendMessageW(hwnd, WM_TOGGLE_WINDOW, 0, 0);
             break;
 
         case ID_GENERATORWINDOW_SHORTCUT:
-            SendMessage(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
+            SendMessageW(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
             break;
 
         default: break;
@@ -269,8 +316,6 @@ void ProcessHotKey(HWND hwnd, WPARAM wParam)
 
 LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    LUPASS_LOG_FUNCTION();
-
     switch (uMsg)
     {
         case WM_SETFOCUS:
@@ -294,7 +339,7 @@ LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, 
             break;
 
         case WM_TRAYICON:
-            ProcessTrayIconMessage(hwnd, lParam);
+            ProcessTrayIconMessage(hwnd, wParam, lParam);
             break;
 
         case WM_HOTKEY:
@@ -303,6 +348,16 @@ LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, 
     }
 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+LRESULT App::LowLevelMouseProcedure(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode == HC_ACTION && (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN))
+    {
+        SendMessageW(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME), WM_TRAYICON, wParam, lParam);
+    }
+
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 void App::AddTrayIcon()
@@ -321,7 +376,7 @@ void App::AddTrayIcon()
     wc.lpszClassName = TRAYICON_CLASSNAME;
     RegisterClassEx(&wc);
 
-    m_tray_hwnd = CreateWindowEx(0, TRAYICON_CLASSNAME, TRAYICON_CLASSNAME, WS_OVERLAPPEDWINDOW, 0, 0, 0, 0, nullptr, nullptr, wc.hInstance, nullptr);
+    m_tray_hwnd = CreateWindowEx(0, TRAYICON_CLASSNAME, TRAYICON_CLASSNAME, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, wc.hInstance, nullptr);
 
     m_notify_icon_data.cbSize = sizeof(NOTIFYICONDATA);
     m_notify_icon_data.hWnd = m_tray_hwnd;
@@ -364,4 +419,14 @@ void App::UnregisterKeyboardShortcuts()
 
     UnregisterHotKey(m_tray_hwnd, ID_APPLICATIONWINDOW_SHORTCUT);
     UnregisterHotKey(m_tray_hwnd, ID_GENERATORWINDOW_SHORTCUT);
+}
+
+void App::RegisterMouseHook()
+{
+    m_mouse_hook = SetWindowsHookEx(WH_MOUSE_LL, LowLevelMouseProcedure, nullptr, 0);
+}
+
+void App::UnregisterMouseHook()
+{
+    UnhookWindowsHookEx(m_mouse_hook);
 }

@@ -8,6 +8,9 @@
 #define LUPASS_DIALOG_HELPER_H
 
 #include "pch.h"
+
+#include "App.xaml.h"
+
 #include "ApplicationSettings.xaml.h"
 #include "PasswordGenerator.xaml.h"
 
@@ -20,16 +23,17 @@ namespace winrt::Helper
     {
         LUPASS_LOG_FUNCTION();
 
-        Controls::ContentDialog dialog;
+        Controls::ContentDialog dialog;        
+
         dialog.XamlRoot(root);
         dialog.Title(box_value(title));
         dialog.Content(box_value(content));
 
         if (add_confirm)
         {
-			dialog.PrimaryButtonText(confirm_text);
+            dialog.PrimaryButtonText(confirm_text);
             dialog.DefaultButton(Microsoft::UI::Xaml::Controls::ContentDialogButton::Primary);
-		}
+        }
 
         if (can_close)
         {
@@ -37,6 +41,26 @@ namespace winrt::Helper
         }
 
         return dialog;
+    }
+
+    inline bool HasAnyPopupOpen()
+    {
+        return Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopups(Microsoft::UI::Xaml::Application::Current().as<winrt::MainApplication::implementation::App>()->Window()).Size() > 0;
+    }
+
+    inline void CloseExistingDialogs()
+    {
+        LUPASS_LOG_FUNCTION();
+
+        const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopups(Microsoft::UI::Xaml::Application::Current().as<winrt::MainApplication::implementation::App>()->Window());
+        for (const auto& popup : existing_popups)
+        {
+            auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>();
+            if (existing_dialog)
+            {
+                existing_dialog.Hide();
+            }
+        }
     }
 
     inline Microsoft::UI::Xaml::Controls::ContentDialog CreateLoadingDialog(const Microsoft::UI::Xaml::XamlRoot& root)
@@ -51,6 +75,11 @@ namespace winrt::Helper
     inline Windows::Foundation::IAsyncAction InvokeGeneratorDialog(const Microsoft::UI::Xaml::XamlRoot& root)
     {
         LUPASS_LOG_FUNCTION();
+
+        if (Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root).Size() > 0)
+        {
+            co_return;
+        }
 
         try
         {
@@ -73,6 +102,11 @@ namespace winrt::Helper
     inline Windows::Foundation::IAsyncAction InvokeSettingsDialog(const Microsoft::UI::Xaml::XamlRoot& root)
     {
         LUPASS_LOG_FUNCTION();
+
+        if (Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root).Size() > 0)
+        {
+            co_return;
+        }
 
         try
         {

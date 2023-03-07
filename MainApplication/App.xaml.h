@@ -30,16 +30,22 @@ namespace winrt::MainApplication::implementation
 
     private:
         Microsoft::UI::Xaml::Window m_window{ nullptr };
+        Microsoft::UI::Dispatching::DispatcherQueueTimer m_timer{ nullptr };
 
         HWND m_tray_hwnd;
+        HHOOK m_mouse_hook;
         
         NOTIFYICONDATA m_notify_icon_data = {};
         static LRESULT CALLBACK ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+        static LRESULT CALLBACK LowLevelMouseProcedure(int nCode, WPARAM wParam, LPARAM lParam);
 
         void AddTrayIcon();
         void RemoveTrayIcon();
 
         void RegisterKeyboardShortcuts();
         void UnregisterKeyboardShortcuts();
+
+        void RegisterMouseHook();
+        void UnregisterMouseHook();
     };
 }
