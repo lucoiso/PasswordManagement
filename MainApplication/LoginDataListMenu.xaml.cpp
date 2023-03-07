@@ -72,7 +72,7 @@ namespace winrt::MainApplication::implementation
                 {
                     if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(Parent()); MainPage)
                     {
-                        MainPage.AddLoginData(editor.Data());
+                        co_await MainPage.AddLoginData(editor.Data());
                     }
                 }
 
@@ -108,7 +108,7 @@ namespace winrt::MainApplication::implementation
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
                     confirm_dialog.Hide();
-                    MainPage.RemoveAllLoginData();
+                    co_await MainPage.RemoveAllLoginData();
                 }
             }
         }

@@ -39,28 +39,28 @@ namespace winrt::MainApplication::implementation
         co_return co_await LoadLocalDataAsync();
     }
 
-    void MainPage::AddLoginData(PasswordManager::LoginData const& data)
+    Windows::Foundation::IAsyncAction MainPage::AddLoginData(PasswordManager::LoginData const& data)
     {
         LUPASS_LOG_FUNCTION();
 
         LI_LoginData().InsertDataInList(data);
-        SaveLocalDataAsync();
+        co_await SaveLocalDataAsync();
     }
 
-    void MainPage::RemoveLoginData(PasswordManager::LoginData const& data)
+    Windows::Foundation::IAsyncAction MainPage::RemoveLoginData(PasswordManager::LoginData const& data)
     {
         LUPASS_LOG_FUNCTION();
 
         LI_LoginData().RemoveDataFromList(data);
-        SaveLocalDataAsync();
+        co_await SaveLocalDataAsync();
     }
 
-    void MainPage::RemoveAllLoginData()
+    Windows::Foundation::IAsyncAction MainPage::RemoveAllLoginData()
     {
         LUPASS_LOG_FUNCTION();
 
         LI_LoginData().RemoveAllDataFromList();
-		SaveLocalDataAsync();
+		co_await SaveLocalDataAsync();
     }
 
     Windows::Foundation::IAsyncAction MainPage::PerformDataImportAsync()

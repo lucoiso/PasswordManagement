@@ -76,7 +76,7 @@ namespace winrt::Helper
         initialize_setting(SETTING_GENERATOR_ENABLE_NUMBERS, true);
         initialize_setting(SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS, true);
         initialize_setting(SETTING_GENERATOR_PASSWORD_SIZE, 8);
-        initialize_setting(SETTING_GENERATOR_CUSTOM_CHARACTERS, L",.;:[]{}!\'\"?");
+        initialize_setting(SETTING_GENERATOR_CUSTOM_CHARACTERS, L"!@#$%&*.;:[]{}!\'?");
 
         initialize_setting(SETTING_ENABLE_WINDOWS_HELLO, co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync());
     }
@@ -94,7 +94,7 @@ namespace winrt::Helper
         InsertSettingValue(SETTING_GENERATOR_ENABLE_NUMBERS, true);
         InsertSettingValue(SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS, true);
         InsertSettingValue(SETTING_GENERATOR_PASSWORD_SIZE, 8);
-        InsertSettingValue(SETTING_GENERATOR_CUSTOM_CHARACTERS, L",.;:[]{}!\'\"?");
+        InsertSettingValue(SETTING_GENERATOR_CUSTOM_CHARACTERS, L"!@#$%&*.;:[]{}!\'?");
 
         InsertSettingValue(SETTING_ENABLE_WINDOWS_HELLO, co_await Windows::Security::Credentials::KeyCredentialManager::IsSupportedAsync());
     }

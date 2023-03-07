@@ -40,7 +40,7 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::Url() const
     {
-        return L"https://" + m_url + L"/";
+        return m_url;
     }
 
     void LoginData::Url(hstring const& value)
@@ -65,12 +65,6 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Password(hstring const& value)
     {
-        if (!Helper::StringContains(value, L","))
-        {
-            Helper::SetMemberValue(value, m_password);
-            return;
-        }
-
         std::string new_pass = to_string(value);
         if (std::equal(new_pass.begin(), new_pass.begin() + 1, "\"") && std::equal(new_pass.end() - 1, new_pass.end(), "\""))
         {
@@ -113,7 +107,7 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::GetDataAsString_CSV_Internal() const
     {
-        return Name() + L"," + Url() + L"," + Username() + L"," + (Helper::StringContains(Password(), L",") ? hstring(L"\"" + Password() + L"\"") : Password());
+        return Name() + L"," + L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"";
     }
 
     hstring LoginData::GetDataAsString_TXT_Internal() const

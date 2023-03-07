@@ -112,7 +112,7 @@ namespace winrt::MainApplication::implementation
 
         MainApplication::LoginDataEditor editor;
         editor.XamlRoot(XamlRoot());
-        editor.Data(Data());
+        editor.Data(Data().Clone().as<PasswordManager::LoginData>());
 
         switch ((co_await editor.ShowAsync()))
         {
@@ -155,7 +155,7 @@ namespace winrt::MainApplication::implementation
             {
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
-                    MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>());
+                    co_await MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>());
                 }
             }
         }

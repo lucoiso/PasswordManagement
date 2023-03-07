@@ -16,10 +16,10 @@ namespace winrt::MainApplication::implementation
 
         Windows::Foundation::IAsyncAction OnNavigatedTo(Microsoft::UI::Xaml::Navigation::NavigationEventArgs const& e);
 
-        void AddLoginData(PasswordManager::LoginData const& data);
-        void RemoveLoginData(PasswordManager::LoginData const& data);
+        Windows::Foundation::IAsyncAction AddLoginData(PasswordManager::LoginData const& data);
+        Windows::Foundation::IAsyncAction RemoveLoginData(PasswordManager::LoginData const& data);
 
-        void RemoveAllLoginData();
+        Windows::Foundation::IAsyncAction RemoveAllLoginData();
 
         Windows::Foundation::IAsyncAction LoadLocalDataAsync();
         Windows::Foundation::IAsyncAction SaveLocalDataAsync();
