@@ -65,7 +65,19 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Password(hstring const& value)
     {
-        Helper::SetMemberValue(value, m_password);
+        if (!Helper::StringContains(value, L","))
+        {
+            Helper::SetMemberValue(value, m_password);
+            return;
+        }
+
+        std::string new_pass = to_string(value);
+        if (std::equal(new_pass.begin(), new_pass.begin() + 1, "\"") && std::equal(new_pass.end() - 1, new_pass.end(), "\""))
+        {
+            new_pass = new_pass.substr(1, new_pass.size() - 2);
+        }
+
+        Helper::SetMemberValue(to_hstring(new_pass), m_password);
     }
 #pragma endregion Getters and Setters
 
@@ -101,7 +113,7 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::GetDataAsString_CSV_Internal() const
     {
-        return Name() + L"," + Url() + L"," + Username() + L"," + Password();
+        return Name() + L"," + Url() + L"," + Username() + L"," + (Helper::StringContains(Password(), L",") ? hstring(L"\"" + Password() + L"\"") : Password());
     }
 
     hstring LoginData::GetDataAsString_TXT_Internal() const
