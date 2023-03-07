@@ -21,7 +21,7 @@ namespace winrt::MainApplication::implementation
 
         static HWND GetCurrentWindowHandle();
 
-        static void ToggleWindow();
+        static void ToggleWindow(HWND hwnd, const bool can_hide = true);
 
         static void RestartApplication();
         static void CloseApplication();
@@ -34,7 +34,7 @@ namespace winrt::MainApplication::implementation
         HWND m_tray_hwnd;
         
         NOTIFYICONDATA m_notify_icon_data = {};
-        static LRESULT CALLBACK TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+        static LRESULT CALLBACK ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
         void AddTrayIcon();
         void RemoveTrayIcon();

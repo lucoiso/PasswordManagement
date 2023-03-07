@@ -106,7 +106,7 @@ HWND MainApplication::implementation::App::GetCurrentWindowHandle()
     return Application::Current().as<App>()->Window().as<MainWindow>()->GetWindowHandle();
 }
 
-void App::ToggleWindow()
+void App::ToggleWindow(HWND hwnd, const bool can_hide)
 {
     LUPASS_LOG_FUNCTION();
 
@@ -116,8 +116,13 @@ void App::ToggleWindow()
         if (!application->Window().Visible())
         {
             application->Window().Activate();
+
+            if (GetForegroundWindow() != hwnd)
+            {
+                SetForegroundWindow(hwnd);
+            }
         }
-        else
+        else if (can_hide)
         {
             application->Window().as<MainWindow>()->GetAppWindow().Hide();
         }
@@ -162,7 +167,7 @@ bool App::CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstanc
 
     if (!instance.IsCurrent())
     {
-        SendMessage(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME), WM_SHOWWINDOW, 0, 0);
+        SetForegroundWindow(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME));
 
         try
         {
@@ -190,7 +195,7 @@ void ProcessTrayIconMessage(HWND hwnd, LPARAM lParam)
             static DWORD64 last_click_time;
             DWORD64 current_tick_time = GetTickCount64();
 
-            if (current_tick_time - last_click_time < 1000)
+            if (current_tick_time - last_click_time < 500)
             {
                 SendMessage(hwnd, WM_TOGGLE_WINDOW, 0, 0);
             }
@@ -262,14 +267,18 @@ void ProcessHotKey(HWND hwnd, WPARAM wParam)
     }
 }
 
-LRESULT CALLBACK App::TrayIconCallback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     LUPASS_LOG_FUNCTION();
 
     switch (uMsg)
     {
+        case WM_SETFOCUS:
+            App::ToggleWindow(hwnd, false);
+            break;
+
         case WM_TOGGLE_WINDOW:
-            App::ToggleWindow();
+            App::ToggleWindow(hwnd);
             break;
 
         case WM_TOGGLE_GENERATOR:
@@ -307,7 +316,7 @@ void App::AddTrayIcon()
 
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEX);
-    wc.lpfnWndProc = TrayIconCallback;
+    wc.lpfnWndProc = ApplicationProcedure;
     wc.hInstance = GetModuleHandle(nullptr);
     wc.lpszClassName = TRAYICON_CLASSNAME;
     RegisterClassEx(&wc);

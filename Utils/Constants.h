@@ -21,7 +21,7 @@ constexpr wchar_t APP_SUBSCRIPTION_URI[] = L"ms-windows-store://pdp/?ProductId=9
 constexpr wchar_t APP_NAME[] = L"Lupass";
 constexpr wchar_t ICON_NAME[] = L"Icon.ico";
 constexpr wchar_t APP_VERSION[] = L"v1.0.0";
-constexpr wchar_t TRAYICON_CLASSNAME[] = L"TrayIcon";
+constexpr wchar_t TRAYICON_CLASSNAME[] = L"LUCOISO_PASS_MANAGER_TRAY_ICON_CN";
 constexpr wchar_t PASSWORD_DATA_CSV_HEADER[] = L"name,url,username,password";
 
 constexpr wchar_t KEY_MATERIAL_TEMP_ID[] = L"KEY_MATERIAL_TEMP_ID";
