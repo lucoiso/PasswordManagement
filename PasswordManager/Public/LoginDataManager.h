@@ -29,10 +29,10 @@ namespace winrt::PasswordManager::implementation
         Windows::Foundation::IAsyncAction WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data);
 
         void ReadTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text);
-        void WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
+        Windows::Foundation::IAsyncAction WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
 
         void ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text);
-        void WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
+        Windows::Foundation::IAsyncAction WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
 
 		void ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type);
     };

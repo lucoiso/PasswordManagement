@@ -170,17 +170,17 @@ namespace winrt::PasswordManager::implementation
 
 		for (const auto line : file_text)
 		{
+			if (line == L"Applications" || line == L"Notes")
+			{
+				break;
+			}
+
 			const std::string std_line = to_string(line);
 
 			if (!Helper::StringContains(std_line, ":"))
 			{
 				newData.resetLoginData();
 				continue;
-			}
-
-			if (Helper::StringContains(std_line, "Application") || Helper::StringContains(std_line, "Notes"))
-			{
-				break;
 			}
 
 			const unsigned int separatorIndex = static_cast<unsigned int>(std_line.find(':'));
@@ -209,7 +209,7 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	void LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		LUPASS_LOG_FUNCTION();
 
@@ -221,7 +221,7 @@ namespace winrt::PasswordManager::implementation
 			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::TXT));
 		}
 
-		Windows::Storage::FileIO::WriteLinesAsync(file, lines);
+		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
 	}
 
 	void LoginDataManager::ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
@@ -236,7 +236,7 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	void LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		LUPASS_LOG_FUNCTION();
 
@@ -248,7 +248,7 @@ namespace winrt::PasswordManager::implementation
 			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::CSV));
 		}
 
-		Windows::Storage::FileIO::WriteLinesAsync(file, lines);
+		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
 	}
 	
 	void LoginDataManager::ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type)
