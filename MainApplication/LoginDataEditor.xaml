@@ -19,13 +19,16 @@
 		<TextBox x:Name="TB_Name" PlaceholderText="Name (Optional)" Margin="4" TextChanged="TB_Name_TextChanged" HorizontalAlignment="Stretch"/>
 		<TextBox x:Name="TB_Url" PlaceholderText="Url" Margin="4" TextChanged="TB_Url_TextChanged" HorizontalAlignment="Stretch"/>
 		<TextBox x:Name="TB_Username" PlaceholderText="Username" Margin="4" TextChanged="TB_Username_TextChanged" HorizontalAlignment="Stretch"/>
+		
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
 			<PasswordBox x:Name="TB_Password" PlaceholderText="Password" Margin="4" PasswordChanged="TB_Password_PasswordChanged" Width="420" PasswordRevealMode="Hidden" />
+			
 			<Button x:Name="BP_TogglePassword" Click="BT_TogglePasswordView_Click" Padding="4" ToolTipService.ToolTip="Show/Hide Password" Width="Auto" Margin="4">
-				<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe MDL2 Assets" Glyph="&#xE9A9;" FontSize="18"/>
+				<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe Fluent Icons" Glyph="&#xE9A9;" FontSize="18"/>
 			</Button>
+			
 			<Button x:Name="BP_GeneratePassword" Click="BT_GeneratePassword_Click" Padding="4" ToolTipService.ToolTip="Password Generator" Width="Auto" Margin="4">
-				<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE875;" FontSize="18"/>
+				<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE730;" FontSize="18"/>
 			</Button>
 		</StackPanel>
 	</StackPanel>

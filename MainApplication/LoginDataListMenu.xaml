@@ -11,36 +11,52 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid ColumnDefinitions="160, 160, 160" RowDefinitions ="Auto, Auto, Auto, Auto">
-		<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="0" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
-			<x:String>Name</x:String>
-			<x:String>Url</x:String>
-			<x:String>Username</x:String>
-		</ComboBox>
-		
-		<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" SelectedIndex="0" Grid.Row="0" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
-			<x:String>Ascending</x:String>
-			<x:String>Descending</x:String>
-		</ComboBox>
+	<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Top">
+		<Grid ColumnDefinitions="160, 160" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16">
+			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="0" Margin="0, 0, 0, 8">Sorting</TextBlock>
 
-		<ComboBox x:Name="CB_ExportMode" PlaceholderText="Export Mode" Grid.Row="2" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
-			<ComboBoxItem ToolTipService.ToolTip="Kapersky's Password Manager format">
-				<x:String>.txt</x:String>
-			</ComboBoxItem>
-			
-			<ComboBoxItem ToolTipService.ToolTip="Google and Microsoft format">
-				<x:String>.csv</x:String>
-			</ComboBoxItem>
+			<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+				<x:String>Name</x:String>
+				<x:String>Url</x:String>
+				<x:String>Username</x:String>
+			</ComboBox>
 
-			<!-- <ComboBoxItem ToolTipService.ToolTip="Internal format - DEBUGGING ONLY"> -->
-			<!-- 	<x:String>.bin</x:String> -->
-			<!-- </ComboBoxItem> -->
-		</ComboBox>
-		
-		<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Import</Button>
-		<Button x:Name="BP_Add" Click="BP_Add_Click" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Add</Button>
-		<Button x:Name="BP_Export" Click="BP_Export_Click" Grid.Row="2" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Export</Button>
-		<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Generator</Button>
-		<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Clear</Button>
-	</Grid>
+			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" SelectedIndex="1" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+				<x:String>Ascending</x:String>
+				<x:String>Descending</x:String>
+			</ComboBox>
+
+			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="0" Margin="0, 16, 0, 8">Import</TextBlock>
+
+			<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Import</Button>
+
+			<Button x:Name="BP_Add" Click="BP_Add_Click" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Insert</Button>
+
+			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="0" Margin="0, 16, 0, 8">Export</TextBlock>
+
+			<Button x:Name="BP_Export" Click="BP_Export_Click" Grid.Row="5" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Export</Button>
+
+			<ComboBox x:Name="CB_ExportMode" PlaceholderText="Export Mode" Grid.Row="5" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">
+				<ComboBoxItem ToolTipService.ToolTip="Kapersky's Password Manager format">
+					<x:String>.txt</x:String>
+				</ComboBoxItem>
+
+				<ComboBoxItem ToolTipService.ToolTip="Google and Microsoft format">
+					<x:String>.csv</x:String>
+				</ComboBoxItem>
+
+				<!-- <ComboBoxItem ToolTipService.ToolTip="Internal format - DEBUGGING ONLY"> -->
+				<!-- 	<x:String>.bin</x:String> -->
+				<!-- </ComboBoxItem> -->
+			</ComboBox>
+
+			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="6" Grid.Column="0" Margin="0, 16, 0, 8">Remove</TextBlock>
+
+			<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="7" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Clear</Button>
+
+			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="8" Grid.Column="0" Margin="0, 16, 0, 8">Tools</TextBlock>
+
+			<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="9" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Generator</Button>
+		</Grid>
+	</Border>
 </UserControl>

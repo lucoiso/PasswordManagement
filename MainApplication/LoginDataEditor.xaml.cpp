@@ -86,10 +86,12 @@ namespace winrt::MainApplication::implementation
         Controls::Flyout flyout;        
         auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
 
-        generator_content.OnClose([flyout]()
-        {
-            flyout.Hide();
-        });
+        generator_content.OnClose(
+            [flyout]()
+            {
+                flyout.Hide();
+            }
+        );
 
         flyout.Content(generator_content);
         flyout.ShowAt(BP_GeneratePassword());

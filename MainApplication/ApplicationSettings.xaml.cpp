@@ -23,18 +23,22 @@ namespace winrt::MainApplication::implementation
         Style(Application::Current().Resources().Lookup(box_value(L"DefaultContentDialogStyle")).as<Microsoft::UI::Xaml::Style>());
         DefaultButton(Microsoft::UI::Xaml::Controls::ContentDialogButton::Primary);
 
-        PrimaryButtonClick([this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&)
-        {
-            SaveSettings();
-            Hide();
-            App::RestartApplication();
-		});
+        PrimaryButtonClick(
+            [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&)
+            {
+                SaveSettings();
+                Hide();
+                App::RestartApplication();
+            }
+        );
 
-        SecondaryButtonClick([this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&)
-        {
-            SaveSettings();
-			Hide();
-		});
+        SecondaryButtonClick(
+            [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&)
+            {
+                SaveSettings();
+                Hide();
+            }
+        );
     }
 
     void ApplicationSettings::Panel_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)

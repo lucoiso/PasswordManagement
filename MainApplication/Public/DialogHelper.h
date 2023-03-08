@@ -86,10 +86,12 @@ namespace winrt::Helper
             auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
             auto generator_dialog = Helper::CreateContentDialog(root, L"Password Generator", generator_content, false, false);
 
-            generator_content.OnClose([generator_dialog]()
-            {
-				generator_dialog.Hide();
-			});
+            generator_content.OnClose(
+                [generator_dialog]()
+                {
+                    generator_dialog.Hide();
+                }
+            );
 
             co_await generator_dialog.ShowAsync();
         }

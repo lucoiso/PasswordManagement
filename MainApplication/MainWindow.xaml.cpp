@@ -79,7 +79,12 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        HB_LicenseData().NavigateUri(Windows::Foundation::Uri(to_hstring(APP_SUBSCRIPTION_URI)));
+        HB_LicenseData().Click(
+            [this]([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+            {
+                FO_StoreOptions().ShowAt(HB_LicenseData());
+            }
+        );
 
         if constexpr (ENABLE_DEBBUGGING)
         {
@@ -113,18 +118,28 @@ namespace winrt::MainApplication::implementation
         HB_LicenseData().Content(box_value(license_information));
     }
 
-    void MainWindow::BT_Settings_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction MainWindow::BT_Settings_Clicked([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        Helper::InvokeSettingsDialog(Content().XamlRoot());
+        co_await Helper::InvokeSettingsDialog(Content().XamlRoot());
     }
 
-    Windows::Foundation::IAsyncAction MainWindow::HB_LicenseData_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction MainWindow::OpenStorePage_Invoked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        co_await LaunchUri(HB_LicenseData().NavigateUri());
+        const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
+        const auto tag = element.Tag().as<hstring>();
+
+        if (tag == L"Application")
+        {
+            co_await LaunchUri(to_hstring(APP_PRODUCT_URI));
+        }
+        else if (tag == L"AddOn")
+        {
+            co_await LaunchUri(to_hstring(APP_SUBSCRIPTION_URI));
+        }
     }
     
     HWND MainWindow::GetWindowHandle()

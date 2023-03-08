@@ -7,6 +7,8 @@
 #include "LoginDataListView.xaml.h"
 #include "LoginDataListView.g.cpp"
 
+#include "App.xaml.h"
+
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 
@@ -18,6 +20,31 @@ namespace winrt::MainApplication::implementation
 
         m_data = single_threaded_vector<PasswordManager::LoginData>();
         m_filtered_data = single_threaded_observable_vector<PasswordManager::LoginData>();
+
+        auto main_window = Application::Current().as<winrt::MainApplication::implementation::App>()->Window();
+        UpdateListSize(main_window.Bounds().Width, main_window.Bounds().Height);
+
+        main_window.SizeChanged({ this, &LoginDataListView::WindowSize_Changed });
+    }
+
+    void LoginDataListView::UpdateListSize(const float width, const float height)
+    {
+        LUPASS_LOG_FUNCTION();
+
+        const float list_width = width * 0.6f;
+        const float list_height = height * 0.8f;
+
+        LV_DataList().Width(list_width);
+        LV_DataList().Height(list_height);
+
+        TB_Search().Width(list_width);
+    }
+
+    void LoginDataListView::WindowSize_Changed([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args)
+    {
+        LUPASS_LOG_FUNCTION();
+
+        UpdateListSize(args.Size().Width, args.Size().Height);
     }
 
     bool LoginDataListView::EnableLicenseTools() const

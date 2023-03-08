@@ -59,6 +59,7 @@ namespace winrt::MainApplication::implementation
 
         MainApplication::LoginDataEditor editor;
         editor.XamlRoot(XamlRoot());
+        editor.Title(box_value(L"Creator"));
 
         switch ((co_await editor.ShowAsync()))
         {

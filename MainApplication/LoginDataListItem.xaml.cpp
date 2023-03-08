@@ -73,8 +73,8 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-		const auto button = sender.as<Microsoft::UI::Xaml::Controls::Button>();
-		const auto tag = button.Tag().as<hstring>();
+		const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
+		const auto tag = element.Tag().as<hstring>();
 
 		if (tag == L"Username")
 		{
@@ -98,7 +98,7 @@ namespace winrt::MainApplication::implementation
         Controls::TextBlock info;
         info.Text(L"Copied to clipboard!");
 		flyout.Content(info);
-        flyout.ShowAt(button);
+        flyout.ShowAt(element);
     }
 
     Windows::Foundation::IAsyncAction LoginDataListItem::BT_Edit_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
@@ -112,6 +112,7 @@ namespace winrt::MainApplication::implementation
 
         MainApplication::LoginDataEditor editor;
         editor.XamlRoot(XamlRoot());
+        editor.Title(box_value(L"Editor"));
         editor.Data(Data().Clone().as<PasswordManager::LoginData>());
 
         switch ((co_await editor.ShowAsync()))

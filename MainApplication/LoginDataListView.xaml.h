@@ -12,6 +12,10 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListView();
 
+        void UpdateListSize(const float width, const float height);
+
+        void WindowSize_Changed(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args);
+
         bool EnableLicenseTools() const;
         void EnableLicenseTools(bool value);
 

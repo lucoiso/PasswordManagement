@@ -13,43 +13,43 @@
 
 	<Border BorderThickness="0, 0, 0, 2" BorderBrush="{ThemeResource SystemAccentColorLight2}" Background="Transparent" CornerRadius="8" Margin="4">
 		<RelativePanel Margin="4, 8, 4, 8" HorizontalAlignment="Stretch">
-			<Grid ColumnDefinitions="80, 400" RowDefinitions ="24, 24, 24, 24">
+			<Grid ColumnDefinitions="1*, 8, 9*, 64" RowDefinitions ="24, 24, 24, 24">
 				<TextBlock Grid.Column="0" Grid.Row="0" Text="Name:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Bind Data.Name, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Name, Mode=OneWay}"/>
+				<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="0" Text="{x:Bind Data.Name, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Name, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="1" Text="Url:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Data.Url, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Url, Mode=OneWay}"/>
+				<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="1" Text="{x:Bind Data.Url, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Url, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="2" Text="Username:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="2" Text="{x:Bind Data.Username, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Username, Mode=OneWay}"/>
+				<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="2" Text="{x:Bind Data.Username, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Username, Mode=OneWay}"/>
 
 				<TextBlock Grid.Column="0" Grid.Row="3" Text="Password:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-				<TextBlock Grid.Column="1" Grid.Row="3" Text="{x:Bind Password, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+				<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="3" Text="{x:Bind Password, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
 			</Grid>
 
 			<Grid ColumnDefinitions="32, 32" RowDefinitions ="32, 32, 32" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True">
 				<Button x:Name="BT_TogglePassword" Grid.Column="0" Grid.Row="0" Click="BT_TogglePassword_Clicked" Padding="4" ToolTipService.ToolTip="Show/Hide Password">
-					<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe MDL2 Assets" Glyph="&#xE9A9;" FontSize="16"/>
+					<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe Fluent Icons" Glyph="&#xE9A9;" FontSize="16"/>
 				</Button>
 
 				<Button Tag="Url" Grid.Column="1" Grid.Row="0" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Url to Clipboard">
-					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8C8;" FontSize="16"/>
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8C8;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Username" Grid.Column="0" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Login to Clipboard">
-					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EE;" FontSize="16"/>
+				<Button Tag="Username" Grid.Column="0" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Username to Clipboard">
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7EE;" FontSize="16"/>
 				</Button>
 
 				<Button Tag="Password" Grid.Column="1" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Password to Clipboard">
-					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7EF;" FontSize="16"/>
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7EF;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit Password Data" IsEnabled="{x:Bind EnableLicenseTools}" >
-					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70F;" FontSize="16"/>
+				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit" IsEnabled="{x:Bind EnableLicenseTools}" >
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE70F;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete Password Data" IsEnabled="{x:Bind EnableLicenseTools}" >
-					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74D;" FontSize="16"/>
+				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete" IsEnabled="{x:Bind EnableLicenseTools}" >
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74D;" FontSize="16"/>
 				</Button>
 			</Grid>
 		</RelativePanel>

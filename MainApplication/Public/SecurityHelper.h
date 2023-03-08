@@ -76,6 +76,7 @@ namespace winrt::Helper
         {
             case Windows::Security::Credentials::KeyCredentialStatus::Success:
                 Helper::InsertSettingValue(SECURITY_KEY_SET_ID, true);
+                SetForegroundWindow(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME));
                 co_return true;
 
             default: break;

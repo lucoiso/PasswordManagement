@@ -9,7 +9,6 @@
 
 #include "Constants.h"
 #include <winrt/base.h>
-#include <winrt/Windows.Globalization.DateTimeFormatting.h>
 
 using namespace winrt;
 
@@ -19,10 +18,7 @@ namespace winrt::Helper
 	{
 		if constexpr (ENABLE_DEBBUGGING)
 		{
-			const auto formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortTime();
-			const hstring current_time = formatter.Format(winrt::clock::now());
-
-			const hstring output = L"APPLICATION: " + hstring(APP_NAME) + L"; VERSION: " + hstring(APP_VERSION) + L"; TIME: " + current_time + L"; MESSAGE: " + message + L"\n";
+			const hstring output = L"[APPLICATION DEBUG MESSAGE] " + message + L"\n";
 			OutputDebugStringW(output.c_str());
 		}
 	}
