@@ -78,7 +78,6 @@ Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivat
 
     AddTrayIcon();
     RegisterKeyboardShortcuts();
-    RegisterMouseHook();
     InitializeWindow(app_instance.GetActivatedEventArgs().Kind());
 }
 
@@ -188,6 +187,8 @@ void ProcessTrayIconMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     const auto remove_menu = [&hwnd](HMENU& menu)
     {
+        Application::Current().as<App>()->UnregisterMouseHook();
+
         if (!menu)
         {
             return;
@@ -252,6 +253,8 @@ void ProcessTrayIconMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             POINT cursor_position;
             GetCursorPos(&cursor_position);
+
+            Application::Current().as<App>()->RegisterMouseHook();
 
             const UINT menu_flags = TPM_RETURNCMD | TPM_NONOTIFY | TPM_RIGHTBUTTON | TPM_LEFTBUTTON;
             const BOOL menu_item = TrackPopupMenuEx(menu, menu_flags, cursor_position.x, cursor_position.y, hwnd, nullptr);

@@ -26,6 +26,9 @@ namespace winrt::MainApplication::implementation
         static void RestartApplication();
         static void CloseApplication();
 
+        void RegisterMouseHook();
+        void UnregisterMouseHook();
+
         bool CheckSingleInstance(const Microsoft::Windows::AppLifecycle::AppInstance& instance);
 
     private:
@@ -44,8 +47,5 @@ namespace winrt::MainApplication::implementation
 
         void RegisterKeyboardShortcuts();
         void UnregisterKeyboardShortcuts();
-
-        void RegisterMouseHook();
-        void UnregisterMouseHook();
     };
 }
