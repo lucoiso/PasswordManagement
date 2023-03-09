@@ -312,6 +312,7 @@ void ProcessHotKey(HWND hwnd, WPARAM wParam)
             break;
 
         case ID_GENERATORWINDOW_SHORTCUT:
+            SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
             SendMessageW(hwnd, WM_TOGGLE_GENERATOR, 0, 0);
             break;
 
