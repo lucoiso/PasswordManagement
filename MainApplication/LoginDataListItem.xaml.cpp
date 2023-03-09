@@ -76,11 +76,11 @@ namespace winrt::MainApplication::implementation
 		const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
 		const auto tag = element.Tag().as<hstring>();
 
-		if (tag == L"Username")
+		if (Helper::StringEquals(tag, L"Username"))
 		{
 			CopyContentToClipboard(m_data.Username());
 		}
-		else if (tag == L"Password")
+		else if (Helper::StringEquals(tag, L"Password"))
 		{
             if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
             {
@@ -89,7 +89,7 @@ namespace winrt::MainApplication::implementation
 
 			CopyContentToClipboard(m_data.Password());
 		}
-		else if (tag == L"Url")
+		else if (Helper::StringEquals(tag, L"Url"))
 		{
 			CopyContentToClipboard(m_data.Url());
 		}
@@ -123,10 +123,18 @@ namespace winrt::MainApplication::implementation
                 {
                     co_await Helper::CreateContentDialog(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true).ShowAsync();
                 }
-                else
+                else if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
-                    Data(editor.Data().Clone().as<PasswordManager::LoginData>());
-                    if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                    const auto new_data = editor.Data().Clone().as<PasswordManager::LoginData>();
+                    const auto current_data = Data().Clone().as<PasswordManager::LoginData>();
+
+                    co_await MainPage.InsertLoginData(new_data, false);
+
+                    if (!new_data.Equals(current_data))
+                    {
+                        co_await MainPage.RemoveLoginData(current_data, true);
+                    }
+                    else
                     {
                         co_await MainPage.SaveLocalDataAsync();
                     }
@@ -156,9 +164,11 @@ namespace winrt::MainApplication::implementation
             {
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
-                    co_await MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>());
+                    co_await MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>(), true);
                 }
             }
+
+            default: co_return;
         }
     }
 

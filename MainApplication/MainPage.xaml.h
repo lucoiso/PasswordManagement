@@ -16,17 +16,17 @@ namespace winrt::MainApplication::implementation
 
         Windows::Foundation::IAsyncAction OnNavigatedTo(Microsoft::UI::Xaml::Navigation::NavigationEventArgs const& e);
 
-        Windows::Foundation::IAsyncAction AddLoginData(PasswordManager::LoginData const& data);
-        Windows::Foundation::IAsyncAction RemoveLoginData(PasswordManager::LoginData const& data);
+        Windows::Foundation::IAsyncAction InsertLoginData(PasswordManager::LoginData const& data, const bool save_data);
+        Windows::Foundation::IAsyncAction RemoveLoginData(PasswordManager::LoginData const& data, const bool save_data);
 
-        Windows::Foundation::IAsyncAction RemoveAllLoginData();
+        Windows::Foundation::IAsyncAction RemoveAllLoginData(const bool save_data);
 
         Windows::Foundation::IAsyncAction LoadLocalDataAsync();
         Windows::Foundation::IAsyncAction SaveLocalDataAsync();
 
     protected:
         Windows::Foundation::IAsyncAction PerformDataImportAsync();
-        Windows::Foundation::IAsyncAction PerformDataExportAsync();
+        Windows::Foundation::IAsyncAction PerformDataExportAsync(const PasswordManager::LoginDataExportType export_type);
 
     private:
         bool m_enable_license_tools{ false };

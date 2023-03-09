@@ -72,27 +72,27 @@ namespace winrt::MainApplication::implementation
         const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
         const auto tag = element.Tag().as<hstring>();
 
-        if (tag == L"LowerCase_C")
+        if (Helper::StringEquals(tag, L"LowerCase_C"))
         {
             Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_LOWERCASE, CB_EnableLowerCase().IsChecked());
         }
-        else if (tag == L"UpperCase_C")
+        else if (Helper::StringEquals(tag, L"UpperCase_C"))
         {
             Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_UPPERCASE, CB_EnableUpperCase().IsChecked());
         }
-        else if (tag == L"Numbers_C")
+        else if (Helper::StringEquals(tag, L"Numbers_C"))
         {
             Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_NUMBERS, CB_EnableNumbers().IsChecked());
         }
-        else if (tag == L"CustomCharacters_C")
+        else if (Helper::StringEquals(tag, L"CustomCharacters_C"))
         {
             Helper::InsertSettingValue(SETTING_GENERATOR_ENABLE_CUSTOM_CHARACTERS, CB_EnableCustomCharacters().IsChecked());
         }
-        else if (tag == L"CustomCharacters_T")
+        else if (Helper::StringEquals(tag, L"CustomCharacters_T"))
         {
             Helper::InsertSettingValue(SETTING_GENERATOR_CUSTOM_CHARACTERS, TB_CustomCharacters().Text());
         }
-        else if (tag == L"Password_S")
+        else if (Helper::StringEquals(tag, L"Password_S"))
         {
             Helper::InsertSettingValue(SETTING_GENERATOR_PASSWORD_SIZE, static_cast<int>(SL_PasswordSize().Value()));
         }

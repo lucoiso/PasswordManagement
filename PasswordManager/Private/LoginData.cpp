@@ -18,6 +18,7 @@ namespace winrt::PasswordManager::implementation
         output.Url(m_url);
         output.Username(m_username);
         output.Password(m_password);
+        output.Notes(m_notes);
 
         return output;
     }
@@ -73,21 +74,39 @@ namespace winrt::PasswordManager::implementation
 
         Helper::SetMemberValue(to_hstring(new_pass), m_password);
     }
+
+    hstring LoginData::Notes() const
+    {
+        return m_notes;
+    }
+
+    void LoginData::Notes(hstring const& value)
+    {
+        Helper::SetMemberValue(value, m_notes);
+    }
 #pragma endregion Getters and Setters
 
-    hstring LoginData::GetDataAsString(PasswordManager::LoginDataFileType const& inType) const
+    hstring LoginData::GetExportData(PasswordManager::LoginDataExportType const& inType) const
     {
         switch (inType)
         {
-            case PasswordManager::LoginDataFileType::CSV:
-            case PasswordManager::LoginDataFileType::BIN:
-                return GetDataAsString_CSV_Internal();
+            case PasswordManager::LoginDataExportType::Microsoft:
+                return GetExportData_Microsoft();
 
-            case PasswordManager::LoginDataFileType::TXT:
-                return GetDataAsString_TXT_Internal();
+            case PasswordManager::LoginDataExportType::Google:
+                return GetExportData_Google();
+
+            case PasswordManager::LoginDataExportType::Firefox:
+                return GetExportData_Firefox();
+
+            case PasswordManager::LoginDataExportType::Lupass:
+                return GetExportData_Lupass();
+
+            case PasswordManager::LoginDataExportType::Kapersky:
+                return GetExportData_Kapersky();
 
             default:
-                throw hresult_not_implemented(L"not implemented yet");
+                throw hresult_invalid_argument(L"Invalid data type");
                 break;
         }
     }
@@ -97,21 +116,37 @@ namespace winrt::PasswordManager::implementation
         return Helper::HasEmptyData(m_url, m_username, m_password);
     }
 
-    void LoginData::resetLoginData()
+    void LoginData::ResetLoginData()
     {
         m_name.clear();
         m_url.clear();
         m_username.clear();
         m_password.clear();
+        m_notes.clear();
     }
 
-    hstring LoginData::GetDataAsString_CSV_Internal() const
+    hstring LoginData::GetExportData_Microsoft() const
     {
         return Name() + L"," + L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"";
     }
 
-    hstring LoginData::GetDataAsString_TXT_Internal() const
+    hstring LoginData::GetExportData_Google() const
     {
-        return L"Website name: " + Name() + L"\nWebsite URL: " + Url() + L"\nLogin name: \nLogin: " + Username() + L"\nPassword: " + Password() + L"\nComment: \n\n---\n\n";
+        return Name() + L"," + L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"" + L"," + Notes();
+    }
+
+    hstring LoginData::GetExportData_Firefox() const
+    {
+        return L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"" + L",,,,";
+    }
+
+    hstring LoginData::GetExportData_Lupass() const
+    {
+        return GetExportData_Google();
+    }
+
+    hstring LoginData::GetExportData_Kapersky() const
+    {
+        return L"Website name: " + Name() + L"\nWebsite URL: " + Url() + L"\nLogin name: \nLogin: " + Username() + L"\nPassword: " + Password() + L"\nComment: " + Notes() + L"\n\n---\n\n";
     }
 }

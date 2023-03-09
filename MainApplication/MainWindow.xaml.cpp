@@ -132,11 +132,11 @@ namespace winrt::MainApplication::implementation
         const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
         const auto tag = element.Tag().as<hstring>();
 
-        if (tag == L"Application")
+        if (Helper::StringEquals(tag, L"Application"))
         {
             co_await LaunchUri(to_hstring(APP_PRODUCT_URI));
         }
-        else if (tag == L"AddOn")
+        else if (Helper::StringEquals(tag, L"AddOn"))
         {
             co_await LaunchUri(to_hstring(APP_SUBSCRIPTION_URI));
         }

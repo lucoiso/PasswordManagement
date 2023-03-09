@@ -75,32 +75,53 @@ namespace winrt::Helper
 		return arg.empty() || HasEmptyData(std::forward<Args>(args)...);
 	}
 
+	inline std::string StringToLower(const std::string& string)
+	{
+		std::string output = string;
+		const auto to_lower = [](const char& c) -> char
+		{
+			return static_cast<char>(std::tolower(c));
+		};
+
+		std::transform(output.begin(), output.end(), output.begin(), to_lower);
+
+		return output;
+	}
+
 	inline const bool StringContains(const std::string& string, const std::string& find, bool caseSensitive = false)
 	{
 		if (caseSensitive)
 		{
 			return string.rfind(find) != std::string::npos;
 		}
-		else
-		{
-			std::string stringLower = string;
-			std::string findLower = find;
 
-			const auto to_lower = [](const char& c) -> char
-			{
-				return static_cast<char>(std::tolower(c));
-			};
+		std::string stringLower = StringToLower(string);
+		std::string findLower = StringToLower(find);
 
-			std::transform(stringLower.begin(), stringLower.end(), stringLower.begin(), to_lower);
-			std::transform(findLower.begin(), findLower.end(), findLower.begin(), to_lower);
-
-			return stringLower.rfind(findLower) != std::string::npos;
-		}
+		return stringLower.rfind(findLower) != std::string::npos;
 	}
 
 	inline const bool StringContains(const hstring& string, const hstring& find, bool caseSensitive = false)
 	{
 		return StringContains(to_string(string), to_string(find), caseSensitive);
+	}
+
+	inline const bool StringEquals(const std::string& string1, const std::string& string2, bool caseSensitive = false)
+	{
+		if (caseSensitive)
+		{
+			return string1 == string2;
+		}
+
+		std::string string_lower1 = StringToLower(string1);
+		std::string string_lower2 = StringToLower(string2);
+
+		return string_lower1 == string_lower2;
+	}
+
+	inline const bool StringEquals(const hstring& string1, const hstring& string2, bool caseSensitive = false)
+	{
+		return StringEquals(to_string(string1), to_string(string2), caseSensitive);
 	}
 
 	inline const hstring GetCleanUrlString(const hstring& value)
@@ -137,6 +158,33 @@ namespace winrt::Helper
 		new_url.shrink_to_fit();
 
 		return to_hstring(new_url);
+	}
+
+	inline std::vector<hstring> SplitString(const std::string& line, const char delimiter, const bool ignore_quotes = true)
+	{
+		std::vector<hstring> tokens;
+		std::string token;
+		bool in_quotes = false;
+
+		for (const auto character : line)
+		{
+			if (ignore_quotes && character == '"')
+			{
+				in_quotes = !in_quotes;
+			}
+			else if (character == delimiter && !in_quotes)
+			{
+				tokens.push_back(to_hstring(token));
+				token.clear();
+			}
+			else
+			{
+				token.push_back(character);
+			}
+		}
+
+		tokens.push_back(to_hstring(token));
+		return tokens;
 	}
 }
 #endif

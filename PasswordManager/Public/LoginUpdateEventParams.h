@@ -11,14 +11,14 @@ namespace winrt::PasswordManager::implementation
     struct LoginUpdateEventParams : LoginUpdateEventParamsT<LoginUpdateEventParams>
     {
         LoginUpdateEventParams() = delete;
-        LoginUpdateEventParams(PasswordManager::LoginData const& data, PasswordManager::LoginDataFileType const& type);
+        LoginUpdateEventParams(PasswordManager::LoginData const& data, PasswordManager::LoginDataExportType const& type);
 
         PasswordManager::LoginData Data() const;
-        PasswordManager::LoginDataFileType Type() const;
+        PasswordManager::LoginDataExportType Type() const;
 
     private:
         PasswordManager::LoginData m_data;
-        PasswordManager::LoginDataFileType m_type;
+        PasswordManager::LoginDataExportType m_type;
     };
 }
 namespace winrt::PasswordManager::factory_implementation

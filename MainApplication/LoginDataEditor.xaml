@@ -19,6 +19,7 @@
 		<TextBox x:Name="TB_Name" PlaceholderText="Name (Optional)" Margin="4" TextChanged="TB_Name_TextChanged" HorizontalAlignment="Stretch"/>
 		<TextBox x:Name="TB_Url" PlaceholderText="Url" Margin="4" TextChanged="TB_Url_TextChanged" HorizontalAlignment="Stretch"/>
 		<TextBox x:Name="TB_Username" PlaceholderText="Username" Margin="4" TextChanged="TB_Username_TextChanged" HorizontalAlignment="Stretch"/>
+		<TextBox x:Name="TB_Notes" PlaceholderText="Notes (Optional)" Margin="4" TextChanged="TB_Notes_TextChanged" HorizontalAlignment="Stretch"/>
 		
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
 			<PasswordBox x:Name="TB_Password" PlaceholderText="Password" Margin="4" PasswordChanged="TB_Password_PasswordChanged" Width="420" PasswordRevealMode="Hidden" />

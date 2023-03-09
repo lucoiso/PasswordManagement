@@ -41,19 +41,42 @@ namespace winrt::MainApplication::implementation
         m_import_pressed();
     }
 
-    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Export_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Export_Click(Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!CB_ExportMode().SelectedItem() || !(co_await Helper::RequestUserCredentials(XamlRoot())))
+        const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
+
+        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
         }
 
-        m_export_pressed();
+        const auto tag = element.Tag().as<hstring>();
+
+        if (Helper::StringEquals(tag, L"Lupass"))
+        {
+            m_export_pressed(PasswordManager::LoginDataExportType::Lupass);
+        }
+        else if (Helper::StringEquals(tag, L"Microsoft"))
+        {
+            m_export_pressed(PasswordManager::LoginDataExportType::Microsoft);
+        }
+        else if (Helper::StringEquals(tag, L"Google"))
+        {
+            m_export_pressed(PasswordManager::LoginDataExportType::Google);
+        }
+        else if (Helper::StringEquals(tag, L"Firefox"))
+        {
+            m_export_pressed(PasswordManager::LoginDataExportType::Firefox);
+        }
+        else if (Helper::StringEquals(tag, L"Kapersky"))
+        {
+            m_export_pressed(PasswordManager::LoginDataExportType::Kapersky);
+        }
     }
 
-    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Add_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Insert_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
@@ -73,7 +96,7 @@ namespace winrt::MainApplication::implementation
                 {
                     if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(Parent()); MainPage)
                     {
-                        co_await MainPage.AddLoginData(editor.Data());
+                        co_await MainPage.InsertLoginData(editor.Data(), true);
                     }
                 }
 
@@ -109,7 +132,7 @@ namespace winrt::MainApplication::implementation
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
                     confirm_dialog.Hide();
-                    co_await MainPage.RemoveAllLoginData();
+                    co_await MainPage.RemoveAllLoginData(true);
                 }
             }
         }
@@ -120,34 +143,6 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         m_sorting_changed();
-    }
-
-    PasswordManager::LoginDataFileType LoginDataListMenu::SelectedExportDataType()
-    {
-        LUPASS_LOG_FUNCTION();
-
-        if (!CB_ExportMode().SelectedItem())
-        {
-            Helper::CreateContentDialog(XamlRoot(), L"Error", L"Invalid export mode.", false, true).ShowAsync();
-            return PasswordManager::LoginDataFileType::Undefined;
-        }
-
-        const hstring selectedValue = unbox_value<hstring>(unbox_value<Controls::ComboBoxItem>(CB_ExportMode().SelectedItem()).Content());
-
-        if (selectedValue == L".txt")
-        {
-            return PasswordManager::LoginDataFileType::TXT;
-        }
-        else if (selectedValue == L".csv")
-        {
-            return PasswordManager::LoginDataFileType::CSV;
-        }
-        else if (selectedValue == L".bin")
-        {
-            return PasswordManager::LoginDataFileType::BIN;
-        }
-
-        return PasswordManager::LoginDataFileType::Undefined;
     }
 
     DataSortMode LoginDataListMenu::SelectedSortingMode()
@@ -162,17 +157,21 @@ namespace winrt::MainApplication::implementation
 
         const hstring selectedValue = unbox_value<hstring>(CB_SortingMode().SelectedItem());
 
-        if (selectedValue == L"Name")
+        if (Helper::StringEquals(selectedValue, L"Name"))
         {
             return DataSortMode::Name;
         }
-        else if (selectedValue == L"Url")
+        else if (Helper::StringEquals(selectedValue, L"Url"))
         {
             return DataSortMode::Url;
         }
-        else if (selectedValue == L"Username")
+        else if (Helper::StringEquals(selectedValue, L"Username"))
         {
             return DataSortMode::Username;
+        }
+        else if (Helper::StringEquals(selectedValue, L"Notes"))
+        {
+            return DataSortMode::Notes;
         }
 
         return DataSortMode::Undefined;
@@ -216,7 +215,7 @@ namespace winrt::MainApplication::implementation
         m_import_pressed.remove(token);
     }
 
-    event_token LoginDataListMenu::ExportPressed(MainApplication::SingleVoidDelegate const& handler)
+    event_token LoginDataListMenu::ExportPressed(MainApplication::ExportTypeDelegate const& handler)
     {
         return m_export_pressed.add(handler);
     }

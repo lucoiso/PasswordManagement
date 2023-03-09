@@ -48,6 +48,11 @@ namespace winrt::Helper
         return Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopups(Microsoft::UI::Xaml::Application::Current().as<winrt::MainApplication::implementation::App>()->Window()).Size() > 0;
     }
 
+    inline bool HasAnyPopupOpen(const Microsoft::UI::Xaml::XamlRoot& root)
+    {
+        return Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root).Size() > 0;
+    }
+
     inline void CloseExistingDialogs()
     {
         LUPASS_LOG_FUNCTION();
@@ -76,11 +81,6 @@ namespace winrt::Helper
     {
         LUPASS_LOG_FUNCTION();
 
-        if (Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root).Size() > 0)
-        {
-            co_return;
-        }
-
         try
         {
             auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
@@ -105,7 +105,7 @@ namespace winrt::Helper
     {
         LUPASS_LOG_FUNCTION();
 
-        if (Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root).Size() > 0)
+        if (HasAnyPopupOpen(root))
         {
             co_return;
         }

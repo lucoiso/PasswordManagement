@@ -11,7 +11,7 @@ using namespace winrt;
 
 namespace winrt::PasswordManager::implementation
 {
-    LoginUpdateEventParams::LoginUpdateEventParams(PasswordManager::LoginData const& data, PasswordManager::LoginDataFileType const& type) : m_data(data), m_type(type)
+    LoginUpdateEventParams::LoginUpdateEventParams(PasswordManager::LoginData const& data, PasswordManager::LoginDataExportType const& type) : m_data(data), m_type(type)
     {
     }
 
@@ -22,7 +22,7 @@ namespace winrt::PasswordManager::implementation
         return m_data;
     }
 
-    PasswordManager::LoginDataFileType LoginUpdateEventParams::Type() const
+    PasswordManager::LoginDataExportType LoginUpdateEventParams::Type() const
     {
         LUPASS_LOG_FUNCTION();
 

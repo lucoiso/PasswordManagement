@@ -71,8 +71,7 @@ namespace winrt::MainApplication::implementation
             {
                 const unsigned int index = static_cast<unsigned int>(std::distance(container.begin(), matchingIterator));
                                 
-				if (newData.Name().size() <= 0 
-                    || (Helper::GetCleanUrlString(newData.Name()) == newData.Url() && container.GetAt(index).Name().size() > 0))
+				if (newData.Name().size() <= 0 || (Helper::GetCleanUrlString(newData.Name()) == newData.Url() && container.GetAt(index).Name().size() > 0))
 				{
 					newData.Name(container.GetAt(index).Name());
 				}
@@ -174,6 +173,9 @@ namespace winrt::MainApplication::implementation
                 case DataSortMode::Username:
                     return filter_orientation(lhs.Username(), rhs.Username());
 
+                case DataSortMode::Notes:
+                    return filter_orientation(lhs.Notes(), rhs.Notes());
+
                 default:
                     return false;
             }
@@ -188,7 +190,10 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        return Helper::StringContains(data.Name(), m_current_search) || Helper::StringContains(data.Url(), m_current_search) || Helper::StringContains(data.Username(), m_current_search);
+        return Helper::StringContains(data.Name(), m_current_search) 
+            || Helper::StringContains(data.Url(), m_current_search) 
+            || Helper::StringContains(data.Username(), m_current_search)
+            || Helper::StringContains(data.Notes(), m_current_search);
     }
 
     void MainApplication::implementation::LoginDataListView::UpdateFilteredData()

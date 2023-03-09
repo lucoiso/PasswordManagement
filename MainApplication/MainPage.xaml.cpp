@@ -39,28 +39,40 @@ namespace winrt::MainApplication::implementation
         co_return co_await LoadLocalDataAsync();
     }
 
-    Windows::Foundation::IAsyncAction MainPage::AddLoginData(PasswordManager::LoginData const& data)
+    Windows::Foundation::IAsyncAction MainPage::InsertLoginData(PasswordManager::LoginData const& data, const bool save_data)
     {
         LUPASS_LOG_FUNCTION();
 
         LI_LoginData().InsertDataInList(data);
-        co_await SaveLocalDataAsync();
+
+        if (save_data)
+        {
+            co_await SaveLocalDataAsync();
+        }
     }
 
-    Windows::Foundation::IAsyncAction MainPage::RemoveLoginData(PasswordManager::LoginData const& data)
+    Windows::Foundation::IAsyncAction MainPage::RemoveLoginData(PasswordManager::LoginData const& data, const bool save_data)
     {
         LUPASS_LOG_FUNCTION();
 
         LI_LoginData().RemoveDataFromList(data);
-        co_await SaveLocalDataAsync();
+
+        if (save_data)
+        {
+            co_await SaveLocalDataAsync();
+        }
     }
 
-    Windows::Foundation::IAsyncAction MainPage::RemoveAllLoginData()
+    Windows::Foundation::IAsyncAction MainPage::RemoveAllLoginData(const bool save_data)
     {
         LUPASS_LOG_FUNCTION();
 
         LI_LoginData().RemoveAllDataFromList();
-		co_await SaveLocalDataAsync();
+
+        if (save_data)
+        {
+            co_await SaveLocalDataAsync();
+        }
     }
 
     Windows::Foundation::IAsyncAction MainPage::PerformDataImportAsync()
@@ -71,8 +83,11 @@ namespace winrt::MainApplication::implementation
         if (data_files.Size() > 0)
         {
             const auto loading_dialog = Helper::CreateLoadingDialog(XamlRoot());
-            loading_dialog.ShowAsync();
+
+            try
             {
+                loading_dialog.ShowAsync();
+
                 for (const auto& iterator : data_files)
                 {
                     if (!iterator)
@@ -80,26 +95,58 @@ namespace winrt::MainApplication::implementation
                         continue;
                     }
 
-                    co_await m_manager.ImportDataAsync(iterator);
+                    PasswordManager::LoginDataExportType export_type = PasswordManager::LoginDataExportType::Undefined;
+                    const auto file_type = iterator.FileType();
+
+                    if (file_type == L".bin")
+                    {
+                        export_type = PasswordManager::LoginDataExportType::Lupass;
+                    }
+                    else if (file_type == L".csv")
+                    {
+                        export_type = PasswordManager::LoginDataExportType::GenericCSV;
+                    }
+                    else if (file_type == L".txt")
+                    {
+                        export_type = PasswordManager::LoginDataExportType::Kapersky;
+                    }
+
+                    co_await m_manager.ImportDataAsync(iterator, export_type);
                 }
 
                 co_await SaveLocalDataAsync();
             }
+            catch (const hresult_error& e)
+            {
+                loading_dialog.Hide();
+				Helper::PrintDebugLine(e.message());
+                Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
+			}
+
             loading_dialog.Hide();
         }
     }
 
-    Windows::Foundation::IAsyncAction MainPage::PerformDataExportAsync()
+    Windows::Foundation::IAsyncAction MainPage::PerformDataExportAsync(const PasswordManager::LoginDataExportType export_type)
     {
         LUPASS_LOG_FUNCTION();
 
-        if (const auto exported_file = co_await Helper::SavePasswordDataFileAsync(MO_DataOptions().SelectedExportDataType()))
+        if (const auto exported_file = co_await Helper::SavePasswordDataFileAsync(export_type))
         {
             const auto loading_dialog = Helper::CreateLoadingDialog(XamlRoot());
-            loading_dialog.ShowAsync();
+
+            try
             {
-                co_await m_manager.ExportDataAsync(exported_file, LI_LoginData().Data().GetView());
+                const auto registered_data = LI_LoginData().Data().GetView();
+                co_await m_manager.ExportDataAsync(exported_file, registered_data, export_type);
             }
+            catch (const hresult_error& e)
+            {
+                loading_dialog.Hide();
+                Helper::PrintDebugLine(e.message());
+                Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
+            }
+
             loading_dialog.Hide();
         }
     }
@@ -110,11 +157,12 @@ namespace winrt::MainApplication::implementation
 
         try
         {
-            co_await m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync());
+            co_await m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync(), PasswordManager::LoginDataExportType::Lupass);
         }
         catch (const hresult_error& e)
         {
             Helper::PrintDebugLine(e.message());
+            Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
         }
     }
 
@@ -124,11 +172,13 @@ namespace winrt::MainApplication::implementation
 
         try
         {
-            co_await m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), LI_LoginData().Data().GetView());
+            const auto registered_data = LI_LoginData().Data().GetView();
+            co_await m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), registered_data, PasswordManager::LoginDataExportType::Lupass);
         }
         catch (const hresult_error& e)
         {
             Helper::PrintDebugLine(e.message());
+            Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
         }
     }
 
@@ -162,11 +212,11 @@ namespace winrt::MainApplication::implementation
 
 		m_data_import_token = MO_DataOptions().ImportPressed(import_data_lambda);
 
-        const auto export_data_lambda = [this]()
+        const auto export_data_lambda = [this](const PasswordManager::LoginDataExportType export_type)
         {
             try
             {
-                PerformDataExportAsync();
+                PerformDataExportAsync(export_type);
             }
             catch (const hresult_error& e)
             {

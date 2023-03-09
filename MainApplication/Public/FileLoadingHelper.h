@@ -30,7 +30,7 @@ namespace winrt::Helper
         return file_picker.PickMultipleFilesAsync();
     }
 
-    inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode)
+    inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> SavePasswordDataFileAsync(const PasswordManager::LoginDataExportType& export_mode)
     {
         LUPASS_LOG_FUNCTION();
 
@@ -41,21 +41,23 @@ namespace winrt::Helper
 
         switch (export_mode)
         {
-        case PasswordManager::LoginDataFileType::CSV:
-            file_types.Append(L".csv");
-            break;
+            case PasswordManager::LoginDataExportType::Lupass:
+                file_types.Append(L".bin");
+                break;
 
-        case PasswordManager::LoginDataFileType::TXT:
-            file_types.Append(L".txt");
-            break;
+            case PasswordManager::LoginDataExportType::Microsoft:
+            case PasswordManager::LoginDataExportType::Google:
+            case PasswordManager::LoginDataExportType::Firefox:
+                file_types.Append(L".csv");
+                break;
 
-        case PasswordManager::LoginDataFileType::BIN:
-            file_types.Append(L".bin");
-            break;
+            case PasswordManager::LoginDataExportType::Kapersky:
+                file_types.Append(L".txt");
+                break;
 
-        default:
-            throw hresult_not_implemented(L"not implemented yet");
-            break;
+            default:
+                throw hresult_invalid_argument(L"Invalid data type");
+                break;
         }
 
         file_picker.FileTypeChoices().Insert(L"Password Data", file_types);

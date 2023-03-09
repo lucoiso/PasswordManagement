@@ -4,12 +4,15 @@
 
 namespace PasswordManager
 { 
-	enum LoginDataFileType
+	enum LoginDataExportType
 	{
 		Undefined,
-		CSV,
-		TXT,
-		BIN,
+		Microsoft,
+		Google,
+		Firefox,
+		Kapersky,
+		Lupass,
+		GenericCSV,
 		MAX
 	};
 
@@ -28,20 +31,21 @@ namespace PasswordManager
 		String Url;
 		String Username;
 		String Password;
+		String Notes;
 
-		String GetDataAsString(LoginDataFileType type);
+		String GetExportData(LoginDataExportType type);
 
 		Boolean HasEmptyData();
-		void resetLoginData();
+		void ResetLoginData();
 	}
 
 	[default_interface]
 	runtimeclass LoginUpdateEventParams
 	{
-		LoginUpdateEventParams(LoginData data, LoginDataFileType type);
+		LoginUpdateEventParams(LoginData data, LoginDataExportType type);
 
 		LoginData Data{ get; };
-		LoginDataFileType Type{ get; };
+		LoginDataExportType Type{ get; };
 	};
 
 	[default_interface]
@@ -49,8 +53,8 @@ namespace PasswordManager
 	{
 		LoginDataManager();
 
-		Windows.Foundation.IAsyncAction ImportDataAsync(Windows.Storage.StorageFile file);
-		Windows.Foundation.IAsyncAction ExportDataAsync(Windows.Storage.StorageFile file, Windows.Foundation.Collections.IVectorView<LoginData> data);
+		Windows.Foundation.IAsyncAction ImportDataAsync(Windows.Storage.StorageFile file, LoginDataExportType export_type);
+		Windows.Foundation.IAsyncAction ExportDataAsync(Windows.Storage.StorageFile file, Windows.Foundation.Collections.IVectorView<LoginData> data, LoginDataExportType type);
 
 		event Windows.Foundation.EventHandler<LoginUpdateEventParams> LoginDataUpdated;
 	}

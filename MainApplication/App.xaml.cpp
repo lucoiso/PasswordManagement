@@ -58,8 +58,6 @@ App::App()
 
 App::~App()
 {
-    Helper::ClearSecurityIds();
-
     RemoveTrayIcon();
     UnregisterKeyboardShortcuts();
     UnregisterMouseHook();
@@ -75,6 +73,8 @@ Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivat
     {
         co_return;
     }
+
+    Helper::ClearSecurityIds();
 
     co_await Helper::InitializeSettings();
 

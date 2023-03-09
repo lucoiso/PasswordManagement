@@ -31,23 +31,30 @@ namespace winrt::PasswordManager::implementation
 
         hstring Password() const;
         void Password(hstring const& value);
+
+        hstring Notes() const;
+        void Notes(hstring const& value);
 #pragma endregion Getters and Setters
 
-        hstring GetDataAsString(PasswordManager::LoginDataFileType const& type) const;
+        hstring GetExportData(PasswordManager::LoginDataExportType const& type) const;
 
         bool HasEmptyData() const;
 
-        void resetLoginData();
+        void ResetLoginData();
 
     protected:
-        hstring GetDataAsString_CSV_Internal() const;
-        hstring GetDataAsString_TXT_Internal() const;
+        hstring GetExportData_Microsoft() const;
+        hstring GetExportData_Google() const;
+        hstring GetExportData_Firefox() const;
+        hstring GetExportData_Lupass() const;
+        hstring GetExportData_Kapersky() const;
 
     private:
         hstring m_name;
         hstring m_url;
         hstring m_username;
         hstring m_password;
+        hstring m_notes;
     };
 }
 namespace winrt::PasswordManager::factory_implementation

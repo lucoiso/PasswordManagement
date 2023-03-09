@@ -18,7 +18,7 @@ using namespace winrt;
 
 namespace winrt::PasswordManager::implementation
 {
-	Windows::Foundation::IAsyncAction LoginDataManager::ImportDataAsync(const Windows::Storage::StorageFile& file)
+	Windows::Foundation::IAsyncAction LoginDataManager::ImportDataAsync(const Windows::Storage::StorageFile& file, const PasswordManager::LoginDataExportType export_type)
 	{
 		LUPASS_LOG_FUNCTION();
 
@@ -26,34 +26,63 @@ namespace winrt::PasswordManager::implementation
 		{
 			throw hresult_invalid_argument(L"file is unavailable");
 		}
-
-		const hstring fileType = file.FileType();
 		
-		if (fileType == L".bin")
+		if (export_type == PasswordManager::LoginDataExportType::Lupass)
 		{
-			ReadBinaryData(file);
+			co_await ReadData_Lupass(file);
 			co_return;
 		}
 
 		const auto fileContent = (co_await Windows::Storage::FileIO::ReadLinesAsync(file)).GetView();
 
-		if (fileType == L".txt")
+		if (fileContent.Size() == 0)
 		{
-			ReadTextData(fileContent);
-		}
-		else if (fileType == L".csv")
-		{
-			ReadCsvData(fileContent);
-		}
-		else
-		{
-			throw hresult_not_implemented(L"not implemented yet");
+			co_return;
 		}
 
-		co_return;
+		switch (export_type)
+		{
+			case PasswordManager::LoginDataExportType::Microsoft:
+			case PasswordManager::LoginDataExportType::Google:
+			case PasswordManager::LoginDataExportType::Firefox:
+				ReadData_GenericCSV(fileContent, export_type);
+				break;
+
+			case PasswordManager::LoginDataExportType::Kapersky:
+				ReadData_Kapersky(fileContent);
+				break;
+
+			case PasswordManager::LoginDataExportType::GenericCSV:
+			{
+				const hstring header = fileContent.GetAt(0);
+
+				if (header == PASSWORD_DATA_MICROSOFT_HEADER)
+				{
+					ReadData_GenericCSV(fileContent, PasswordManager::LoginDataExportType::Microsoft);
+				}
+				else if (header == PASSWORD_DATA_GOOGLE_HEADER)
+				{
+					ReadData_GenericCSV(fileContent, PasswordManager::LoginDataExportType::Google);
+				}
+				else if (header == PASSWORD_DATA_FIREFOX_HEADER)
+				{
+					ReadData_GenericCSV(fileContent, PasswordManager::LoginDataExportType::Firefox);
+				}
+				else
+				{
+					throw hresult_invalid_argument(L"Invalid data type");
+				}
+
+				break;
+			}
+
+			default:
+				throw hresult_invalid_argument(L"Invalid data type");
+				break;
+		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::ExportDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
+	Windows::Foundation::IAsyncAction LoginDataManager::ExportDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data, const PasswordManager::LoginDataExportType export_type)
 	{
 		LUPASS_LOG_FUNCTION();
 
@@ -62,26 +91,26 @@ namespace winrt::PasswordManager::implementation
 			throw hresult_invalid_argument(L"file is unavailable");
 		}
 
-		const hstring fileType = file.FileType();
-		
-		if (fileType == L".bin")
+		switch (export_type)
 		{
-			WriteBinaryDataAsync(file, data);
-		}
-		else if (fileType == L".txt")
-		{
-			WriteTextDataAsync(file, data);
-		}
-		else if (fileType == L".csv")
-		{
-			WriteCsvDataAsync(file, data);
-		}
-		else
-		{
-			throw hresult_not_implemented(L"not implemented yet");
-		}
+			case PasswordManager::LoginDataExportType::Lupass:
+				co_await WriteData_Lupass(file, data);
+				break;
 
-		co_return;
+			case PasswordManager::LoginDataExportType::Microsoft:
+			case PasswordManager::LoginDataExportType::Google:
+			case PasswordManager::LoginDataExportType::Firefox:
+				co_await WriteData_GenericCSV(file, data, export_type);
+				break;
+
+			case PasswordManager::LoginDataExportType::Kapersky:
+				co_await WriteData_Kapersky(file, data);
+				break;
+
+			default:
+				throw hresult_invalid_argument(L"Invalid data type");
+				break;
+		}
 	}
 
 	event_token LoginDataManager::LoginDataUpdated(Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams> const& handler)
@@ -98,18 +127,24 @@ namespace winrt::PasswordManager::implementation
 		m_data_updated.remove(token);
 	}
 
-	void LoginDataManager::PushData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataFileType& type)
+	void LoginDataManager::PushData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataExportType& type)
 	{
 		LUPASS_LOG_FUNCTION();
 
 		m_data_updated(*this, make<PasswordManager::implementation::LoginUpdateEventParams>(data, type));
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::ReadBinaryData(const Windows::Storage::StorageFile& file)
+	Windows::Foundation::IAsyncAction LoginDataManager::ReadData_Lupass(const Windows::Storage::StorageFile& file)
 	{
 		LUPASS_LOG_FUNCTION();
 
 		const auto data_buffer = co_await Windows::Storage::FileIO::ReadBufferAsync(file);
+
+		if (data_buffer.Length() == 0)
+		{
+			co_return;
+		}
+
 		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
 		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
 		const auto keyMaterial_64Value = localSettings.Values().Lookup(KEY_MATERIAL_TEMP_ID).as<hstring>();
@@ -127,7 +162,7 @@ namespace winrt::PasswordManager::implementation
 		{
 			if (*iterator == '\n')
 			{
-				ProcessCsvLine(to_hstring(line), newData, PasswordManager::LoginDataFileType::BIN);
+				ProcessCsvLine(to_hstring(line), newData, PasswordManager::LoginDataExportType::Lupass);
 				line.clear();
 			}
 			else
@@ -137,14 +172,14 @@ namespace winrt::PasswordManager::implementation
 		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteBinaryDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteData_Lupass(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data)
 	{
 		LUPASS_LOG_FUNCTION();
 
-		hstring fileContent = to_hstring(PASSWORD_DATA_CSV_HEADER);
+		hstring fileContent = to_hstring(PASSWORD_DATA_LUPASS_HEADER);
 		for (const auto& iterator : data)
 		{
-			fileContent = fileContent + L"\n" + iterator.GetDataAsString(PasswordManager::LoginDataFileType::BIN);
+			fileContent = fileContent + L"\n" + iterator.GetExportData(PasswordManager::LoginDataExportType::Lupass);
 		}
 
 		fileContent = fileContent + L"\n";
@@ -162,7 +197,7 @@ namespace winrt::PasswordManager::implementation
 		localSettings.Values().Insert(KEY_MATERIAL_TEMP_ID, box_value(exportedKeyMaterial));
 	}
 
-	void LoginDataManager::ReadTextData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
+	void LoginDataManager::ReadData_GenericCSV(const Windows::Foundation::Collections::IVectorView<hstring>& file_text, const PasswordManager::LoginDataExportType& data_type)
 	{
 		LUPASS_LOG_FUNCTION();
 
@@ -170,7 +205,123 @@ namespace winrt::PasswordManager::implementation
 
 		for (const auto line : file_text)
 		{
-			if (line == L"Applications" || line == L"Notes")
+			ProcessCsvLine(line, newData, data_type);
+		}
+	}
+
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteData_GenericCSV(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data, const PasswordManager::LoginDataExportType& data_type) const
+	{
+		LUPASS_LOG_FUNCTION();
+
+		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
+
+		switch (data_type)
+		{
+			case PasswordManager::LoginDataExportType::Microsoft:
+				lines.Append(to_hstring(PASSWORD_DATA_MICROSOFT_HEADER));
+				break;
+
+			case PasswordManager::LoginDataExportType::Google:
+				lines.Append(to_hstring(PASSWORD_DATA_GOOGLE_HEADER));
+				break;
+
+			case PasswordManager::LoginDataExportType::Firefox:
+				lines.Append(to_hstring(PASSWORD_DATA_FIREFOX_HEADER));
+				break;
+
+			default:
+				throw hresult_invalid_argument(L"Invalid data type");
+				break;
+		}
+
+		for (const PasswordManager::LoginData& iterator : data)
+		{
+			lines.Append(iterator.GetExportData(data_type));
+		}
+
+		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
+	}
+
+	void LoginDataManager::ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataExportType& data_type)
+	{
+		LUPASS_LOG_FUNCTION();
+
+		const std::string std_line = to_string(line);
+
+		std::string header;
+		switch (data_type)
+		{
+		case PasswordManager::LoginDataExportType::Lupass:
+			header = to_string(PASSWORD_DATA_LUPASS_HEADER);
+			break;
+
+		case PasswordManager::LoginDataExportType::Microsoft:
+			header = to_string(PASSWORD_DATA_MICROSOFT_HEADER);
+			break;
+
+		case PasswordManager::LoginDataExportType::Google:
+			header = to_string(PASSWORD_DATA_GOOGLE_HEADER);
+			break;
+
+		case PasswordManager::LoginDataExportType::Firefox:
+			header = to_string(PASSWORD_DATA_FIREFOX_HEADER);
+			break;
+
+		default:
+			throw hresult_invalid_argument(L"Invalid data type");
+			break;
+		}
+
+		if (header.empty() || Helper::StringContains(std_line, header))
+		{
+			return;
+		}
+
+		const std::vector<hstring> headers = Helper::SplitString(header, ',', false);
+		const std::vector<hstring> split_line = Helper::SplitString(std_line, ',', true);
+
+		for (auto iterator = split_line.begin(); iterator != split_line.end(); ++iterator)
+		{
+			const unsigned current_index = static_cast<unsigned int>(std::distance(split_line.begin(), iterator));
+
+			if (Helper::StringEquals(headers.at(current_index), L"name"))
+			{
+				current_data.Name(*iterator);
+			}
+			else if (Helper::StringEquals(headers.at(current_index), L"url"))
+			{
+				current_data.Url(*iterator);
+			}
+			else if (Helper::StringEquals(headers.at(current_index), L"username"))
+			{
+				current_data.Username(*iterator);
+			}
+			else if (Helper::StringEquals(headers.at(current_index), L"password"))
+			{
+				current_data.Password(*iterator);
+			}
+			else if (Helper::StringEquals(headers.at(current_index), L"notes"))
+			{
+				current_data.Notes(*iterator);
+			}
+
+			if (current_index == split_line.size() - 1)
+			{
+				PushData(current_data, data_type);
+				current_data.ResetLoginData();
+			}
+		}
+	}
+
+	void LoginDataManager::ReadData_Kapersky(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
+	{
+		LUPASS_LOG_FUNCTION();
+
+		PasswordManager::LoginData new_data = make<PasswordManager::implementation::LoginData>();
+
+		for (const auto line : file_text)
+		{
+			if (Helper::StringEquals(line, L"Applications") || Helper::StringEquals(line, L"Notes"))
 			{
 				break;
 			}
@@ -179,37 +330,41 @@ namespace winrt::PasswordManager::implementation
 
 			if (!Helper::StringContains(std_line, ":"))
 			{
-				newData.resetLoginData();
+				new_data.ResetLoginData();
 				continue;
 			}
 
 			const unsigned int separatorIndex = static_cast<unsigned int>(std_line.find(':'));
 			const std::string key = std_line.substr(0, separatorIndex);
-			const std::string value = std_line.substr(separatorIndex + 2u, std_line.size() - separatorIndex - 1);
+			const std::string value = std_line.substr(static_cast<std::size_t>(separatorIndex + 2u), static_cast<std::size_t>(std_line.size() - separatorIndex - 1));
 
-			if (key == "Website name")
+			if (Helper::StringEquals(key, "Website name"))
 			{
-				newData.Name(to_hstring(value));
+				new_data.Name(to_hstring(value));
 			}
-			else if (key == "Website URL")
+			else if (Helper::StringEquals(key, "Website URL"))
 			{
-				newData.Url(to_hstring(value));
+				new_data.Url(to_hstring(value));
 			}
-			else if (key == "Login")
+			else if (Helper::StringEquals(key, "Login"))
 			{
-				newData.Username(to_hstring(value));
+				new_data.Username(to_hstring(value));
 			}
-			else if (key == "Password")
+			else if (Helper::StringEquals(key, "Password"))
 			{
-				newData.Password(to_hstring(value));
+				new_data.Password(to_hstring(value));
+			}
+			else if (Helper::StringEquals(key, "Comment"))
+			{
+				new_data.Notes(to_hstring(value));
 
-				PushData(newData, PasswordManager::LoginDataFileType::TXT);
-				newData.resetLoginData();
+				PushData(new_data, PasswordManager::LoginDataExportType::Kapersky);
+				new_data.ResetLoginData();
 			}
 		}
 	}
 
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteTextDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
+	Windows::Foundation::IAsyncAction LoginDataManager::WriteData_Kapersky(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
 	{
 		LUPASS_LOG_FUNCTION();
 
@@ -218,81 +373,9 @@ namespace winrt::PasswordManager::implementation
 
 		for (const PasswordManager::LoginData& iterator : data)
 		{
-			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::TXT));
+			lines.Append(iterator.GetExportData(PasswordManager::LoginDataExportType::Kapersky));
 		}
 
 		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
-	}
-
-	void LoginDataManager::ReadCsvData(const Windows::Foundation::Collections::IVectorView<hstring>& file_text)
-	{
-		LUPASS_LOG_FUNCTION();
-
-		PasswordManager::LoginData newData = make<PasswordManager::implementation::LoginData>();
-
-		for (const auto line : file_text)
-		{
-			ProcessCsvLine(line, newData, PasswordManager::LoginDataFileType::CSV);
-		}
-	}
-
-	Windows::Foundation::IAsyncAction LoginDataManager::WriteCsvDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const
-	{
-		LUPASS_LOG_FUNCTION();
-
-		Windows::Foundation::Collections::IVector<hstring> lines = single_threaded_vector<hstring>();
-		lines.Append(to_hstring(PASSWORD_DATA_CSV_HEADER));
-
-		for (const PasswordManager::LoginData& iterator : data)
-		{
-			lines.Append(iterator.GetDataAsString(PasswordManager::LoginDataFileType::CSV));
-		}
-
-		co_await Windows::Storage::FileIO::WriteLinesAsync(file, lines);
-	}
-	
-	void LoginDataManager::ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataFileType& data_type)
-	{
-		LUPASS_LOG_FUNCTION();
-
-		const std::string std_line = to_string(line);
-
-		if (Helper::StringContains(std_line, to_string(PASSWORD_DATA_CSV_HEADER)))
-		{
-			return;
-		}
-
-		constexpr unsigned int num_columns = 4u;
-		unsigned int currentSeparatorIndex = 0u;
-
-		for (unsigned int iterator = 0u; iterator < num_columns; ++iterator)
-		{
-			const unsigned int nextSeparatorIndex = static_cast<unsigned int>(iterator == num_columns - 1 ? std_line.size() : std_line.find(',', currentSeparatorIndex));
-
-			const hstring converted_value = to_hstring(std_line.substr(currentSeparatorIndex, nextSeparatorIndex - currentSeparatorIndex));
-			switch (iterator)
-			{
-				case 0u:
-					current_data.Name(converted_value);
-					break;
-
-				case 1u:
-					current_data.Url(converted_value);
-					break;
-
-				case 2u:
-					current_data.Username(converted_value);
-					break;
-
-				case 3u:
-					current_data.Password(converted_value);
-					PushData(current_data, data_type);
-					current_data.resetLoginData();
-					currentSeparatorIndex = 0u;
-					continue;
-			}
-
-			currentSeparatorIndex = nextSeparatorIndex + 1u;
-		}
 	}
 }

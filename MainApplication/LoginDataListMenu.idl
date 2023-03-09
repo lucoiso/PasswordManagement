@@ -12,13 +12,12 @@ namespace MainApplication
         LoginDataListMenu();
 
         Boolean EnableLicenseTools;
-
-        PasswordManager.LoginDataFileType SelectedExportDataType{ get; };        
+   
         DataSortMode SelectedSortingMode{ get; };        
         DataSortOrientation SelectedSortingOrientation{ get; };
 
         event MainApplication.SingleVoidDelegate ImportPressed;
-        event MainApplication.SingleVoidDelegate ExportPressed;
+        event MainApplication.ExportTypeDelegate ExportPressed;
 
         event MainApplication.SingleVoidDelegate SortingChanged;
     }

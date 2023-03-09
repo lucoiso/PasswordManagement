@@ -10,6 +10,7 @@ namespace MainApplication
         Name,
         Url,
         Username,
+        Notes,
         MAX
     };
 
@@ -22,4 +23,5 @@ namespace MainApplication
     };
     
     delegate void SingleVoidDelegate();
+    delegate void ExportTypeDelegate(PasswordManager.LoginDataExportType export_type);
 }

@@ -34,6 +34,7 @@ namespace winrt::MainApplication::implementation
         TB_Name().Text(m_data.Name());
         TB_Url().Text(m_data.Url());
         TB_Username().Text(m_data.Username());
+        TB_Notes().Text(m_data.Notes());
         TB_Password().Password(m_data.Password());
     }
 
@@ -56,6 +57,13 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         m_data.Username(TB_Username().Text());
+    }
+
+    void LoginDataEditor::TB_Notes_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
+    {
+        LUPASS_LOG_FUNCTION();
+
+        m_data.Notes(TB_Notes().Text());
     }
 
     void LoginDataEditor::TB_Password_PasswordChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)

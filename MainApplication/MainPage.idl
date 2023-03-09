@@ -11,9 +11,9 @@ namespace MainApplication
 
         Boolean EnableLicenseTools{ get; };
 
-        Windows.Foundation.IAsyncAction AddLoginData(PasswordManager.LoginData data);
-        Windows.Foundation.IAsyncAction RemoveLoginData(PasswordManager.LoginData data);
-        Windows.Foundation.IAsyncAction RemoveAllLoginData();
+        Windows.Foundation.IAsyncAction InsertLoginData(PasswordManager.LoginData data, Boolean save_data);
+        Windows.Foundation.IAsyncAction RemoveLoginData(PasswordManager.LoginData data, Boolean save_data);
+        Windows.Foundation.IAsyncAction RemoveAllLoginData(Boolean save_data);
 
         Windows.Foundation.IAsyncAction LoadLocalDataAsync();
         Windows.Foundation.IAsyncAction SaveLocalDataAsync();
