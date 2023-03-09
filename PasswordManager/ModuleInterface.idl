@@ -33,6 +33,11 @@ namespace PasswordManager
 		String Password;
 		String Notes;
 
+		UInt64 Created;
+		UInt64 Changed;
+		UInt64 Used;
+
+		void InitializeInvalidTimes();
 		String GetExportData(LoginDataExportType type);
 
 		Boolean HasEmptyData();

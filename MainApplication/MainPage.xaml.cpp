@@ -6,6 +6,8 @@
 #include "MainPage.xaml.h"
 #include "MainPage.g.cpp"
 
+#include "App.xaml.h"
+
 #include "FileLoadingHelper.h"
 #include "DialogHelper.h"
 
@@ -17,6 +19,14 @@ namespace winrt::MainApplication::implementation
     MainPage::MainPage()
     {
         InitializeComponent();
+
+        auto app_window = Application::Current().as<winrt::MainApplication::implementation::App>()->Window();
+        app_window.Closed(
+            [this, app_window]([[maybe_unused]] const auto& sender, [[maybe_unused]] const auto& args) -> Windows::Foundation::IAsyncAction
+            {
+                co_await SaveLocalDataAsync();                
+            }
+        );
     }
 
     bool MainPage::EnableLicenseTools() const

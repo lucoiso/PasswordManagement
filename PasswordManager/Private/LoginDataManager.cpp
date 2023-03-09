@@ -277,7 +277,7 @@ namespace winrt::PasswordManager::implementation
 			return;
 		}
 
-		const std::vector<hstring> headers = Helper::SplitString(header, ',', false);
+		const std::vector<hstring> headers = Helper::SplitString(header, ',', true);
 		const std::vector<hstring> split_line = Helper::SplitString(std_line, ',', true);
 
 		for (auto iterator = split_line.begin(); iterator != split_line.end(); ++iterator)
@@ -303,6 +303,18 @@ namespace winrt::PasswordManager::implementation
 			else if (Helper::StringEquals(headers.at(current_index), L"notes"))
 			{
 				current_data.Notes(*iterator);
+			}
+			else if (Helper::StringContains(headers.at(current_index), L"created"))
+			{
+				current_data.Created(std::stoull(to_string(*iterator)));
+			}
+			else if (Helper::StringContains(headers.at(current_index), L"changed"))
+			{
+				current_data.Changed(std::stoull(to_string(*iterator)));
+			}
+			else if (Helper::StringContains(headers.at(current_index), L"used"))
+			{
+				current_data.Used(std::stoull(to_string(*iterator)));
 			}
 
 			if (current_index == split_line.size() - 1)

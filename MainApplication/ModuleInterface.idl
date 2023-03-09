@@ -11,6 +11,9 @@ namespace MainApplication
         Url,
         Username,
         Notes,
+        Created,
+        Used,
+        Changed,
         MAX
     };
 

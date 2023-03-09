@@ -19,6 +19,9 @@ namespace winrt::PasswordManager::implementation
         output.Username(m_username);
         output.Password(m_password);
         output.Notes(m_notes);
+        output.Created(m_created);
+        output.Used(m_changed);
+        output.Changed(m_used);
 
         return output;
     }
@@ -84,7 +87,53 @@ namespace winrt::PasswordManager::implementation
     {
         Helper::SetMemberValue(value, m_notes);
     }
+
+    uint64_t LoginData::Created() const
+    {
+        return m_created;
+    }
+
+    void LoginData::Created(uint64_t const& value)
+    {
+        Helper::SetMemberValue(value, m_created);
+    }
+
+    uint64_t LoginData::Changed() const
+    {
+        return m_changed;
+    }
+
+    void LoginData::Changed(uint64_t const& value)
+    {
+        Helper::SetMemberValue(value, m_changed);
+    }
+
+    uint64_t LoginData::Used() const
+    {
+        return m_used;
+    }
+
+    void LoginData::Used(uint64_t const& value)
+    {
+        Helper::SetMemberValue(value, m_used);
+    }
 #pragma endregion Getters and Setters
+
+    void LoginData::InitializeInvalidTimes()
+    {
+        const auto current_time = winrt::clock::now().time_since_epoch().count();
+        const auto initialization_lambda = [this, current_time](std::uint64_t& value)
+        {
+            if (value == 0)
+            {
+                value = current_time;
+            }
+        };
+
+        initialization_lambda(m_used);
+        initialization_lambda(m_changed);
+        initialization_lambda(m_created);
+    }
 
     hstring LoginData::GetExportData(PasswordManager::LoginDataExportType const& inType) const
     {
@@ -123,6 +172,9 @@ namespace winrt::PasswordManager::implementation
         m_username.clear();
         m_password.clear();
         m_notes.clear();
+        m_created = 0;
+        m_changed = 0;
+        m_used = 0;
     }
 
     hstring LoginData::GetExportData_Microsoft() const
@@ -137,12 +189,12 @@ namespace winrt::PasswordManager::implementation
 
     hstring LoginData::GetExportData_Firefox() const
     {
-        return L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"" + L",,,,";
+        return L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"" + L",,,," + to_hstring(std::to_string(Created())) + L"," + to_hstring(std::to_string(Used())) + L"," + to_hstring(std::to_string(Changed()));
     }
 
     hstring LoginData::GetExportData_Lupass() const
     {
-        return GetExportData_Google();
+        return Name() + L"," + L"https://" + Url() + L"/" + L"," + Username() + L"," + L"\"" + Password() + L"\"" + L"," + Notes() + L"," + to_hstring(std::to_string(Created())) + L"," + to_hstring(std::to_string(Used())) + L"," + to_hstring(std::to_string(Changed()));
     }
 
     hstring LoginData::GetExportData_Kapersky() const

@@ -20,6 +20,9 @@
 				<x:String>Url</x:String>
 				<x:String>Username</x:String>
 				<x:String>Notes</x:String>
+				<x:String>Time Created</x:String>
+				<x:String>Time Used</x:String>
+				<x:String>Time Changed</x:String>
 			</ComboBox>
 
 			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" HorizontalContentAlignment="Center" SelectedIndex="1" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">

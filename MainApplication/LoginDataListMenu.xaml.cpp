@@ -173,6 +173,18 @@ namespace winrt::MainApplication::implementation
         {
             return DataSortMode::Notes;
         }
+        else if (Helper::StringEquals(selectedValue, L"Time Created"))
+        {
+            return DataSortMode::Created;
+        }
+        else if (Helper::StringEquals(selectedValue, L"Time Used"))
+        {
+            return DataSortMode::Used;
+        }
+        else if (Helper::StringEquals(selectedValue, L"Time Changed"))
+        {
+            return DataSortMode::Changed;
+        }
 
         return DataSortMode::Undefined;
     }

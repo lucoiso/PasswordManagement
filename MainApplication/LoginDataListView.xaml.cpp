@@ -63,6 +63,8 @@ namespace winrt::MainApplication::implementation
 
         PasswordManager::LoginData newData = data.Clone().try_as<PasswordManager::LoginData>();
 		check_bool(newData != nullptr);
+
+        newData.InitializeInvalidTimes();
         
 		const auto push_data = [&newData](const auto& container, const auto& validator)
         {
@@ -147,7 +149,7 @@ namespace winrt::MainApplication::implementation
         m_data.Clear();
         
         std::sort(local_data.begin(), local_data.end(), [&](const PasswordManager::LoginData& lhs, const PasswordManager::LoginData& rhs) -> bool {
-            const auto filter_orientation = [&](const hstring& left_string, const hstring& right_string) -> bool
+            const auto filter_orientation = [&](const auto& left_string, const auto& right_string) -> bool
             {
                 switch (orientation)
                 {
@@ -175,6 +177,15 @@ namespace winrt::MainApplication::implementation
 
                 case DataSortMode::Notes:
                     return filter_orientation(lhs.Notes(), rhs.Notes());
+
+                case DataSortMode::Created:
+                    return filter_orientation(lhs.Created(), rhs.Created());
+
+                case DataSortMode::Used:
+                    return filter_orientation(lhs.Used(), rhs.Used());
+
+                case DataSortMode::Changed:
+                    return filter_orientation(lhs.Changed(), rhs.Changed());
 
                 default:
                     return false;

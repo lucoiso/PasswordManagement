@@ -30,7 +30,7 @@
 				<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="4" Text="{x:Bind Data.Notes, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" ToolTipService.ToolTip="{x:Bind Data.Notes, Mode=OneWay}"/>
 			</Grid>
 
-			<Grid ColumnDefinitions="32, 32" RowDefinitions ="32, 32, 32" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+			<Grid ColumnDefinitions="32, 32" RowDefinitions ="32, 32, 32, 32" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True">
 				<Button x:Name="BT_TogglePassword" Grid.Column="0" Grid.Row="0" Click="BT_TogglePassword_Clicked" Padding="4" ToolTipService.ToolTip="Show/Hide Password">
 					<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe Fluent Icons" Glyph="&#xE9A9;" FontSize="16"/>
 				</Button>
@@ -53,6 +53,25 @@
 
 				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete" IsEnabled="{x:Bind EnableLicenseTools}" >
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74D;" FontSize="16"/>
+				</Button>
+
+				<Button Grid.Column="1" Grid.Row="3" Padding="4" ToolTipService.ToolTip="Time Information">
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xec92;" FontSize="16"/>
+
+					<Button.Flyout>
+						<Flyout>
+							<Grid ColumnDefinitions="*, 8, *" RowDefinitions ="24, 24, 24">
+								<TextBlock Grid.Column="0" Grid.Row="0" Text="Created:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+								<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="0" Text="{x:Bind TimeCreated, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+
+								<TextBlock Grid.Column="0" Grid.Row="1" Text="Used:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+								<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="1" Text="{x:Bind TimeUsed, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+
+								<TextBlock Grid.Column="0" Grid.Row="2" Text="Changed:" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+								<TextBlock HorizontalAlignment="Left" Grid.Column="2" Grid.Row="2" Text="{x:Bind TimeChanged, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}"/>
+							</Grid>
+						</Flyout>
+					</Button.Flyout>
 				</Button>
 			</Grid>
 		</RelativePanel>

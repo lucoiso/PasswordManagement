@@ -34,8 +34,18 @@ namespace winrt::PasswordManager::implementation
 
         hstring Notes() const;
         void Notes(hstring const& value);
+
+        uint64_t Created() const;
+        void Created(uint64_t const& value);
+
+        uint64_t Changed() const;
+        void Changed(uint64_t const& value);
+
+        uint64_t Used() const;
+        void Used(uint64_t const& value);
 #pragma endregion Getters and Setters
 
+        void InitializeInvalidTimes();
         hstring GetExportData(PasswordManager::LoginDataExportType const& type) const;
 
         bool HasEmptyData() const;
@@ -55,6 +65,9 @@ namespace winrt::PasswordManager::implementation
         hstring m_username;
         hstring m_password;
         hstring m_notes;
+        uint64_t m_created;
+        uint64_t m_changed;
+        uint64_t m_used;
     };
 }
 namespace winrt::PasswordManager::factory_implementation

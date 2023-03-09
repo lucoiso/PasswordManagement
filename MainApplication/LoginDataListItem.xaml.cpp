@@ -41,6 +41,11 @@ namespace winrt::MainApplication::implementation
             
             m_show_password = false;
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
+
+            EmitUsedEvent(false);
+            EmitChangedEvent(false);
+
+            m_property_changed(*this, Data::PropertyChangedEventArgs{ L"TimeCreated" });
         }
     }
 
@@ -57,6 +62,8 @@ namespace winrt::MainApplication::implementation
         m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
 
         FI_TogglePassword().Glyph(m_show_password ? L"\xE9A8" : L"\xE9A9");
+
+        EmitUsedEvent();
     }
 
     void CopyContentToClipboard(const hstring& content)
@@ -99,11 +106,18 @@ namespace winrt::MainApplication::implementation
         info.Text(L"Copied to clipboard!");
 		flyout.Content(info);
         flyout.ShowAt(element);
+
+        EmitUsedEvent();
     }
 
     Windows::Foundation::IAsyncAction LoginDataListItem::BT_Edit_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
+
+        if (Helper::HasAnyPopupOpen(XamlRoot()))
+        {
+            co_return;
+        }
 
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
@@ -125,7 +139,11 @@ namespace winrt::MainApplication::implementation
                 }
                 else if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
+                    EmitChangedEvent();
+
                     const auto new_data = editor.Data().Clone().as<PasswordManager::LoginData>();
+                    new_data.Changed(Data().Changed());
+
                     const auto current_data = Data().Clone().as<PasswordManager::LoginData>();
 
                     co_await MainPage.InsertLoginData(new_data, false);
@@ -143,13 +161,18 @@ namespace winrt::MainApplication::implementation
                 break;
             }
 
-            default: co_return;
+            default: break;
         }
     }
 
     Windows::Foundation::IAsyncAction LoginDataListItem::BT_Delete_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
+
+        if (Helper::HasAnyPopupOpen(XamlRoot()))
+        {
+            co_return;
+        }
 
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
@@ -161,15 +184,49 @@ namespace winrt::MainApplication::implementation
         switch ((co_await confirm_dialog.ShowAsync()))
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-            {
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
                     co_await MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>(), true);
                 }
-            }
+                break;
 
-            default: co_return;
+            default: break;
         }
+    }
+
+    void LoginDataListItem::EmitUsedEvent(const bool update_value)
+    {
+        if (update_value)
+        {
+            m_data.Used(winrt::clock::now().time_since_epoch().count());
+        }
+
+        m_property_changed(*this, Data::PropertyChangedEventArgs{ L"TimeUsed" });
+    }
+
+    void LoginDataListItem::EmitChangedEvent(const bool update_value)
+    {
+        if (update_value)
+        {
+            m_data.Changed(winrt::clock::now().time_since_epoch().count());
+        }
+
+        m_property_changed(*this, Data::PropertyChangedEventArgs{ L"TimeChanged" });
+    }
+
+    hstring LoginDataListItem::TimeCreated() const
+    {
+        return Helper::TimeToString(Helper::ToTimePoint(m_data.Created()));
+    }
+
+    hstring LoginDataListItem::TimeUsed() const
+    {
+        return Helper::TimeToString(Helper::ToTimePoint(m_data.Used()));
+    }
+
+    hstring LoginDataListItem::TimeChanged() const
+    {
+        return Helper::TimeToString(Helper::ToTimePoint(m_data.Changed()));
     }
 
     hstring MainApplication::implementation::LoginDataListItem::Password() const

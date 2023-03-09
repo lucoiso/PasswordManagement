@@ -46,14 +46,16 @@ namespace winrt::MainApplication::implementation
             Helper::PrintDebugLine(e.message());
         }
 
-        app_window.Closing([this, app_window]([[maybe_unused]] const auto& sender, const auto& args)
-        { 
-            if (Helper::GetSettingValue<bool>(SETTING_ENABLE_SYSTEM_TRAY))
+        app_window.Closing(
+            [this, app_window]([[maybe_unused]] const auto& sender, const auto& args)
             {
-                args.Cancel(true);
-                app_window.Hide();
+                if (Helper::GetSettingValue<bool>(SETTING_ENABLE_SYSTEM_TRAY))
+                {
+                    args.Cancel(true);
+                    app_window.Hide();
+                }
             }
-        });
+        );
     }
 
     Windows::Foundation::IAsyncAction MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)

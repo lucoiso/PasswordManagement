@@ -23,6 +23,13 @@ namespace winrt::MainApplication::implementation
         Windows::Foundation::IAsyncAction BT_Edit_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BT_Delete_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
+        void EmitUsedEvent(const bool update_value = true);
+        void EmitChangedEvent(const bool update_value = true);
+
+        hstring TimeCreated() const;
+        hstring TimeUsed() const;
+        hstring TimeChanged() const;
+
         hstring Password() const;
 
         event_token PropertyChanged(Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& value);

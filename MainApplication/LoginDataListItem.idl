@@ -13,5 +13,9 @@ namespace MainApplication
 
         PasswordManager.LoginData Data;
         String Password{ get; };
+
+        String TimeCreated{ get; };
+        String TimeUsed{ get; };
+        String TimeChanged{ get; };
     }
 }
