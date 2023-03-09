@@ -9,6 +9,11 @@
 
 #include "Constants.h"
 #include <winrt/base.h>
+#include <chrono>
+#include <ctime>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 using namespace winrt;
 
@@ -18,10 +23,19 @@ namespace winrt::Helper
 	{
 		if constexpr (ENABLE_DEBBUGGING)
 		{
-			const hstring output = L"[APPLICATION DEBUG MESSAGE] " + message + L"\n";
+			const auto now = std::chrono::system_clock::now();
+			const auto now_time_t = std::chrono::system_clock::to_time_t(now);
+			std::tm now_tm{};
+			localtime_s(&now_tm, &now_time_t);
+			std::ostringstream stream;
+			stream << std::put_time(&now_tm, "%m-%d-%y %T");
+			const hstring formatted_time = to_hstring(stream.str());
+
+			const hstring output = L"[" + to_hstring(APP_NAME) + L":" + to_hstring(APP_VERSION) + L" - " + formatted_time + L"]: " + message + L"\n";
 			OutputDebugStringW(output.c_str());
 		}
 	}
+
 
 #define LUPASS_LOG_FUNCTION() if constexpr (ENABLE_DEBBUGGING) winrt::Helper::PrintDebugLine(hstring(to_hstring(__FILE__) + L":" + to_hstring(__LINE__) + L":" + to_hstring(__func__)))
 
