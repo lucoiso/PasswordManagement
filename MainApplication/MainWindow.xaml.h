@@ -13,7 +13,6 @@ namespace winrt::MainApplication::implementation
         MainWindow();
         
         Windows::Foundation::IAsyncAction FR_MainFrame_Loaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
-        Windows::Foundation::IAsyncAction InitializeLicenseInformation();
 
         Windows::Foundation::IAsyncAction BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction OpenStorePage_Invoked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
@@ -35,6 +34,10 @@ namespace winrt::MainApplication::implementation
 
         HWND GetWindowHandle();
         Microsoft::UI::Windowing::AppWindow GetAppWindow();
+
+    private:
+        Windows::Foundation::IAsyncAction InitializeBackupData();
+        Windows::Foundation::IAsyncAction InitializeLicenseInformation();
     };
 }
 

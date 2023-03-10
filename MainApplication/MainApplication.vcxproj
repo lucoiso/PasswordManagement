@@ -158,6 +158,10 @@
       <DependentUpon>ApplicationSettings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="BackupDataListItem.xaml.h">
+      <DependentUpon>BackupDataListItem.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
     <ClInclude Include="LoginDataEditor.xaml.h">
       <DependentUpon>LoginDataEditor.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -202,6 +206,10 @@
       <DependentUpon>ApplicationSettings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="BackupDataListItem.xaml.cpp">
+      <DependentUpon>BackupDataListItem.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="LoginDataEditor.xaml.cpp">
       <DependentUpon>LoginDataEditor.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -244,6 +252,10 @@
     </Midl>
     <Midl Include="ApplicationSettings.idl">
       <DependentUpon>ApplicationSettings.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Midl>
+    <Midl Include="BackupDataListItem.idl">
+      <DependentUpon>BackupDataListItem.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Midl>
     <Midl Include="LoginDataEditor.idl">
@@ -298,6 +310,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ApplicationSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BackupDataListItem.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="LoginDataEditor.xaml">

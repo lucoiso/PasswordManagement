@@ -24,7 +24,7 @@
 			<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center">
+				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" Margin="2, 2, 2, 8">
 					<Flyout x:Name="FO_StoreOptions">
 						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 							<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 16" HorizontalAlignment="Center" VerticalAlignment="Center">Microsoft Store</TextBlock>
@@ -33,8 +33,36 @@
 						</StackPanel>
 					</Flyout>
 				</HyperlinkButton>
+
+				<Button Padding="4" ToolTipService.ToolTip="Backups" Margin="2, 2, 2, 8">
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe81c;" FontSize="16"/>
+
+					<Button.Flyout>
+						<Flyout>
+							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+								<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 12" HorizontalAlignment="Center" VerticalAlignment="Center">Available Backups</TextBlock>
+
+								<ListView x:Name="LV_Backups" Margin="4" Height="200" Width="180" Background="Transparent" SelectionMode="None"/>
+							</StackPanel>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
 				
-				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Application Settings" Margin="8">
+				<Button Padding="4" ToolTipService.ToolTip="Shortcuts" Margin="2, 2, 2, 8">
+					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xeda7;" FontSize="16"/>
+
+					<Button.Flyout>
+						<Flyout>
+							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+								<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 12" HorizontalAlignment="Center" VerticalAlignment="Center">Shortcuts</TextBlock>
+								<TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">Ctrl + Alt + N: Toggle Application View</TextBlock>
+								<TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">Ctrl + Alt + M: Open Password Generator</TextBlock>
+							</StackPanel>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+				
+				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Settings" Margin="2, 2, 8, 8">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE713;" FontSize="16"/>
 				</Button>
 			</StackPanel>

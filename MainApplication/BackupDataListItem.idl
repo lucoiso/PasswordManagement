@@ -1,0 +1,14 @@
+// Author: Lucas Oliveira Vilas-Bôas
+// Year: 2023
+// Repository: https://github.com/lucoiso/PasswordManagement
+namespace MainApplication
+{
+    [default_interface]
+    runtimeclass BackupDataListItem : Microsoft.UI.Xaml.Controls.UserControl, Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        BackupDataListItem();
+
+        String Date{ get; };
+        Int64 BackupTime;
+    }
+}

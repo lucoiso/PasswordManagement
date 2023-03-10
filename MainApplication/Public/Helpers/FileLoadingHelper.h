@@ -12,6 +12,8 @@
 #include <ShObjIdl_core.h>
 #include <App.xaml.h>
 
+#include "SettingsHelper.h"
+
 using namespace winrt::MainApplication;
 
 namespace winrt::Helper
@@ -71,15 +73,15 @@ namespace winrt::Helper
 
         try
         {
-            const Windows::Storage::StorageFolder localAppDir = Windows::Storage::ApplicationData::Current().LocalFolder();
-            Helper::PrintDebugLine(localAppDir.Path().c_str());
+            const Windows::Storage::StorageFolder local_directory = Windows::Storage::ApplicationData::Current().LocalFolder();
+            Helper::PrintDebugLine(hstring(L"Application data file: " + local_directory.Path()).c_str());
 
-            if (const auto existingFile = co_await localAppDir.TryGetItemAsync(L"data.bin"))
+            if (const auto existingFile = co_await local_directory.TryGetItemAsync(L"data.bin"))
             {
-                co_return co_await localAppDir.GetFileAsync(L"data.bin");
+                co_return co_await local_directory.GetFileAsync(L"data.bin");
             }
 
-            co_return co_await localAppDir.CreateFileAsync(L"data.bin");
+            co_return co_await local_directory.CreateFileAsync(L"data.bin");
         }
         catch (const hresult_error& e)
         {
@@ -87,6 +89,101 @@ namespace winrt::Helper
         }
 
         co_return nullptr;
+    }
+
+    inline Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<uint64_t>> GetExistingBackups()
+    {
+        LUPASS_LOG_FUNCTION();
+
+        std::vector<uint64_t> output;
+
+        try
+        {
+            const Windows::Storage::StorageFolder backups_directory = co_await Windows::Storage::ApplicationData::Current().LocalFolder().CreateFolderAsync(L"backups", Windows::Storage::CreationCollisionOption::OpenIfExists);
+            const auto backup_files = co_await backups_directory.GetFilesAsync();
+
+            for (const auto& file : backup_files)
+            {
+                Helper::PrintDebugLine(hstring(L"File found in backup directory: " + file.Path()).c_str());
+
+                if (!file)
+                {
+                    continue;
+                }
+
+                const std::string file_name = to_string(file.DisplayName());
+
+                bool valid_file = !file_name.empty();
+                for (const auto& character : file_name)
+                {
+                    if (!std::isdigit(character))
+                    {
+                        valid_file = false;
+                        break;
+                    }
+                }
+
+                if (!valid_file)
+                {
+                    co_await file.DeleteAsync();
+                    continue;
+                }
+
+                const uint64_t backup_time = std::stoull(file_name);
+
+                output.push_back(backup_time);
+            }
+
+            constexpr unsigned short int max_backups = 5;
+
+            if (output.size() > max_backups)
+            {
+                std::sort(output.begin(), output.end(), std::greater<uint64_t>());
+
+                for (uint32_t iterator = max_backups; iterator < output.size(); ++iterator)
+                {
+                    const uint64_t backup_time = output.at(iterator);
+                    const hstring file_name = to_hstring(backup_time);
+                    const Windows::Storage::StorageFile file = co_await backups_directory.GetFileAsync(file_name);
+
+                    Helper::RemoveSettingKey(file_name);
+
+                    co_await file.DeleteAsync();
+                }
+
+                output.resize(max_backups);
+            }
+        }
+        catch (const hresult_error& e)
+        {
+            Helper::PrintDebugLine(e.message());
+        }
+
+        const auto output_foundation_vector = single_threaded_vector(std::move(output));
+        co_return output_foundation_vector.GetView();
+    }
+
+    inline Windows::Foundation::IAsyncAction CopyDataAsBackup()
+    {
+        LUPASS_LOG_FUNCTION();
+
+        try
+        {
+			const Windows::Storage::StorageFolder backups_directory = co_await Windows::Storage::ApplicationData::Current().LocalFolder().CreateFolderAsync(L"backups", Windows::Storage::CreationCollisionOption::OpenIfExists);
+			const Windows::Storage::StorageFile local_data_file = co_await GetLocalDataFileAsync();
+
+            const uint64_t backup_time = winrt::clock::now().time_since_epoch().count() / (static_cast<long long>(24 * 60 * 60) * 10000000) * (static_cast<long long>(24 * 60 * 60) * 10000000);;
+			const hstring file_name = to_hstring(backup_time);
+
+			const Windows::Storage::StorageFile backup_file = co_await backups_directory.CreateFileAsync(file_name, Windows::Storage::CreationCollisionOption::ReplaceExisting);
+			co_await local_data_file.CopyAndReplaceAsync(backup_file);
+
+			Helper::InsertSettingValue(file_name, Helper::GetSettingValue<hstring>(KEY_MATERIAL_TEMP_ID));
+		}
+        catch (const hresult_error& e)
+        {
+			Helper::PrintDebugLine(e.message());
+		}
     }
 }
 #endif

@@ -29,7 +29,7 @@ private:
         CloseExistingDialogs(root);
 
         // Loading is open
-        if (HasAnyPopupOpen(root))
+        if (HasAnyDialogOpen(root))
         {
             return nullptr;
         }
@@ -67,12 +67,14 @@ public:
 
     void WaitForDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const;
     void NotifyDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const;
-    bool HasAnyPopupOpen(const Microsoft::UI::Xaml::XamlRoot& root) const;
+    bool HasAnyDialogOpen(const Microsoft::UI::Xaml::XamlRoot& root) const;
     void CloseExistingDialogs(const Microsoft::UI::Xaml::XamlRoot& root) const;
 
     template<typename ContentTy>
     inline Microsoft::UI::Xaml::Controls::ContentDialog ShowDialogSync(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto dialog = CreateContentDialog(root, title, content, add_confirm, can_close, confirm_text, close_text);
         if (dialog)
         {
@@ -85,6 +87,8 @@ public:
     template<typename ContentTy>
     inline Windows::Foundation::IAsyncOperation<Microsoft::UI::Xaml::Controls::ContentDialogResult> ShowDialogAsync(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
     {
+        LUPASS_LOG_FUNCTION();
+
         const auto dialog = CreateContentDialog(root, title, content, add_confirm, can_close, confirm_text, close_text);
         if (dialog)
         {

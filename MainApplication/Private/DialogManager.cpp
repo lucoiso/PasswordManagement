@@ -15,28 +15,39 @@
 void DialogManager::WaitForDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const
 {
     std::unique_lock<std::mutex> lock(mutex);
-    condition_variable.wait(lock, [this, &root] { return !HasAnyPopupOpen(root); });
+    condition_variable.wait(lock, [this, &root] { return !HasAnyDialogOpen(root); });
 }
 
 void DialogManager::NotifyDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const
 {
-    if (!HasAnyPopupOpen(root))
+    if (!HasAnyDialogOpen(root))
     {
         condition_variable.notify_all();
     }
 }
 
-bool DialogManager::HasAnyPopupOpen(const Microsoft::UI::Xaml::XamlRoot& root) const
-{
-    return Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root).Size() > 0;
-}
-
-void DialogManager::CloseExistingDialogs(const Microsoft::UI::Xaml::XamlRoot& root) const
+bool DialogManager::HasAnyDialogOpen(const Microsoft::UI::Xaml::XamlRoot& root) const
 {
     const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root);
     for (const auto& popup : existing_popups)
     {
-        auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>();
+        if (const auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>())
+        {
+            return true;
+        }        
+    }
+
+    return false;
+}
+
+void DialogManager::CloseExistingDialogs(const Microsoft::UI::Xaml::XamlRoot& root) const
+{
+    LUPASS_LOG_FUNCTION();
+
+    const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root);
+    for (const auto& popup : existing_popups)
+    {
+        const auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>();
         if (existing_dialog && existing_dialog != m_loading_dialog)
         {
             existing_dialog.Hide();
@@ -58,7 +69,7 @@ void DialogManager::ShowLoadingDialog(const Microsoft::UI::Xaml::XamlRoot& root)
     CloseExistingDialogs(root);
 
     // Loading is already open
-    if (HasAnyPopupOpen(root))
+    if (HasAnyDialogOpen(root))
     {
         return;
     }
@@ -72,6 +83,8 @@ void DialogManager::ShowLoadingDialog(const Microsoft::UI::Xaml::XamlRoot& root)
 
 void DialogManager::HideLoadingDialog()
 {
+    LUPASS_LOG_FUNCTION();
+
     if (m_loading_dialog_count <= 0u)
     {
         m_loading_dialog_count = 0u;
@@ -91,7 +104,7 @@ Windows::Foundation::IAsyncAction DialogManager::InvokeSettingsDialogAsync(const
 {
     LUPASS_LOG_FUNCTION();
 
-    if (HasAnyPopupOpen(root))
+    if (HasAnyDialogOpen(root))
     {
         co_return;
     }
@@ -112,7 +125,7 @@ Windows::Foundation::IAsyncAction DialogManager::InvokeGeneratorDialogAsync(cons
 {
     LUPASS_LOG_FUNCTION();
 
-    if (HasAnyPopupOpen(root))
+    if (HasAnyDialogOpen(root))
     {
         co_return;
     }

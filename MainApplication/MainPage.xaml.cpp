@@ -21,13 +21,14 @@ namespace winrt::MainApplication::implementation
     {
         InitializeComponent();
 
-        auto app_window = Application::Current().as<winrt::MainApplication::implementation::App>()->Window();
-        app_window.Closed(
-            [this, app_window]([[maybe_unused]] const auto& sender, [[maybe_unused]] const auto& args) -> Windows::Foundation::IAsyncAction
-            {
-                co_await SaveLocalDataAsync();                
-            }
-        );
+        auto main_window = Application::Current().as<winrt::MainApplication::implementation::App>()->Window();
+
+        const auto ensure_save_lambda = [this, main_window]([[maybe_unused]] const auto& sender, [[maybe_unused]] const auto& args) -> Windows::Foundation::IAsyncAction
+        {
+            co_await SaveLocalDataAsync();
+        };
+
+        main_window.Closed(ensure_save_lambda);
     }
 
     bool MainPage::EnableLicenseTools() const
@@ -187,6 +188,8 @@ namespace winrt::MainApplication::implementation
         {
             const auto registered_data = LI_LoginData().Data().GetView();
             co_await m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), registered_data, PasswordManager::LoginDataExportType::Lupass);
+
+            co_await Helper::CopyDataAsBackup();
         }
         catch (const hresult_error& e)
         {

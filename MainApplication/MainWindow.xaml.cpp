@@ -9,11 +9,13 @@
 
 #include "MainPage.xaml.h"
 #include "App.xaml.h"
+#include "BackupDataListItem.xaml.h"
 
 #include "DialogManager.h"
 
 #include "Helpers/SettingsHelper.h"
 #include "Helpers/SecurityHelper.h"
+#include "Helpers/FileLoadingHelper.h"
 
 #include <iomanip>
 #include <locale>
@@ -75,7 +77,21 @@ namespace winrt::MainApplication::implementation
 			}
         }
 
+        co_await InitializeBackupData();
+
         FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>(), box_value(has_license));
+    }
+
+    Windows::Foundation::IAsyncAction MainWindow::InitializeBackupData()
+    {
+        const auto backup_data = co_await Helper::GetExistingBackups();
+        for (const auto& data : backup_data)
+        {
+            auto backup_data_item = make<BackupDataListItem>();
+            backup_data_item.BackupTime(data);
+
+            LV_Backups().Items().Append(backup_data_item);
+        }
     }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeLicenseInformation()

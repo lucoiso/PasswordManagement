@@ -46,12 +46,28 @@ namespace winrt::Helper
         return winrt::clock::from_sys(time_point);
     }
 
-    inline hstring TimeToString(const Windows::Foundation::DateTime& time)
-    {        
-        const auto date_formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortDate();
-		const auto time_formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortTime();
+    inline hstring TimeToString(const Windows::Foundation::DateTime& time, const bool include_date = true, const bool include_time = true)
+    {
+        hstring output;
 
-        return date_formatter.Format(time) + L" - " + time_formatter.Format(time);
+        if (include_date)
+        {
+            const auto date_formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortDate();
+            output = output + date_formatter.Format(time);
+        }
+
+        if (include_time)
+        {
+            if (!output.empty())
+            {
+                output = output + L" - ";
+            }
+
+			const auto time_formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortTime();
+            output = output + time_formatter.Format(time);
+		}
+
+        return output;
     }
 }
 #endif

@@ -8,5 +8,7 @@ namespace MainApplication
     runtimeclass MainWindow : Microsoft.UI.Xaml.Window
     {
         MainWindow();
+
+        Microsoft.UI.Windowing.AppWindow GetAppWindow { get; };
     }
 }

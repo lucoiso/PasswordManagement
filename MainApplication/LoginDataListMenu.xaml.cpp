@@ -124,7 +124,7 @@ namespace winrt::MainApplication::implementation
             co_return;
         }
 
-        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Delete All Data", L"Confirm process?", true, true);
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Delete All Data", L"Confirm process?", true, true, L"Confirm", L"Cancel");
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
