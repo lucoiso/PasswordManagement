@@ -8,8 +8,10 @@
 #include "ApplicationSettings.g.cpp"
 
 #include "App.xaml.h"
-#include "DialogHelper.h"
-#include "SettingsHelper.h"
+
+#include "DialogManager.h"
+
+#include "Helpers/SettingsHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -50,14 +52,12 @@ namespace winrt::MainApplication::implementation
 
     Windows::Foundation::IAsyncAction ApplicationSettings::BP_Reset_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
-        Hide();
-        auto confirm_dialog = Helper::CreateContentDialog(XamlRoot(), L"Reset to Defaults", L"This operation will reset all settings to default. It will not delete login data, only application settings. Proceed?", true, true);
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Reset to Defaults", L"This operation will reset all settings to default. It will not delete login data, only application settings. Proceed?", true, true);
 
-        switch ((co_await confirm_dialog.ShowAsync()))
+        switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
             {
-                confirm_dialog.Hide();
                 Helper::SetSettingsToDefault();
                 App::RestartApplication();
             }

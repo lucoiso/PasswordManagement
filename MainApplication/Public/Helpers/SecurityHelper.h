@@ -9,8 +9,9 @@
 
 #include "pch.h"
 
-#include "DialogHelper.h"
-#include "SettingsHelper.h"
+#include "DialogManager.h"
+
+#include "Helpers/SettingsHelper.h"
 
 using namespace winrt::MainApplication;
 
@@ -57,7 +58,7 @@ namespace winrt::Helper
         {
             if (!Helper::HasSettingKey(INVALID_SECURITY_ENVIRONMENT_ID))
             {
-                co_await CreateContentDialog(root, L"Error", L"Windows Hello! wasn't configured in the current platform. Consider enabling this functionality to improve security.", false, true).ShowAsync();
+                co_await DialogManager::GetInstance().ShowDialogAsync(root, L"Error", L"Windows Hello! wasn't configured in the current platform. Consider enabling this functionality to improve security.", false, true);
                 Helper::InsertSettingValue(INVALID_SECURITY_ENVIRONMENT_ID, true);
             }
 

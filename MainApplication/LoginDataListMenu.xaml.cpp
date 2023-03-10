@@ -10,9 +10,10 @@
 #include "LoginDataEditor.xaml.h"
 #include "MainPage.xaml.h"
 
-#include "SecurityHelper.h"
-#include "DialogHelper.h"
-#include "CastingHelper.h"
+#include "DialogManager.h"
+
+#include "Helpers/SecurityHelper.h"
+#include "Helpers/CastingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -90,7 +91,7 @@ namespace winrt::MainApplication::implementation
             {
                 if (editor.Data().HasEmptyData())
                 {
-                    co_await Helper::CreateContentDialog(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true).ShowAsync();
+                    co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true);
                 }
                 else
                 {
@@ -107,11 +108,11 @@ namespace winrt::MainApplication::implementation
         }
     }
 
-    void LoginDataListMenu::BP_Generator_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Generator_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        Helper::InvokeGeneratorDialog(XamlRoot());
+        co_await DialogManager::GetInstance().InvokeGeneratorDialogAsync(XamlRoot());
     }
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Clear_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
@@ -123,15 +124,13 @@ namespace winrt::MainApplication::implementation
             co_return;
         }
 
-        auto confirm_dialog = Helper::CreateContentDialog(XamlRoot(), L"Delete All Data", L"Confirm process?", true, true);
-
-        switch ((co_await confirm_dialog.ShowAsync()))
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Delete All Data", L"Confirm process?", true, true);
+        switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
             {
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
-                    confirm_dialog.Hide();
                     co_await MainPage.RemoveAllLoginData(true);
                 }
             }
@@ -151,7 +150,6 @@ namespace winrt::MainApplication::implementation
 
         if (!CB_SortingMode().SelectedItem())
         {
-            Helper::CreateContentDialog(XamlRoot(), L"Error", L"Invalid sorting mode.", false, true).ShowAsync();
             return DataSortMode::Undefined;
         }
 
@@ -195,7 +193,6 @@ namespace winrt::MainApplication::implementation
 
         if (!CB_SortingOrientation().SelectedItem())
         {
-            Helper::CreateContentDialog(XamlRoot(), L"Error", L"Invalid sorting orientation.", false, true).ShowAsync();
             return DataSortOrientation::Undefined;
         }
 

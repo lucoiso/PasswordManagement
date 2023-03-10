@@ -188,11 +188,11 @@
     <ClInclude Include="App.xaml.h">
       <DependentUpon>App.xaml</DependentUpon>
     </ClInclude>
-    <ClInclude Include="Public\CastingHelper.h" />
-    <ClInclude Include="Public\DialogHelper.h" />
-    <ClInclude Include="Public\FileLoadingHelper.h" />
-    <ClInclude Include="Public\SecurityHelper.h" />
-    <ClInclude Include="Public\SettingsHelper.h" />
+    <ClInclude Include="Public\DialogManager.h" />
+    <ClInclude Include="Public\Helpers\CastingHelper.h" />
+    <ClInclude Include="Public\Helpers\FileLoadingHelper.h" />
+    <ClInclude Include="Public\Helpers\SecurityHelper.h" />
+    <ClInclude Include="Public\Helpers\SettingsHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -235,6 +235,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="Private\DialogManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="App.idl">

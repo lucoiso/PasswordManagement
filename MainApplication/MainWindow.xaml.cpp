@@ -10,9 +10,10 @@
 #include "MainPage.xaml.h"
 #include "App.xaml.h"
 
-#include "DialogHelper.h"
-#include "SettingsHelper.h"
-#include "SecurityHelper.h"
+#include "DialogManager.h"
+
+#include "Helpers/SettingsHelper.h"
+#include "Helpers/SecurityHelper.h"
 
 #include <iomanip>
 #include <locale>
@@ -67,8 +68,8 @@ namespace winrt::MainApplication::implementation
         const bool has_license = co_await Helper::HasLicenseActive();
         if (!has_license)
         {
-            const auto dialog_result = co_await Helper::CreateContentDialog(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true, L"Open Store", L"Close").ShowAsync();
-            if (dialog_result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary)
+            const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true, L"Open Store", L"Close");
+            if (result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary)
             {
                 co_await LaunchUri(to_hstring(APP_SUBSCRIPTION_URI));
 			}
@@ -124,7 +125,7 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        co_await Helper::InvokeSettingsDialog(Content().XamlRoot());
+        co_await DialogManager::GetInstance().InvokeSettingsDialogAsync(Content().XamlRoot());
     }
 
     Windows::Foundation::IAsyncAction MainWindow::OpenStorePage_Invoked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)

@@ -8,8 +8,9 @@
 
 #include "App.xaml.h"
 
-#include "FileLoadingHelper.h"
-#include "DialogHelper.h"
+#include "DialogManager.h"
+
+#include "Helpers/FileLoadingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -92,12 +93,10 @@ namespace winrt::MainApplication::implementation
         const auto data_files = co_await Helper::LoadPasswordDataFilesAsync();
         if (data_files.Size() > 0)
         {
-            const auto loading_dialog = Helper::CreateLoadingDialog(XamlRoot());
+            DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
 
             try
             {
-                loading_dialog.ShowAsync();
-
                 for (const auto& iterator : data_files)
                 {
                     if (!iterator)
@@ -128,12 +127,11 @@ namespace winrt::MainApplication::implementation
             }
             catch (const hresult_error& e)
             {
-                loading_dialog.Hide();
+                DialogManager::GetInstance().HideLoadingDialog();
 				Helper::PrintDebugLine(e.message());
-                Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
 			}
 
-            loading_dialog.Hide();
+            DialogManager::GetInstance().HideLoadingDialog();
         }
     }
 
@@ -143,7 +141,7 @@ namespace winrt::MainApplication::implementation
 
         if (const auto exported_file = co_await Helper::SavePasswordDataFileAsync(export_type))
         {
-            const auto loading_dialog = Helper::CreateLoadingDialog(XamlRoot());
+            DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
 
             try
             {
@@ -152,12 +150,11 @@ namespace winrt::MainApplication::implementation
             }
             catch (const hresult_error& e)
             {
-                loading_dialog.Hide();
+                DialogManager::GetInstance().HideLoadingDialog();
                 Helper::PrintDebugLine(e.message());
-                Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
             }
 
-            loading_dialog.Hide();
+            DialogManager::GetInstance().HideLoadingDialog();
         }
     }
 
@@ -165,20 +162,26 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
+        DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+
         try
         {
             co_await m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync(), PasswordManager::LoginDataExportType::Lupass);
         }
         catch (const hresult_error& e)
         {
+            DialogManager::GetInstance().HideLoadingDialog();
             Helper::PrintDebugLine(e.message());
-            Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
         }
+
+        DialogManager::GetInstance().HideLoadingDialog();
     }
 
     Windows::Foundation::IAsyncAction MainPage::SaveLocalDataAsync()
     {
         LUPASS_LOG_FUNCTION();
+
+        DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
 
         try
         {
@@ -187,9 +190,11 @@ namespace winrt::MainApplication::implementation
         }
         catch (const hresult_error& e)
         {
+            DialogManager::GetInstance().HideLoadingDialog();
             Helper::PrintDebugLine(e.message());
-            Helper::CreateContentDialog(XamlRoot(), L"Error", e.message(), false, true).ShowAsync();
         }
+
+        DialogManager::GetInstance().HideLoadingDialog();
     }
 
     void MainPage::BindDataUpdate()

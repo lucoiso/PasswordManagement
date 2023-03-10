@@ -7,12 +7,13 @@
 #include "App.xaml.h"
 #include "MainWindow.xaml.h"
 
+#include "DialogManager.h"
+
 #include <windows.h>
 #include <windowsx.h>
 #include <shellapi.h>
 
-#include "SettingsHelper.h"
-#include "DialogHelper.h"
+#include "Helpers/SettingsHelper.h"
 
 constexpr auto WM_TRAYICON = (WM_USER + 1);
 constexpr auto WM_TOGGLE_WINDOW = (WM_USER + 2);
@@ -333,11 +334,11 @@ LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, 
             break;
 
         case WM_TOGGLE_GENERATOR:
-            Helper::InvokeGeneratorDialog(Application::Current().as<App>()->Window().Content().XamlRoot());
+            DialogManager::GetInstance().InvokeGeneratorDialogAsync(Application::Current().as<App>()->Window().Content().XamlRoot());
             break;
 
         case WM_TOGGLE_SETTINGS:
-            Helper::InvokeSettingsDialog(Application::Current().as<App>()->Window().Content().XamlRoot());
+            DialogManager::GetInstance().InvokeSettingsDialogAsync(Application::Current().as<App>()->Window().Content().XamlRoot());
             break;
 
         case WM_EXIT_APPLICATION:

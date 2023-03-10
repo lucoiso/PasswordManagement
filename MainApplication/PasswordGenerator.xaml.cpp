@@ -7,7 +7,7 @@
 #include "PasswordGenerator.xaml.h"
 #include "PasswordGenerator.g.cpp"
 
-#include "SettingsHelper.h"
+#include "Helpers/SettingsHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;

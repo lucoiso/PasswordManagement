@@ -14,6 +14,9 @@
     <ClCompile Include="pch.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Private\DialogManager.cpp">
+      <Filter>Development\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -46,6 +49,9 @@
     <Filter Include="Development\MIDL Files">
       <UniqueIdentifier>{9fc13aa1-adfd-4a3d-8f4f-1076a0cd1b3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Development\Header Files\Helpers">
+      <UniqueIdentifier>{09dfb386-658b-48ad-9e6c-c3a14d21db55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -71,20 +77,20 @@
     <ClInclude Include="pch.h">
       <Filter>Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Public\FileLoadingHelper.h">
+    <ClInclude Include="Public\DialogManager.h">
       <Filter>Development\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Public\SecurityHelper.h">
-      <Filter>Development\Header Files</Filter>
+    <ClInclude Include="Public\Helpers\CastingHelper.h">
+      <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Public\DialogHelper.h">
-      <Filter>Development\Header Files</Filter>
+    <ClInclude Include="Public\Helpers\FileLoadingHelper.h">
+      <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Public\CastingHelper.h">
-      <Filter>Development\Header Files</Filter>
+    <ClInclude Include="Public\Helpers\SecurityHelper.h">
+      <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Public\SettingsHelper.h">
-      <Filter>Development\Header Files</Filter>
+    <ClInclude Include="Public\Helpers\SettingsHelper.h">
+      <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

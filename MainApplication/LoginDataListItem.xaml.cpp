@@ -9,9 +9,10 @@
 
 #include "MainPage.xaml.h"
 
-#include "SecurityHelper.h"
-#include "CastingHelper.h"
-#include "DialogHelper.h"
+#include "DialogManager.h"
+
+#include "Helpers/SecurityHelper.h"
+#include "Helpers/CastingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -114,11 +115,6 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        if (Helper::HasAnyPopupOpen(XamlRoot()))
-        {
-            co_return;
-        }
-
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
@@ -135,7 +131,7 @@ namespace winrt::MainApplication::implementation
             {
                 if (editor.Data().HasEmptyData())
                 {
-                    co_await Helper::CreateContentDialog(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true).ShowAsync();
+                    co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true);
                 }
                 else if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
                 {
@@ -169,19 +165,14 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        if (Helper::HasAnyPopupOpen(XamlRoot()))
-        {
-            co_return;
-        }
-
         if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
         {
             co_return;
         }
 
-        auto confirm_dialog = Helper::CreateContentDialog(XamlRoot(), L"Delete Data", L"Confirm process?", true, true);        
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Delete Data", L"Confirm process?", true, true);
 
-        switch ((co_await confirm_dialog.ShowAsync()))
+        switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
                 if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
