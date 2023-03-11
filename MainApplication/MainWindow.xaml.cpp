@@ -119,6 +119,12 @@ namespace winrt::MainApplication::implementation
             co_return;
         }
 
+        if constexpr (ENABLE_RELEASE_TESTING)
+        {
+            HB_LicenseData().Content(box_value(L"License Status: Testing"));
+            co_return;
+        }
+
         const auto current_license_information = co_await Helper::GetAddonSubscriptionInfo();
 
         if (!current_license_information)

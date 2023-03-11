@@ -36,6 +36,11 @@ namespace winrt::Helper
             co_return true;
         }
 
+        if constexpr (ENABLE_RELEASE_TESTING)
+        {
+            co_return true;
+        }
+
         const auto license = co_await GetAddonSubscriptionInfo();
         if (!license)
         {

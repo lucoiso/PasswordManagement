@@ -12,6 +12,7 @@
 #endif
 
 constexpr bool ENABLE_DEBBUGGING = _DEBUG;
+constexpr bool ENABLE_RELEASE_TESTING = true;
 
 constexpr wchar_t APP_INSTANCE_KEY[] = L"LUCOISO_PASS_MANAGER_INSTANCE_KEY";
 constexpr wchar_t APP_PRODUCT_ID[] = L"9NBM0FRN8VS7";
