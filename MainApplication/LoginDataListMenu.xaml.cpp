@@ -82,7 +82,7 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         MainApplication::LoginDataEditor editor;
-        editor.XamlRoot();
+        editor.XamlRoot(DialogManager::GetInstance().GetMainWindowContentXamlRoot());
         editor.Title(box_value(L"Creator"));
 
         switch ((co_await editor.ShowAsync()))

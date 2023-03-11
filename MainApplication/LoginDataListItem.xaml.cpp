@@ -121,7 +121,7 @@ namespace winrt::MainApplication::implementation
         }
 
         MainApplication::LoginDataEditor editor;
-        editor.XamlRoot();
+        editor.XamlRoot(DialogManager::GetInstance().GetMainWindowContentXamlRoot());
         editor.Title(box_value(L"Editor"));
         editor.Data(Data().Clone().as<PasswordManager::LoginData>());
 
