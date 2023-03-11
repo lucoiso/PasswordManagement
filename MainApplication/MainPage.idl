@@ -17,5 +17,8 @@ namespace MainApplication
 
         Windows.Foundation.IAsyncAction LoadLocalDataAsync();
         Windows.Foundation.IAsyncAction SaveLocalDataAsync();
+
+        Windows.Foundation.IAsyncAction ImportDataFromFileAsync(Windows.Storage.StorageFile data_file, Boolean save_data);
+        Windows.Foundation.IAsyncAction ReplaceDataWithFileAsync(Windows.Storage.StorageFile data_file, Boolean save_data);
     }
 }

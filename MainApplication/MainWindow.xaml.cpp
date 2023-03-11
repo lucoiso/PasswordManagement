@@ -65,21 +65,29 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
+        DialogManager::GetInstance().ShowLoadingDialog();
+
         co_await InitializeLicenseInformation();
 
         const bool has_license = co_await Helper::HasLicenseActive();
         if (!has_license)
         {
-            const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(Content().XamlRoot(), L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true, L"Open Store", L"Close");
+            DialogManager::GetInstance().HideLoadingDialog();
+
+            const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(L"Could not find an active license", L"You currently do not have a valid license. The application will limit its functionalities to only viewing and exporting.", true, true, L"Open Store", L"Close");
             if (result == Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary)
             {
                 co_await LaunchUri(to_hstring(APP_SUBSCRIPTION_URI));
-			}
+            }
+
+            DialogManager::GetInstance().ShowLoadingDialog();
         }
 
         co_await InitializeBackupData();
 
         FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>(), box_value(has_license));
+
+        DialogManager::GetInstance().HideLoadingDialog();
     }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeBackupData()
@@ -112,7 +120,7 @@ namespace winrt::MainApplication::implementation
         }
 
         const auto current_license_information = co_await Helper::GetAddonSubscriptionInfo();
-        
+
         if (!current_license_information)
         {
             HB_LicenseData().Content(box_value(L"License Status: Invalid"));
@@ -141,7 +149,7 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        co_await DialogManager::GetInstance().InvokeSettingsDialogAsync(Content().XamlRoot());
+        co_await DialogManager::GetInstance().InvokeSettingsDialogAsync();
     }
 
     Windows::Foundation::IAsyncAction MainWindow::OpenStorePage_Invoked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
@@ -159,6 +167,11 @@ namespace winrt::MainApplication::implementation
         {
             co_await LaunchUri(to_hstring(APP_SUBSCRIPTION_URI));
         }
+    }
+
+    MainApplication::MainPage MainWindow::TryGetFrameContentAsMainPage()
+    {
+        return FR_MainFrame().Content().try_as<MainApplication::MainPage>();
     }
     
     HWND MainWindow::GetWindowHandle()

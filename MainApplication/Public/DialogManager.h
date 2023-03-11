@@ -22,20 +22,20 @@ private:
     unsigned int m_loading_dialog_count = 0u;
 
     template<typename ContentTy>
-    inline Microsoft::UI::Xaml::Controls::ContentDialog CreateContentDialog(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy& content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
+    inline Microsoft::UI::Xaml::Controls::ContentDialog CreateContentDialog(const hstring& title, const ContentTy& content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
     {
         LUPASS_LOG_FUNCTION();
 
-        CloseExistingDialogs(root);
+        CloseExistingDialogs();
 
         // Loading is open
-        if (HasAnyDialogOpen(root))
+        if (HasAnyDialogOpen())
         {
             return nullptr;
         }
 
         Microsoft::UI::Xaml::Controls::ContentDialog dialog;
-        dialog.XamlRoot(root);
+        dialog.XamlRoot(GetMainWindowContentXamlRoot());
         dialog.Title(box_value(title));
         dialog.Content(box_value(content));
 
@@ -65,17 +65,19 @@ public:
 	DialogManager& operator=(const DialogManager&) = delete;
 	DialogManager& operator=(DialogManager&&) = delete;
 
-    void WaitForDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const;
-    void NotifyDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const;
-    bool HasAnyDialogOpen(const Microsoft::UI::Xaml::XamlRoot& root) const;
-    void CloseExistingDialogs(const Microsoft::UI::Xaml::XamlRoot& root) const;
+    Microsoft::UI::Xaml::XamlRoot GetMainWindowContentXamlRoot() const;
+
+    void WaitForDialogClose() const;
+    void NotifyDialogClose() const;
+    bool HasAnyDialogOpen() const;
+    void CloseExistingDialogs() const;
 
     template<typename ContentTy>
-    inline Microsoft::UI::Xaml::Controls::ContentDialog ShowDialogSync(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
+    inline Microsoft::UI::Xaml::Controls::ContentDialog ShowDialogSync(const hstring& title, const ContentTy content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
     {
         LUPASS_LOG_FUNCTION();
 
-        const auto dialog = CreateContentDialog(root, title, content, add_confirm, can_close, confirm_text, close_text);
+        const auto dialog = CreateContentDialog(title, content, add_confirm, can_close, confirm_text, close_text);
         if (dialog)
         {
             dialog.ShowAsync();
@@ -85,11 +87,11 @@ public:
     }
 
     template<typename ContentTy>
-    inline Windows::Foundation::IAsyncOperation<Microsoft::UI::Xaml::Controls::ContentDialogResult> ShowDialogAsync(const Microsoft::UI::Xaml::XamlRoot& root, const hstring& title, const ContentTy content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
+    inline Windows::Foundation::IAsyncOperation<Microsoft::UI::Xaml::Controls::ContentDialogResult> ShowDialogAsync(const hstring& title, const ContentTy content, const bool add_confirm = true, const bool& can_close = true, const hstring& confirm_text = L"Confirm", const hstring& close_text = L"Close") const
     {
         LUPASS_LOG_FUNCTION();
 
-        const auto dialog = CreateContentDialog(root, title, content, add_confirm, can_close, confirm_text, close_text);
+        const auto dialog = CreateContentDialog(title, content, add_confirm, can_close, confirm_text, close_text);
         if (dialog)
         {
             co_return co_await dialog.ShowAsync();
@@ -98,9 +100,9 @@ public:
         co_return Microsoft::UI::Xaml::Controls::ContentDialogResult::None;
     }
 
-    void ShowLoadingDialog(const Microsoft::UI::Xaml::XamlRoot& root);
+    void ShowLoadingDialog();
     void HideLoadingDialog();
 
-    Windows::Foundation::IAsyncAction InvokeSettingsDialogAsync(const Microsoft::UI::Xaml::XamlRoot& root);
-    Windows::Foundation::IAsyncAction InvokeGeneratorDialogAsync(const Microsoft::UI::Xaml::XamlRoot& root);
+    Windows::Foundation::IAsyncAction InvokeSettingsDialogAsync();
+    Windows::Foundation::IAsyncAction InvokeGeneratorDialogAsync();
 };

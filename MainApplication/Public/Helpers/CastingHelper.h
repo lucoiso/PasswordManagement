@@ -8,6 +8,7 @@
 #define LUPASS_CASTING_HELPER_H
 
 #include "pch.h"
+#include <chrono>
 
 using namespace winrt::MainApplication;
 
@@ -35,15 +36,21 @@ namespace winrt::Helper
         return GetParent<ParentTy>(parent);
     }
 
+    constexpr uint64_t s_ticks_per_day = 864000000000;
+    constexpr uint64_t s_epoch_diff = 116444736000000000;
+
     inline winrt::clock::time_point ToTimePoint(const std::uint64_t& value) 
     {
-        constexpr uint64_t epoch_diff = 116444736000000000;
-        const uint64_t time_count = value - epoch_diff;
-
+        const uint64_t time_count = value - s_epoch_diff;
         const auto duration = std::chrono::duration<uint64_t, std::ratio<1, 10'000'000>>(time_count);
         const auto time_point = std::chrono::time_point<std::chrono::system_clock>(duration);
 
         return winrt::clock::from_sys(time_point);
+    }
+
+    inline uint64_t GetCurrentDayTimeCount()
+    {
+        return (winrt::clock::now().time_since_epoch().count() / (static_cast<uint64_t>(24 * 60 * 60) * 10000000) * (static_cast<uint64_t>(24 * 60 * 60) * 10000000)) + s_ticks_per_day;
     }
 
     inline hstring TimeToString(const Windows::Foundation::DateTime& time, const bool include_date = true, const bool include_time = true)

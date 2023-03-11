@@ -23,6 +23,9 @@ constexpr wchar_t ICON_NAME[] = L"Icon.ico";
 constexpr wchar_t APP_VERSION[] = L"v1.0.2";
 constexpr wchar_t TRAYICON_CLASSNAME[] = L"LUCOISO_PASS_MANAGER_TRAY_ICON_CN";
 
+constexpr wchar_t APP_DATA_FILE_NAME[] = L"APPLICATION_DATA";
+constexpr wchar_t APP_BACKUP_DATA_DIRECTORY_NAME[] = L"Backups";
+
 constexpr wchar_t PASSWORD_DATA_LUPASS_HEADER[] = L"name,url,username,password,notes,created,changed,used";
 constexpr wchar_t PASSWORD_DATA_MICROSOFT_HEADER[] = L"name,url,username,password";
 constexpr wchar_t PASSWORD_DATA_GOOGLE_HEADER[] = L"name,url,username,password,notes";

@@ -11,7 +11,8 @@ namespace PasswordManager
 		Google,
 		Firefox,
 		Kapersky,
-		Lupass,
+		Lupass_Internal,
+		Lupass_External,
 		GenericCSV,
 		MAX
 	};

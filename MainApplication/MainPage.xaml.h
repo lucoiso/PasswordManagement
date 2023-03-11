@@ -24,6 +24,9 @@ namespace winrt::MainApplication::implementation
         Windows::Foundation::IAsyncAction LoadLocalDataAsync();
         Windows::Foundation::IAsyncAction SaveLocalDataAsync();
 
+        Windows::Foundation::IAsyncAction ImportDataFromFileAsync(const Windows::Storage::StorageFile& data_file, const bool save_data);
+        Windows::Foundation::IAsyncAction ReplaceDataWithFileAsync(const Windows::Storage::StorageFile& data_file, const bool save_data);
+
     protected:
         Windows::Foundation::IAsyncAction PerformDataImportAsync();
         Windows::Foundation::IAsyncAction PerformDataExportAsync(const PasswordManager::LoginDataExportType export_type);

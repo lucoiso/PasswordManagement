@@ -2,6 +2,8 @@
 // Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
+import "MainPage.idl";
+
 namespace MainApplication
 {
     [default_interface]
@@ -10,5 +12,6 @@ namespace MainApplication
         MainWindow();
 
         Microsoft.UI.Windowing.AppWindow GetAppWindow { get; };
+        MainApplication.MainPage TryGetFrameContentAsMainPage();
     }
 }

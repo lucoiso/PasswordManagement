@@ -148,7 +148,8 @@ namespace winrt::PasswordManager::implementation
             case PasswordManager::LoginDataExportType::Firefox:
                 return GetExportData_Firefox();
 
-            case PasswordManager::LoginDataExportType::Lupass:
+            case PasswordManager::LoginDataExportType::Lupass_External:
+            case PasswordManager::LoginDataExportType::Lupass_Internal:
                 return GetExportData_Lupass();
 
             case PasswordManager::LoginDataExportType::Kapersky:

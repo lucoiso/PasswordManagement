@@ -48,7 +48,7 @@ namespace winrt::MainApplication::implementation
 
         const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
 
-        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        if (!(co_await Helper::RequestUserCredentials()))
         {
             co_return;
         }
@@ -57,7 +57,7 @@ namespace winrt::MainApplication::implementation
 
         if (Helper::StringEquals(tag, L"Lupass"))
         {
-            m_export_pressed(PasswordManager::LoginDataExportType::Lupass);
+            m_export_pressed(PasswordManager::LoginDataExportType::Lupass_External);
         }
         else if (Helper::StringEquals(tag, L"Microsoft"))
         {
@@ -82,7 +82,7 @@ namespace winrt::MainApplication::implementation
         LUPASS_LOG_FUNCTION();
 
         MainApplication::LoginDataEditor editor;
-        editor.XamlRoot(XamlRoot());
+        editor.XamlRoot();
         editor.Title(box_value(L"Creator"));
 
         switch ((co_await editor.ShowAsync()))
@@ -91,7 +91,7 @@ namespace winrt::MainApplication::implementation
             {
                 if (editor.Data().HasEmptyData())
                 {
-                    co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Error", L"Registered data contains empty values.", false, true);
+                    co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Registered data contains empty values.", false, true);
                 }
                 else
                 {
@@ -112,19 +112,19 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        co_await DialogManager::GetInstance().InvokeGeneratorDialogAsync(XamlRoot());
+        co_await DialogManager::GetInstance().InvokeGeneratorDialogAsync();
     }
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Clear_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        if (!(co_await Helper::RequestUserCredentials()))
         {
             co_return;
         }
 
-        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Delete All Data", L"Confirm process?", true, true, L"Confirm", L"Cancel");
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(L"Delete All Data", L"Confirm process?", true, true, L"Confirm", L"Cancel");
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:

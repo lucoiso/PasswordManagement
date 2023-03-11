@@ -17,6 +17,8 @@ namespace winrt::MainApplication::implementation
         Windows::Foundation::IAsyncAction BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction OpenStorePage_Invoked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
+        MainApplication::MainPage TryGetFrameContentAsMainPage();
+
         template<typename UriTy>
         inline Windows::Foundation::IAsyncAction LaunchUri(const UriTy& uri)
         {

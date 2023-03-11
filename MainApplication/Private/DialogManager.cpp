@@ -6,29 +6,36 @@
 
 #include "DialogManager.h"
 
+#include "App.xaml.h"
+
 #include "ApplicationSettings.xaml.h"
 #include "PasswordGenerator.xaml.h"
 
 #include <thread>
 #include <future>
 
-void DialogManager::WaitForDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const
+Microsoft::UI::Xaml::XamlRoot DialogManager::GetMainWindowContentXamlRoot() const
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    condition_variable.wait(lock, [this, &root] { return !HasAnyDialogOpen(root); });
+    return winrt::Microsoft::UI::Xaml::Application::Current().as<winrt::MainApplication::implementation::App>()->Window().as<winrt::MainApplication::MainWindow>().Content().XamlRoot();
 }
 
-void DialogManager::NotifyDialogClose(const Microsoft::UI::Xaml::XamlRoot& root) const
+void DialogManager::WaitForDialogClose() const
 {
-    if (!HasAnyDialogOpen(root))
+    std::unique_lock<std::mutex> lock(mutex);
+    condition_variable.wait(lock, [this] { return !HasAnyDialogOpen(); });
+}
+
+void DialogManager::NotifyDialogClose() const
+{
+    if (!HasAnyDialogOpen())
     {
         condition_variable.notify_all();
     }
 }
 
-bool DialogManager::HasAnyDialogOpen(const Microsoft::UI::Xaml::XamlRoot& root) const
+bool DialogManager::HasAnyDialogOpen() const
 {
-    const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root);
+    const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(GetMainWindowContentXamlRoot());
     for (const auto& popup : existing_popups)
     {
         if (const auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>())
@@ -40,11 +47,11 @@ bool DialogManager::HasAnyDialogOpen(const Microsoft::UI::Xaml::XamlRoot& root) 
     return false;
 }
 
-void DialogManager::CloseExistingDialogs(const Microsoft::UI::Xaml::XamlRoot& root) const
+void DialogManager::CloseExistingDialogs() const
 {
     LUPASS_LOG_FUNCTION();
 
-    const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(root);
+    const auto existing_popups = Microsoft::UI::Xaml::Media::VisualTreeHelper::GetOpenPopupsForXamlRoot(GetMainWindowContentXamlRoot());
     for (const auto& popup : existing_popups)
     {
         const auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>();
@@ -55,30 +62,35 @@ void DialogManager::CloseExistingDialogs(const Microsoft::UI::Xaml::XamlRoot& ro
     }
 }
 
-void DialogManager::ShowLoadingDialog(const Microsoft::UI::Xaml::XamlRoot& root)
+void DialogManager::ShowLoadingDialog()
 {
     LUPASS_LOG_FUNCTION();
 
-    if (!root)
+    if (!GetMainWindowContentXamlRoot())
     {
         return;
     }
+
+    const bool can_show_loading = m_loading_dialog_count <= 0u;
 
     ++m_loading_dialog_count;
 
-    CloseExistingDialogs(root);
+    CloseExistingDialogs();
 
     // Loading is already open
-    if (HasAnyDialogOpen(root))
+    if (HasAnyDialogOpen())
     {
         return;
     }
 
-    Microsoft::UI::Xaml::Controls::ProgressBar progress_bar;
-    progress_bar.IsIndeterminate(true);
-    m_loading_dialog = CreateContentDialog(root, L"Loading...", progress_bar, false, false);
+    if (can_show_loading)
+    {
+        Microsoft::UI::Xaml::Controls::ProgressBar progress_bar;
+        progress_bar.IsIndeterminate(true);
+        m_loading_dialog = CreateContentDialog(L"Loading...", progress_bar, false, false);
 
-    m_loading_dialog.ShowAsync();
+        m_loading_dialog.ShowAsync();
+    }
 }
 
 void DialogManager::HideLoadingDialog()
@@ -100,11 +112,11 @@ void DialogManager::HideLoadingDialog()
     }
 }
 
-Windows::Foundation::IAsyncAction DialogManager::InvokeSettingsDialogAsync(const Microsoft::UI::Xaml::XamlRoot& root)
+Windows::Foundation::IAsyncAction DialogManager::InvokeSettingsDialogAsync()
 {
     LUPASS_LOG_FUNCTION();
 
-    if (HasAnyDialogOpen(root))
+    if (HasAnyDialogOpen())
     {
         co_return;
     }
@@ -112,7 +124,7 @@ Windows::Foundation::IAsyncAction DialogManager::InvokeSettingsDialogAsync(const
     try
     {
         auto settings = winrt::make<MainApplication::implementation::ApplicationSettings>();
-        settings.XamlRoot(root);
+        settings.XamlRoot(GetMainWindowContentXamlRoot());
         co_await settings.ShowAsync();
     }
     catch (const hresult_error& e)
@@ -121,11 +133,11 @@ Windows::Foundation::IAsyncAction DialogManager::InvokeSettingsDialogAsync(const
     }
 }
 
-Windows::Foundation::IAsyncAction DialogManager::InvokeGeneratorDialogAsync(const Microsoft::UI::Xaml::XamlRoot& root)
+Windows::Foundation::IAsyncAction DialogManager::InvokeGeneratorDialogAsync()
 {
     LUPASS_LOG_FUNCTION();
 
-    if (HasAnyDialogOpen(root))
+    if (HasAnyDialogOpen())
     {
         co_return;
     }
@@ -133,7 +145,7 @@ Windows::Foundation::IAsyncAction DialogManager::InvokeGeneratorDialogAsync(cons
     try
     {
         auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
-        auto generator_dialog = CreateContentDialog(root, L"Password Generator", generator_content, false, false);
+        auto generator_dialog = CreateContentDialog(L"Password Generator", generator_content, false, false);
 
         generator_content.OnClose(
             [generator_dialog]()

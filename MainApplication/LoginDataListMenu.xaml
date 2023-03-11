@@ -37,6 +37,7 @@
 			<DropDownButton Content="Export" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" >
 				<DropDownButton.Flyout>
 					<MenuFlyout>
+						<MenuFlyoutItem Tag="Lupass" Text="Lupass" Click="BP_Export_Click"/>
 						<MenuFlyoutItem Tag="Microsoft" Text="Microsoft" Click="BP_Export_Click"/>
 						<MenuFlyoutItem Tag="Google" Text="Google" Click="BP_Export_Click"/>
 						<MenuFlyoutItem Tag="Firefox" Text="Firefox" Click="BP_Export_Click"/>

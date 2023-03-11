@@ -55,36 +55,72 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        LI_LoginData().InsertDataInList(data);
+        DialogManager::GetInstance().ShowLoadingDialog();
 
-        if (save_data)
+        try
         {
-            co_await SaveLocalDataAsync();
+            LI_LoginData().InsertDataInList(data);
+
+            if (save_data)
+            {
+                co_await SaveLocalDataAsync();
+            }
         }
+        catch (const hresult_error& e)
+        {
+            DialogManager::GetInstance().HideLoadingDialog();
+            Helper::PrintDebugLine(e.message());
+        }
+
+        DialogManager::GetInstance().HideLoadingDialog();
     }
 
     Windows::Foundation::IAsyncAction MainPage::RemoveLoginData(PasswordManager::LoginData const& data, const bool save_data)
     {
         LUPASS_LOG_FUNCTION();
 
-        LI_LoginData().RemoveDataFromList(data);
+        DialogManager::GetInstance().ShowLoadingDialog();
 
-        if (save_data)
+        try
         {
-            co_await SaveLocalDataAsync();
+            LI_LoginData().RemoveDataFromList(data);
+
+            if (save_data)
+            {
+                co_await SaveLocalDataAsync();
+            }
         }
+        catch (const hresult_error& e)
+        {
+            DialogManager::GetInstance().HideLoadingDialog();
+            Helper::PrintDebugLine(e.message());
+        }
+
+        DialogManager::GetInstance().HideLoadingDialog();
     }
 
     Windows::Foundation::IAsyncAction MainPage::RemoveAllLoginData(const bool save_data)
     {
         LUPASS_LOG_FUNCTION();
 
-        LI_LoginData().RemoveAllDataFromList();
+        DialogManager::GetInstance().ShowLoadingDialog();
 
-        if (save_data)
+        try
         {
-            co_await SaveLocalDataAsync();
+            LI_LoginData().RemoveAllDataFromList();
+
+            if (save_data)
+            {
+                co_await SaveLocalDataAsync();
+            }
         }
+        catch (const hresult_error& e)
+        {
+            DialogManager::GetInstance().HideLoadingDialog();
+            Helper::PrintDebugLine(e.message());
+        }
+
+        DialogManager::GetInstance().HideLoadingDialog();
     }
 
     Windows::Foundation::IAsyncAction MainPage::PerformDataImportAsync()
@@ -94,34 +130,13 @@ namespace winrt::MainApplication::implementation
         const auto data_files = co_await Helper::LoadPasswordDataFilesAsync();
         if (data_files.Size() > 0)
         {
-            DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+            DialogManager::GetInstance().ShowLoadingDialog();
 
             try
             {
                 for (const auto& iterator : data_files)
                 {
-                    if (!iterator)
-                    {
-                        continue;
-                    }
-
-                    PasswordManager::LoginDataExportType export_type = PasswordManager::LoginDataExportType::Undefined;
-                    const auto file_type = iterator.FileType();
-
-                    if (file_type == L".bin")
-                    {
-                        export_type = PasswordManager::LoginDataExportType::Lupass;
-                    }
-                    else if (file_type == L".csv")
-                    {
-                        export_type = PasswordManager::LoginDataExportType::GenericCSV;
-                    }
-                    else if (file_type == L".txt")
-                    {
-                        export_type = PasswordManager::LoginDataExportType::Kapersky;
-                    }
-
-                    co_await m_manager.ImportDataAsync(iterator, export_type);
+                    ImportDataFromFileAsync(iterator, false);
                 }
 
                 co_await SaveLocalDataAsync();
@@ -142,7 +157,7 @@ namespace winrt::MainApplication::implementation
 
         if (const auto exported_file = co_await Helper::SavePasswordDataFileAsync(export_type))
         {
-            DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+            DialogManager::GetInstance().ShowLoadingDialog();
 
             try
             {
@@ -163,11 +178,11 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+        DialogManager::GetInstance().ShowLoadingDialog();
 
         try
         {
-            co_await m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync(), PasswordManager::LoginDataExportType::Lupass);
+            co_await m_manager.ImportDataAsync(co_await Helper::GetLocalDataFileAsync(), PasswordManager::LoginDataExportType::Lupass_Internal);
         }
         catch (const hresult_error& e)
         {
@@ -182,14 +197,74 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+        DialogManager::GetInstance().ShowLoadingDialog();
 
         try
         {
             const auto registered_data = LI_LoginData().Data().GetView();
-            co_await m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), registered_data, PasswordManager::LoginDataExportType::Lupass);
+            co_await m_manager.ExportDataAsync(co_await Helper::GetLocalDataFileAsync(), registered_data, PasswordManager::LoginDataExportType::Lupass_Internal);
 
             co_await Helper::CopyDataAsBackup();
+        }
+        catch (const hresult_error& e)
+        {
+            DialogManager::GetInstance().HideLoadingDialog();
+            Helper::PrintDebugLine(e.message());
+        }
+
+        DialogManager::GetInstance().HideLoadingDialog();
+    }
+
+    Windows::Foundation::IAsyncAction MainPage::ImportDataFromFileAsync(const Windows::Storage::StorageFile& data_file, const bool save_data)
+    {
+        LUPASS_LOG_FUNCTION();
+
+        DialogManager::GetInstance().ShowLoadingDialog();
+
+        try
+        {
+            PasswordManager::LoginDataExportType export_type = PasswordManager::LoginDataExportType::Undefined;
+            const auto file_type = data_file.FileType();
+
+            if (file_type == L".")
+            {
+                export_type = PasswordManager::LoginDataExportType::Lupass_Internal;
+            }
+            else if (file_type == L".csv")
+            {
+                export_type = PasswordManager::LoginDataExportType::GenericCSV;
+            }
+            else if (file_type == L".txt")
+            {
+                export_type = PasswordManager::LoginDataExportType::Kapersky;
+            }
+
+            co_await m_manager.ImportDataAsync(data_file, export_type);
+
+            if (save_data)
+            {
+                co_await SaveLocalDataAsync();
+            }
+        }
+        catch (const hresult_error& e)
+        {
+            DialogManager::GetInstance().HideLoadingDialog();
+            Helper::PrintDebugLine(e.message());
+        }
+
+        DialogManager::GetInstance().HideLoadingDialog();
+    }
+
+    Windows::Foundation::IAsyncAction MainPage::ReplaceDataWithFileAsync(const Windows::Storage::StorageFile& data_file, const bool save_data)
+    {
+        LUPASS_LOG_FUNCTION();
+
+        DialogManager::GetInstance().ShowLoadingDialog();
+
+        try
+        {
+            co_await RemoveAllLoginData(false);
+            co_await ImportDataFromFileAsync(data_file, save_data);
         }
         catch (const hresult_error& e)
         {

@@ -27,7 +27,7 @@ namespace winrt::PasswordManager::implementation
 			throw hresult_invalid_argument(L"file is unavailable");
 		}
 		
-		if (export_type == PasswordManager::LoginDataExportType::Lupass)
+		if (export_type == PasswordManager::LoginDataExportType::Lupass_Internal)
 		{
 			co_await ReadData_Lupass(file);
 			co_return;
@@ -42,6 +42,7 @@ namespace winrt::PasswordManager::implementation
 
 		switch (export_type)
 		{
+			case PasswordManager::LoginDataExportType::Lupass_External:
 			case PasswordManager::LoginDataExportType::Microsoft:
 			case PasswordManager::LoginDataExportType::Google:
 			case PasswordManager::LoginDataExportType::Firefox:
@@ -93,10 +94,11 @@ namespace winrt::PasswordManager::implementation
 
 		switch (export_type)
 		{
-			case PasswordManager::LoginDataExportType::Lupass:
+			case PasswordManager::LoginDataExportType::Lupass_Internal:
 				co_await WriteData_Lupass(file, data);
 				break;
 
+			case PasswordManager::LoginDataExportType::Lupass_External:
 			case PasswordManager::LoginDataExportType::Microsoft:
 			case PasswordManager::LoginDataExportType::Google:
 			case PasswordManager::LoginDataExportType::Firefox:
@@ -138,6 +140,7 @@ namespace winrt::PasswordManager::implementation
 	{
 		LUPASS_LOG_FUNCTION();
 
+		const hstring file_name = file.DisplayName();
 		const auto data_buffer = co_await Windows::Storage::FileIO::ReadBufferAsync(file);
 
 		if (data_buffer.Length() == 0)
@@ -145,9 +148,11 @@ namespace winrt::PasswordManager::implementation
 			co_return;
 		}
 
+		const hstring CRYPTOGRAPHY_KEY = file_name == APP_DATA_FILE_NAME ? KEY_MATERIAL_TEMP_ID : file_name;
+
 		const auto provider = Windows::Security::Cryptography::Core::SymmetricKeyAlgorithmProvider::OpenAlgorithm(Windows::Security::Cryptography::Core::SymmetricAlgorithmNames::AesCbcPkcs7());
 		const auto localSettings = Windows::Storage::ApplicationData::Current().LocalSettings();
-		const auto keyMaterial_64Value = localSettings.Values().Lookup(KEY_MATERIAL_TEMP_ID).as<hstring>();
+		const auto keyMaterial_64Value = localSettings.Values().Lookup(CRYPTOGRAPHY_KEY).as<hstring>();
 		const auto keyMaterial = Windows::Security::Cryptography::CryptographicBuffer::DecodeFromBase64String(keyMaterial_64Value);
 		const auto key = provider.CreateSymmetricKey(keyMaterial);
 		const auto decrypted_buffer = Windows::Security::Cryptography::Core::CryptographicEngine::Decrypt(key, data_buffer, nullptr);
@@ -162,7 +167,7 @@ namespace winrt::PasswordManager::implementation
 		{
 			if (*iterator == '\n')
 			{
-				ProcessCsvLine(to_hstring(line), newData, PasswordManager::LoginDataExportType::Lupass);
+				ProcessCsvLine(to_hstring(line), newData, PasswordManager::LoginDataExportType::Lupass_Internal);
 				line.clear();
 			}
 			else
@@ -179,7 +184,7 @@ namespace winrt::PasswordManager::implementation
 		hstring fileContent = to_hstring(PASSWORD_DATA_LUPASS_HEADER);
 		for (const auto& iterator : data)
 		{
-			fileContent = fileContent + L"\n" + iterator.GetExportData(PasswordManager::LoginDataExportType::Lupass);
+			fileContent = fileContent + L"\n" + iterator.GetExportData(PasswordManager::LoginDataExportType::Lupass_Internal);
 		}
 
 		fileContent = fileContent + L"\n";
@@ -251,25 +256,26 @@ namespace winrt::PasswordManager::implementation
 		std::string header;
 		switch (data_type)
 		{
-		case PasswordManager::LoginDataExportType::Lupass:
-			header = to_string(PASSWORD_DATA_LUPASS_HEADER);
-			break;
+			case PasswordManager::LoginDataExportType::Lupass_Internal:
+			case PasswordManager::LoginDataExportType::Lupass_External:
+				header = to_string(PASSWORD_DATA_LUPASS_HEADER);
+				break;
 
-		case PasswordManager::LoginDataExportType::Microsoft:
-			header = to_string(PASSWORD_DATA_MICROSOFT_HEADER);
-			break;
+			case PasswordManager::LoginDataExportType::Microsoft:
+				header = to_string(PASSWORD_DATA_MICROSOFT_HEADER);
+				break;
 
-		case PasswordManager::LoginDataExportType::Google:
-			header = to_string(PASSWORD_DATA_GOOGLE_HEADER);
-			break;
+			case PasswordManager::LoginDataExportType::Google:
+				header = to_string(PASSWORD_DATA_GOOGLE_HEADER);
+				break;
 
-		case PasswordManager::LoginDataExportType::Firefox:
-			header = to_string(PASSWORD_DATA_FIREFOX_HEADER);
-			break;
+			case PasswordManager::LoginDataExportType::Firefox:
+				header = to_string(PASSWORD_DATA_FIREFOX_HEADER);
+				break;
 
-		default:
-			throw hresult_invalid_argument(L"Invalid data type");
-			break;
+			default:
+				throw hresult_invalid_argument(L"Invalid data type");
+				break;
 		}
 
 		if (header.empty() || Helper::StringContains(std_line, header))

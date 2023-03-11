@@ -334,11 +334,11 @@ LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, 
             break;
 
         case WM_TOGGLE_GENERATOR:
-            DialogManager::GetInstance().InvokeGeneratorDialogAsync(Application::Current().as<App>()->Window().Content().XamlRoot());
+            DialogManager::GetInstance().InvokeGeneratorDialogAsync();
             break;
 
         case WM_TOGGLE_SETTINGS:
-            DialogManager::GetInstance().InvokeSettingsDialogAsync(Application::Current().as<App>()->Window().Content().XamlRoot());
+            DialogManager::GetInstance().InvokeSettingsDialogAsync();
             break;
 
         case WM_EXIT_APPLICATION:

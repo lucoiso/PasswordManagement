@@ -26,6 +26,7 @@
 #include <winrt/Windows.UI.ViewManagement.Core.h>
 #include <winrt/Windows.UI.Composition.Desktop.h>
 #include <winrt/Windows.Globalization.DateTimeFormatting.h>
+#include <winrt/Windows.Globalization.h>
 #include <winrt/Windows.UI.Core.h>
 
 #include <winrt/Microsoft.UI.Composition.h>

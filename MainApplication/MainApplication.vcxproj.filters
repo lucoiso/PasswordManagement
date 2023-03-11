@@ -121,6 +121,9 @@
     <Page Include="PasswordGenerator.xaml">
       <Filter>Development\Xaml\Controls</Filter>
     </Page>
+    <Page Include="BackupDataListItem.xaml">
+      <Filter>Development\Xaml\Controls</Filter>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\ApplicationBackground.jpg">

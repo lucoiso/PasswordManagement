@@ -13,6 +13,7 @@
 #include <App.xaml.h>
 
 #include "SettingsHelper.h"
+#include "CastingHelper.h"
 
 using namespace winrt::MainApplication;
 
@@ -43,10 +44,11 @@ namespace winrt::Helper
 
         switch (export_mode)
         {
-            case PasswordManager::LoginDataExportType::Lupass:
+            case PasswordManager::LoginDataExportType::Lupass_Internal:
                 file_types.Append(L".bin");
                 break;
 
+            case PasswordManager::LoginDataExportType::Lupass_External:
             case PasswordManager::LoginDataExportType::Microsoft:
             case PasswordManager::LoginDataExportType::Google:
             case PasswordManager::LoginDataExportType::Firefox:
@@ -67,6 +69,11 @@ namespace winrt::Helper
         return file_picker.PickSaveFileAsync();
     }
 
+    inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFolder> GetBackupsDirectoryAsync()
+    {
+        co_return co_await Windows::Storage::ApplicationData::Current().LocalFolder().CreateFolderAsync(APP_BACKUP_DATA_DIRECTORY_NAME, Windows::Storage::CreationCollisionOption::OpenIfExists);
+    }
+
     inline Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> GetLocalDataFileAsync()
     {
         LUPASS_LOG_FUNCTION();
@@ -76,12 +83,12 @@ namespace winrt::Helper
             const Windows::Storage::StorageFolder local_directory = Windows::Storage::ApplicationData::Current().LocalFolder();
             Helper::PrintDebugLine(hstring(L"Application data file: " + local_directory.Path()).c_str());
 
-            if (const auto existingFile = co_await local_directory.TryGetItemAsync(L"data.bin"))
+            if (const auto existing_file = co_await local_directory.TryGetItemAsync(APP_DATA_FILE_NAME); existing_file)
             {
-                co_return co_await local_directory.GetFileAsync(L"data.bin");
+                co_return co_await local_directory.GetFileAsync(APP_DATA_FILE_NAME);
             }
 
-            co_return co_await local_directory.CreateFileAsync(L"data.bin");
+            co_return co_await local_directory.CreateFileAsync(APP_DATA_FILE_NAME);
         }
         catch (const hresult_error& e)
         {
@@ -89,6 +96,28 @@ namespace winrt::Helper
         }
 
         co_return nullptr;
+    }
+
+    inline Windows::Foundation::IAsyncAction CopyDataAsBackup()
+    {
+        LUPASS_LOG_FUNCTION();
+
+        try
+        {
+            const Windows::Storage::StorageFolder backups_directory = co_await GetBackupsDirectoryAsync();
+            const Windows::Storage::StorageFile local_data_file = co_await GetLocalDataFileAsync();
+
+            const hstring file_name = to_hstring(GetCurrentDayTimeCount());
+
+            const Windows::Storage::StorageFile backup_file = co_await backups_directory.CreateFileAsync(file_name, Windows::Storage::CreationCollisionOption::ReplaceExisting);
+            co_await local_data_file.CopyAndReplaceAsync(backup_file);
+
+            Helper::InsertSettingValue(file_name, Helper::GetSettingValue<hstring>(KEY_MATERIAL_TEMP_ID));
+        }
+        catch (const hresult_error& e)
+        {
+            Helper::PrintDebugLine(e.message());
+        }
     }
 
     inline Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorView<uint64_t>> GetExistingBackups()
@@ -99,8 +128,11 @@ namespace winrt::Helper
 
         try
         {
-            const Windows::Storage::StorageFolder backups_directory = co_await Windows::Storage::ApplicationData::Current().LocalFolder().CreateFolderAsync(L"backups", Windows::Storage::CreationCollisionOption::OpenIfExists);
+            const Windows::Storage::StorageFolder backups_directory = co_await GetBackupsDirectoryAsync();
             const auto backup_files = co_await backups_directory.GetFilesAsync();
+
+            const uint64_t current_day_count = GetCurrentDayTimeCount();
+            bool contains_current_day = false;
 
             for (const auto& file : backup_files)
             {
@@ -131,15 +163,25 @@ namespace winrt::Helper
 
                 const uint64_t backup_time = std::stoull(file_name);
 
+                if (backup_time == current_day_count)
+                {
+                    contains_current_day = true;
+                }
+
                 output.push_back(backup_time);
             }
 
-            constexpr unsigned short int max_backups = 5;
+            if (!contains_current_day)
+            {
+                co_await CopyDataAsBackup();
+                output.push_back(current_day_count);
+            }
 
+            std::sort(output.begin(), output.end(), std::greater<uint64_t>());
+
+            constexpr unsigned short int max_backups = 5;
             if (output.size() > max_backups)
             {
-                std::sort(output.begin(), output.end(), std::greater<uint64_t>());
-
                 for (uint32_t iterator = max_backups; iterator < output.size(); ++iterator)
                 {
                     const uint64_t backup_time = output.at(iterator);
@@ -161,29 +203,6 @@ namespace winrt::Helper
 
         const auto output_foundation_vector = single_threaded_vector(std::move(output));
         co_return output_foundation_vector.GetView();
-    }
-
-    inline Windows::Foundation::IAsyncAction CopyDataAsBackup()
-    {
-        LUPASS_LOG_FUNCTION();
-
-        try
-        {
-			const Windows::Storage::StorageFolder backups_directory = co_await Windows::Storage::ApplicationData::Current().LocalFolder().CreateFolderAsync(L"backups", Windows::Storage::CreationCollisionOption::OpenIfExists);
-			const Windows::Storage::StorageFile local_data_file = co_await GetLocalDataFileAsync();
-
-            const uint64_t backup_time = winrt::clock::now().time_since_epoch().count() / (static_cast<long long>(24 * 60 * 60) * 10000000) * (static_cast<long long>(24 * 60 * 60) * 10000000);;
-			const hstring file_name = to_hstring(backup_time);
-
-			const Windows::Storage::StorageFile backup_file = co_await backups_directory.CreateFileAsync(file_name, Windows::Storage::CreationCollisionOption::ReplaceExisting);
-			co_await local_data_file.CopyAndReplaceAsync(backup_file);
-
-			Helper::InsertSettingValue(file_name, Helper::GetSettingValue<hstring>(KEY_MATERIAL_TEMP_ID));
-		}
-        catch (const hresult_error& e)
-        {
-			Helper::PrintDebugLine(e.message());
-		}
     }
 }
 #endif

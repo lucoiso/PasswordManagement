@@ -45,11 +45,11 @@ namespace winrt::Helper
         co_return license.IsActive();
     }
 
-    inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials(const Microsoft::UI::Xaml::XamlRoot& root)
+    inline Windows::Foundation::IAsyncOperation<bool> RequestUserCredentials()
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_WINDOWS_HELLO))
+        if (!Helper::GetSettingValue<bool>(SETTING_ENABLE_WINDOWS_HELLO) || Helper::HasSettingKey(SECURITY_KEY_SET_ID))
         {
             co_return true;
         }
@@ -58,20 +58,19 @@ namespace winrt::Helper
         {
             if (!Helper::HasSettingKey(INVALID_SECURITY_ENVIRONMENT_ID))
             {
-                co_await DialogManager::GetInstance().ShowDialogAsync(root, L"Error", L"Windows Hello! wasn't configured in the current platform. Consider enabling this functionality to improve security.", false, true);
+                co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Windows Hello! wasn't configured in the current platform. Consider enabling this functionality to improve security.", false, true);
                 Helper::InsertSettingValue(INVALID_SECURITY_ENVIRONMENT_ID, true);
             }
 
             co_return true;
         }
 
-        if (Helper::HasSettingKey(SECURITY_KEY_SET_ID))
-        {
-            co_return true;
-        }
+        DialogManager::GetInstance().ShowLoadingDialog();
 
         const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
         const auto credentials_request = co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting);
+        
+        DialogManager::GetInstance().HideLoadingDialog();
 
         switch (credentials_request.Status())
         {

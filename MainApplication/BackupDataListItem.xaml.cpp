@@ -11,6 +11,7 @@
 
 #include "Helpers/SecurityHelper.h"
 #include "Helpers/CastingHelper.h"
+#include "Helpers/FileLoadingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -26,23 +27,26 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        if (!(co_await Helper::RequestUserCredentials()))
         {
             co_return;
         }
 
-        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Restore Backup (Update)", L"Will add all backup data and update existing informations. Confirm Process?", true, true, L"Confirm", L"Cancel");
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(L"Restore Backup (Update)", L"Will add all backup data and update existing informations. Confirm Process?", true, true, L"Confirm", L"Cancel");
 
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                if (auto MainWindow = Application::Current().as<MainApplication::implementation::App>()->Window().as<MainApplication::MainWindow>(); MainWindow)
                 {
-                    DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+                    DialogManager::GetInstance().ShowLoadingDialog();
 
                     try
                     {
-                        // Import from backup file
+                        const auto backups_directory = co_await Helper::GetBackupsDirectoryAsync();
+                        const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
+
+                        co_await MainWindow.TryGetFrameContentAsMainPage().ImportDataFromFileAsync(backup_file, true);
                     }
                     catch (const hresult_error& e)
                     {
@@ -63,23 +67,26 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!(co_await Helper::RequestUserCredentials(XamlRoot())))
+        if (!(co_await Helper::RequestUserCredentials()))
         {
             co_return;
         }
 
-        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(XamlRoot(), L"Restore Backup (Replace)", L" Will replace all current data with the backup data, removing existing informations that doesn't exists in the backup data. Confirm process?", true, true, L"Confirm", L"Cancel");
+        const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(L"Restore Backup (Replace)", L" Will replace all current data with the backup data, removing existing informations that doesn't exists in the backup data. Confirm process?", true, true, L"Confirm", L"Cancel");
 
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                if (auto MainWindow = Application::Current().as<MainApplication::implementation::App>()->Window().as<MainApplication::MainWindow>(); MainWindow)
                 {
-                    DialogManager::GetInstance().ShowLoadingDialog(XamlRoot());
+                    DialogManager::GetInstance().ShowLoadingDialog();
 
                     try
                     {
-                        // Clear all existing data and import from backup file
+                        const auto backups_directory = co_await Helper::GetBackupsDirectoryAsync();
+                        const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
+
+                        co_await MainWindow.TryGetFrameContentAsMainPage().ReplaceDataWithFileAsync(backup_file, true);
                     }
                     catch (const hresult_error& e)
                     {
@@ -111,6 +118,11 @@ namespace winrt::MainApplication::implementation
 
     hstring BackupDataListItem::Date() const
     {
+        if (BackupTime() == Helper::GetCurrentDayTimeCount())
+        {
+            return L"Current";
+        }
+
         return Helper::TimeToString(Helper::ToTimePoint(BackupTime()), true, false);
     }
 
