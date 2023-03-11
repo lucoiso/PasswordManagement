@@ -57,7 +57,11 @@ namespace winrt::PasswordManager::implementation
 			{
 				const hstring header = fileContent.GetAt(0);
 
-				if (header == PASSWORD_DATA_MICROSOFT_HEADER)
+				if (header == PASSWORD_DATA_LUPASS_HEADER)
+				{
+					ReadData_GenericCSV(fileContent, PasswordManager::LoginDataExportType::Lupass_External);
+				}
+				else if (header == PASSWORD_DATA_MICROSOFT_HEADER)
 				{
 					ReadData_GenericCSV(fileContent, PasswordManager::LoginDataExportType::Microsoft);
 				}
@@ -222,6 +226,11 @@ namespace winrt::PasswordManager::implementation
 
 		switch (data_type)
 		{
+			case PasswordManager::LoginDataExportType::Lupass_Internal:
+			case PasswordManager::LoginDataExportType::Lupass_External:
+				lines.Append(to_hstring(PASSWORD_DATA_LUPASS_HEADER));
+				break;
+
 			case PasswordManager::LoginDataExportType::Microsoft:
 				lines.Append(to_hstring(PASSWORD_DATA_MICROSOFT_HEADER));
 				break;
