@@ -20,7 +20,6 @@ namespace winrt::PasswordManager::implementation
 
     private:
         event<Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams>> m_data_updated;
-        Windows::Security::Cryptography::Core::CryptographicKey* m_cryptographic_key{ nullptr };
 
     protected:
         void PushData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataExportType& type);

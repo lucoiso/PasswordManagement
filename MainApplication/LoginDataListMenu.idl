@@ -10,15 +10,5 @@ namespace MainApplication
     runtimeclass LoginDataListMenu : Microsoft.UI.Xaml.Controls.UserControl
     {
         LoginDataListMenu();
-
-        Boolean EnableLicenseTools;
-   
-        DataSortMode SelectedSortingMode{ get; };        
-        DataSortOrientation SelectedSortingOrientation{ get; };
-
-        event MainApplication.SingleVoidDelegate ImportPressed;
-        event MainApplication.ExportTypeDelegate ExportPressed;
-
-        event MainApplication.SingleVoidDelegate SortingChanged;
     }
 }

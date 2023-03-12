@@ -9,10 +9,11 @@
     xmlns:local="using:MainApplication"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+	Loaded="ComponentLoaded">
 
 	<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-		<local:LoginDataListView x:Name="LI_LoginData" EnableLicenseTools="{x:Bind EnableLicenseTools}"/>
-		<local:LoginDataListMenu x:Name="MO_DataOptions" EnableLicenseTools="{x:Bind EnableLicenseTools}"/>
+		<local:LoginDataListView/>
+		<local:LoginDataListMenu/>
 	</StackPanel>
 </Page>

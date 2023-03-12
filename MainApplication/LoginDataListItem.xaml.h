@@ -12,7 +12,7 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListItem();
 
-        bool EnableLicenseTools() const;
+        void ComponentLoaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         PasswordManager::LoginData Data() const;
         void Data(PasswordManager::LoginData const& value);

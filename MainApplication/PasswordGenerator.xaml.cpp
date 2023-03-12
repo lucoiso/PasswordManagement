@@ -19,7 +19,7 @@ namespace winrt::MainApplication::implementation
         InitializeComponent();
     }
 
-    void PasswordGenerator::Panel_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
+    void PasswordGenerator::ComponentLoaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 

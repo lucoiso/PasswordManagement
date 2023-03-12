@@ -8,12 +8,11 @@
 #include "LoginDataListMenu.g.cpp"
 
 #include "LoginDataEditor.xaml.h"
-#include "MainPage.xaml.h"
 
 #include "DialogManager.h"
+#include "DataManager.h"
 
 #include "Helpers/SecurityHelper.h"
-#include "Helpers/CastingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -25,21 +24,34 @@ namespace winrt::MainApplication::implementation
         InitializeComponent();
     }
 
-    bool LoginDataListMenu::EnableLicenseTools() const
+    void LoginDataListMenu::ComponentLoaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
-        return m_enable_license_tools;
+        if (!Helper::GetSettingValue<bool>(LICENSING_ENABLED_KEY))
+        {
+            BP_Import().IsEnabled(false);
+            BP_Insert().IsEnabled(false);
+            BP_Generator().IsEnabled(false);
+        }
     }
 
-    void LoginDataListMenu::EnableLicenseTools(bool value)
-    {
-        Helper::SetMemberValue(value, m_enable_license_tools);
-    }
-
-    void LoginDataListMenu::BP_Import_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Import_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        m_import_pressed();
+        if (!(co_await Helper::RequestUserCredentials()))
+        {
+            co_return;
+        }
+
+        const auto load_files = co_await DataManager::GetInstance().LoadPasswordDataFilesAsync();
+        std::vector<Windows::Storage::StorageFile> files;
+
+        for (const auto& file : load_files)
+        {
+			files.push_back(file);
+		}
+
+        co_await DataManager::GetInstance().ImportDataFromFileAsync(files, true);
     }
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Export_Click(Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
@@ -55,26 +67,30 @@ namespace winrt::MainApplication::implementation
 
         const auto tag = element.Tag().as<hstring>();
 
+        PasswordManager::LoginDataExportType export_type = PasswordManager::LoginDataExportType::Undefined;
+
         if (Helper::StringEquals(tag, L"Lupass"))
         {
-            m_export_pressed(PasswordManager::LoginDataExportType::Lupass_External);
+            export_type = PasswordManager::LoginDataExportType::Lupass_External;
         }
         else if (Helper::StringEquals(tag, L"Microsoft"))
         {
-            m_export_pressed(PasswordManager::LoginDataExportType::Microsoft);
+            export_type = PasswordManager::LoginDataExportType::Microsoft;
         }
         else if (Helper::StringEquals(tag, L"Google"))
         {
-            m_export_pressed(PasswordManager::LoginDataExportType::Google);
+            export_type = PasswordManager::LoginDataExportType::Google;
         }
         else if (Helper::StringEquals(tag, L"Firefox"))
         {
-            m_export_pressed(PasswordManager::LoginDataExportType::Firefox);
+            export_type = PasswordManager::LoginDataExportType::Firefox;
         }
         else if (Helper::StringEquals(tag, L"Kapersky"))
         {
-            m_export_pressed(PasswordManager::LoginDataExportType::Kapersky);
+            export_type = PasswordManager::LoginDataExportType::Kapersky;
         }
+
+        co_await DataManager::GetInstance().ExportDataAsync(export_type);
     }
 
     Windows::Foundation::IAsyncAction LoginDataListMenu::BP_Insert_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args)
@@ -95,10 +111,7 @@ namespace winrt::MainApplication::implementation
                 }
                 else
                 {
-                    if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(Parent()); MainPage)
-                    {
-                        co_await MainPage.InsertLoginData(editor.Data(), true);
-                    }
+                    co_await DataManager::GetInstance().InsertLoginDataAsync({ editor.Data() }, true);
                 }
 
 				break;
@@ -129,10 +142,7 @@ namespace winrt::MainApplication::implementation
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
             {
-                if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
-                {
-                    co_await MainPage.RemoveAllLoginData(true);
-                }
+                co_await DataManager::GetInstance().ClearLoginDataAsync(true);
             }
         }
     }
@@ -141,14 +151,15 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        m_sorting_changed();
+        DataManager::GetInstance().SetSortingMode(SelectedSortingMode());
+        DataManager::GetInstance().SetSortingOrientation(SelectedSortingOrientation());
     }
 
     DataSortMode LoginDataListMenu::SelectedSortingMode()
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!CB_SortingMode().SelectedItem())
+        if (!CB_SortingMode() || !CB_SortingMode().SelectedItem())
         {
             return DataSortMode::Undefined;
         }
@@ -191,7 +202,7 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        if (!CB_SortingOrientation().SelectedItem())
+        if (!CB_SortingOrientation() || !CB_SortingOrientation().SelectedItem())
         {
             return DataSortOrientation::Undefined;
         }
@@ -208,45 +219,5 @@ namespace winrt::MainApplication::implementation
         }
 
         return DataSortOrientation::Undefined;
-    }
-
-    event_token LoginDataListMenu::ImportPressed(MainApplication::SingleVoidDelegate const& handler)
-    {
-        LUPASS_LOG_FUNCTION();
-
-        return m_import_pressed.add(handler);
-    }
-
-    void LoginDataListMenu::ImportPressed(event_token const& token) noexcept
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_import_pressed.remove(token);
-    }
-
-    event_token LoginDataListMenu::ExportPressed(MainApplication::ExportTypeDelegate const& handler)
-    {
-        return m_export_pressed.add(handler);
-    }
-    
-    void LoginDataListMenu::ExportPressed(event_token const& token) noexcept
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_export_pressed.remove(token);
-    }
-
-    event_token MainApplication::implementation::LoginDataListMenu::SortingChanged(MainApplication::SingleVoidDelegate const& handler)
-    {
-        LUPASS_LOG_FUNCTION();
-
-        return m_sorting_changed.add(handler);
-    }
-
-    void MainApplication::implementation::LoginDataListMenu::SortingChanged(event_token const& token) noexcept
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_sorting_changed.remove(token);
     }
 }

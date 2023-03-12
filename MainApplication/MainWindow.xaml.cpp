@@ -12,10 +12,10 @@
 #include "BackupDataListItem.xaml.h"
 
 #include "DialogManager.h"
+#include "DataManager.h"
 
 #include "Helpers/SettingsHelper.h"
 #include "Helpers/SecurityHelper.h"
-#include "Helpers/FileLoadingHelper.h"
 
 #include <iomanip>
 #include <locale>
@@ -61,7 +61,7 @@ namespace winrt::MainApplication::implementation
         );
     }
 
-    Windows::Foundation::IAsyncAction MainApplication::implementation::MainWindow::FR_MainFrame_Loaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
+    Windows::Foundation::IAsyncAction MainWindow::ComponentLoaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
@@ -70,6 +70,8 @@ namespace winrt::MainApplication::implementation
         co_await InitializeLicenseInformation();
 
         const bool has_license = co_await Helper::HasLicenseActive();
+        Helper::InsertSettingValue(LICENSING_ENABLED_KEY, has_license);
+
         if (!has_license)
         {
             DialogManager::GetInstance().HideLoadingDialog();
@@ -85,14 +87,16 @@ namespace winrt::MainApplication::implementation
 
         co_await InitializeBackupData();
 
-        FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>(), box_value(has_license));
+        FR_MainFrame().Navigate(xaml_typename<MainApplication::MainPage>());
 
         DialogManager::GetInstance().HideLoadingDialog();
     }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeBackupData()
-    {
-        const auto backup_data = co_await Helper::GetExistingBackups();
+    {        
+        co_await DataManager::GetInstance().RefreshBackupDataAsync();
+
+        const auto backup_data = DataManager::GetInstance().Backups();
         for (const auto& data : backup_data)
         {
             auto backup_data_item = make<BackupDataListItem>();

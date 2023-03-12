@@ -47,6 +47,7 @@
 
 #include <wil/cppwinrt_helpers.h>
 
+#include <winrt/MainApplication.h>
 #include <winrt/PasswordManager.h>
 #include <winrt/PasswordGenerator.h>
 #include <Helper.h>

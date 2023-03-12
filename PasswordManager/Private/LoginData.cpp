@@ -69,6 +69,11 @@ namespace winrt::PasswordManager::implementation
 
     void LoginData::Password(hstring const& value)
     {
+        if (value.empty())
+        {
+            return;
+        }
+
         std::string new_pass = to_string(value);
         if (std::equal(new_pass.begin(), new_pass.begin() + 1, "\"") && std::equal(new_pass.end() - 1, new_pass.end(), "\""))
         {

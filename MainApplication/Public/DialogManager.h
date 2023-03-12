@@ -6,16 +6,10 @@
 
 #include "pch.h"
 
-#include <mutex>
-#include <condition_variable>
-
 class DialogManager
 {
 private:
     DialogManager() = default;
-
-    mutable std::mutex mutex;
-    mutable std::condition_variable condition_variable;
 
     Microsoft::UI::Xaml::Controls::ContentDialog m_loading_dialog;
 
@@ -56,19 +50,17 @@ private:
 public:
     static inline DialogManager& GetInstance()
     {
-		static DialogManager instance;
-		return instance;
-	}
+        static DialogManager instance;
+        return instance;
+    }
 
-	DialogManager(const DialogManager&) = delete;
-	DialogManager(DialogManager&&) = delete;
-	DialogManager& operator=(const DialogManager&) = delete;
-	DialogManager& operator=(DialogManager&&) = delete;
+    DialogManager(const DialogManager&) = delete;
+    DialogManager(DialogManager&&) = delete;
+    DialogManager& operator=(const DialogManager&) = delete;
+    DialogManager& operator=(DialogManager&&) = delete;
 
     Microsoft::UI::Xaml::XamlRoot GetMainWindowContentXamlRoot() const;
 
-    void WaitForDialogClose() const;
-    void NotifyDialogClose() const;
     bool HasAnyDialogOpen() const;
     void CloseExistingDialogs() const;
 

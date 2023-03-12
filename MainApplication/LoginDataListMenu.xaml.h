@@ -12,10 +12,9 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListMenu();
 
-        bool EnableLicenseTools() const;
-        void EnableLicenseTools(bool value);
+        void ComponentLoaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
-        void BP_Import_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        Windows::Foundation::IAsyncAction BP_Import_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BP_Export_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BP_Insert_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BP_Generator_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
@@ -25,21 +24,6 @@ namespace winrt::MainApplication::implementation
 
         MainApplication::DataSortMode SelectedSortingMode();
         MainApplication::DataSortOrientation SelectedSortingOrientation();
-
-        event_token ImportPressed(MainApplication::SingleVoidDelegate const& handler);
-        void ImportPressed(event_token const& token) noexcept;
-
-        event_token ExportPressed(MainApplication::ExportTypeDelegate const& handler);
-        void ExportPressed(event_token const& token) noexcept;
-
-        event_token SortingChanged(MainApplication::SingleVoidDelegate const& handler);
-        void SortingChanged(event_token const& token) noexcept;
-
-    private:
-        bool m_enable_license_tools{ false };
-        event<MainApplication::SingleVoidDelegate> m_import_pressed;
-        event<MainApplication::ExportTypeDelegate> m_export_pressed;
-        event<MainApplication::SingleVoidDelegate> m_sorting_changed;
     };
 }
 

@@ -8,17 +8,5 @@ namespace MainApplication
     runtimeclass MainPage : Microsoft.UI.Xaml.Controls.Page
     {
         MainPage();
-
-        Boolean EnableLicenseTools{ get; };
-
-        Windows.Foundation.IAsyncAction InsertLoginData(PasswordManager.LoginData data, Boolean save_data);
-        Windows.Foundation.IAsyncAction RemoveLoginData(PasswordManager.LoginData data, Boolean save_data);
-        Windows.Foundation.IAsyncAction RemoveAllLoginData(Boolean save_data);
-
-        Windows.Foundation.IAsyncAction LoadLocalDataAsync();
-        Windows.Foundation.IAsyncAction SaveLocalDataAsync();
-
-        Windows.Foundation.IAsyncAction ImportDataFromFileAsync(Windows.Storage.StorageFile data_file, Boolean save_data);
-        Windows.Foundation.IAsyncAction ReplaceDataWithFileAsync(Windows.Storage.StorageFile data_file, Boolean save_data);
     }
 }

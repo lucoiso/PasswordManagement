@@ -9,7 +9,8 @@
     xmlns:local="using:MainApplication"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+	Loaded="ComponentLoaded">
 
 	<Border BorderThickness="0, 0, 0, 2" BorderBrush="{ThemeResource SystemAccentColorLight2}" Background="Transparent" CornerRadius="8" Margin="4">
 		<RelativePanel Margin="4, 8, 4, 8" HorizontalAlignment="Stretch">
@@ -47,11 +48,11 @@
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7EF;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit" IsEnabled="{x:Bind EnableLicenseTools}" >
+				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE70F;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete" IsEnabled="{x:Bind EnableLicenseTools}" >
+				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74D;" FontSize="16"/>
 				</Button>
 

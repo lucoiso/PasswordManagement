@@ -11,12 +11,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-	x:Name="Self">
+	Loaded="ComponentLoaded">
 
 	<StackPanel Orientation="Vertical">
 		<TextBox x:Name="TB_Search" PlaceholderText="Search" Width="{Binding ActualWidth, ElementName=LV_DataList}" Margin="4" TextChanged="TB_Search_TextChanged"/>
 		
-		<ListView x:Name="LV_DataList" Margin="4" Height="600" Width="720" CornerRadius="4" ItemsSource="{x:Bind FilteredData}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="None">
+		<ListView x:Name="LV_DataList" Margin="4" Height="600" Width="720" CornerRadius="4" ItemsSource="{x:Bind Data}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="None">
 			<ListView.ItemTemplate>
 				<DataTemplate x:DataType="manager:LoginData">
 					<local:LoginDataListItem Data="{x:Bind}" HorizontalAlignment="Stretch"/>

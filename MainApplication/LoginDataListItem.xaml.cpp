@@ -7,9 +7,8 @@
 #include "LoginDataListItem.xaml.h"
 #include "LoginDataListItem.g.cpp"
 
-#include "MainPage.xaml.h"
-
 #include "DialogManager.h"
+#include "DataManager.h"
 
 #include "Helpers/SecurityHelper.h"
 #include "Helpers/CastingHelper.h"
@@ -24,9 +23,12 @@ namespace winrt::MainApplication::implementation
         InitializeComponent();
     }
 
-    bool LoginDataListItem::EnableLicenseTools() const
+    void LoginDataListItem::ComponentLoaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
-        return Helper::GetParent<MainApplication::MainPage>(*this).EnableLicenseTools();
+        if (!Helper::GetSettingValue<bool>(LICENSING_ENABLED_KEY))
+        {
+            BT_Edit().IsEnabled(false);
+		}
     }
 
     PasswordManager::LoginData MainApplication::implementation::LoginDataListItem::Data() const
@@ -43,10 +45,9 @@ namespace winrt::MainApplication::implementation
             m_show_password = false;
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
 
-            EmitUsedEvent(false);
-            EmitChangedEvent(false);
-
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"TimeCreated" });
+            m_property_changed(*this, Data::PropertyChangedEventArgs{ L"TimeUsed" });
+            m_property_changed(*this, Data::PropertyChangedEventArgs{ L"TimeChanged" });
         }
     }
 
@@ -133,7 +134,7 @@ namespace winrt::MainApplication::implementation
                 {
                     co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Registered data contains empty values.", false, true);
                 }
-                else if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
+                else
                 {
                     EmitChangedEvent();
 
@@ -142,16 +143,13 @@ namespace winrt::MainApplication::implementation
 
                     const auto current_data = Data().Clone().as<PasswordManager::LoginData>();
 
-                    co_await MainPage.InsertLoginData(new_data, false);
+                    const bool is_new_data = !current_data.Equals(new_data);
+                    if (is_new_data)
+                    {
+                        co_await DataManager::GetInstance().RemoveLoginDataAsync({ Data() }, false);
+                    }
 
-                    if (!new_data.Equals(current_data))
-                    {
-                        co_await MainPage.RemoveLoginData(current_data, true);
-                    }
-                    else
-                    {
-                        co_await MainPage.SaveLocalDataAsync();
-                    }
+                    co_await DataManager::GetInstance().InsertLoginDataAsync({ new_data }, true);
                 }
 
                 break;
@@ -175,10 +173,7 @@ namespace winrt::MainApplication::implementation
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                if (auto MainPage = Helper::GetParent<MainApplication::MainPage>(*this); MainPage)
-                {
-                    co_await MainPage.RemoveLoginData(Data().Clone().as<PasswordManager::LoginData>(), true);
-                }
+                co_await DataManager::GetInstance().RemoveLoginDataAsync({ Data() }, true);
                 break;
 
             default: break;

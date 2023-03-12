@@ -18,7 +18,7 @@ namespace winrt::MainApplication::implementation
         uint64_t BackupTime() const;
         void BackupTime(uint64_t value);
 
-        hstring Date() const;
+        hstring Date();
 
         event_token PropertyChanged(Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& value);
         void PropertyChanged(event_token const& token);

@@ -9,8 +9,6 @@ namespace MainApplication
     {
         LoginDataListItem();
 
-        Boolean EnableLicenseTools{ get; };
-
         PasswordManager.LoginData Data;
         String Password{ get; };
 

@@ -21,7 +21,7 @@
 				<AcrylicBrush TintOpacity="0.75" TintLuminosityOpacity="0.25" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
 			</Grid.Background>
 			
-			<Frame x:Name="FR_MainFrame" Loaded="FR_MainFrame_Loaded"/>
+			<Frame x:Name="FR_MainFrame" Loaded="ComponentLoaded"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
 				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" Margin="2, 2, 2, 8">

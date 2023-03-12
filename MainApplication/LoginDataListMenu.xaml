@@ -9,7 +9,8 @@
     xmlns:local="using:MainApplication"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+	Loaded="ComponentLoaded">
 
 	<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Top">
 		<Grid ColumnDefinitions="160, 160" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16">
@@ -25,14 +26,14 @@
 				<x:String>Time Changed</x:String>
 			</ComboBox>
 
-			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" HorizontalContentAlignment="Center" SelectedIndex="1" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" HorizontalContentAlignment="Center" SelectedIndex="0" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
 				<x:String>Ascending</x:String>
 				<x:String>Descending</x:String>
 			</ComboBox>
 
 			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="0" Margin="0, 16, 0, 8">Import / Export</TextBlock>
 
-			<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Import</Button>
+			<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Import</Button>
 
 			<DropDownButton Content="Export" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" >
 				<DropDownButton.Flyout>
@@ -48,13 +49,13 @@
 
 			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="0" Margin="0, 16, 0, 8">Management</TextBlock>
 			
-			<Button x:Name="BP_Insert" Click="BP_Insert_Click" Grid.Row="5" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Insert</Button>
+			<Button x:Name="BP_Insert" Click="BP_Insert_Click" Grid.Row="5" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Insert</Button>
 
-			<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="5" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Clear</Button>
+			<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="5" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">Clear</Button>
 
 			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="6" Grid.Column="0" Margin="0, 16, 0, 8">Tools</TextBlock>
 
-			<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="7" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" IsEnabled="{x:Bind EnableLicenseTools}">Generator</Button>
+			<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="7" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Generator</Button>
 		</Grid>
 	</Border>
 </UserControl>

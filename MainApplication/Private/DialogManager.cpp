@@ -11,26 +11,9 @@
 #include "ApplicationSettings.xaml.h"
 #include "PasswordGenerator.xaml.h"
 
-#include <thread>
-#include <future>
-
 Microsoft::UI::Xaml::XamlRoot DialogManager::GetMainWindowContentXamlRoot() const
 {
-    return winrt::Microsoft::UI::Xaml::Application::Current().as<winrt::MainApplication::implementation::App>()->Window().as<winrt::MainApplication::MainWindow>().Content().XamlRoot();
-}
-
-void DialogManager::WaitForDialogClose() const
-{
-    std::unique_lock<std::mutex> lock(mutex);
-    condition_variable.wait(lock, [this] { return !HasAnyDialogOpen(); });
-}
-
-void DialogManager::NotifyDialogClose() const
-{
-    if (!HasAnyDialogOpen())
-    {
-        condition_variable.notify_all();
-    }
+    return Microsoft::UI::Xaml::Application::Current().as<MainApplication::implementation::App>()->Window().as<MainApplication::MainWindow>().Content().XamlRoot();
 }
 
 bool DialogManager::HasAnyDialogOpen() const
@@ -41,7 +24,7 @@ bool DialogManager::HasAnyDialogOpen() const
         if (const auto existing_dialog = popup.Child().try_as<Microsoft::UI::Xaml::Controls::ContentDialog>())
         {
             return true;
-        }        
+        }
     }
 
     return false;

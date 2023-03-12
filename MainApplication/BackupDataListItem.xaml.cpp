@@ -8,10 +8,10 @@
 #include "BackupDataListItem.g.cpp"
 
 #include "DialogManager.h"
+#include "DataManager.h"
 
 #include "Helpers/SecurityHelper.h"
 #include "Helpers/CastingHelper.h"
-#include "Helpers/FileLoadingHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -37,25 +37,22 @@ namespace winrt::MainApplication::implementation
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                if (auto MainWindow = Application::Current().as<MainApplication::implementation::App>()->Window().as<MainApplication::MainWindow>(); MainWindow)
+                DialogManager::GetInstance().ShowLoadingDialog();
+
+                try
                 {
-                    DialogManager::GetInstance().ShowLoadingDialog();
+                    const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
+                    const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
 
-                    try
-                    {
-                        const auto backups_directory = co_await Helper::GetBackupsDirectoryAsync();
-                        const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
-
-                        co_await MainWindow.TryGetFrameContentAsMainPage().ImportDataFromFileAsync(backup_file, true);
-                    }
-                    catch (const hresult_error& e)
-                    {
-                        DialogManager::GetInstance().HideLoadingDialog();
-                        Helper::PrintDebugLine(e.message());
-                    }
-
-                    DialogManager::GetInstance().HideLoadingDialog();
+                    co_await DataManager::GetInstance().ImportDataFromFileAsync({ backup_file }, true);
                 }
+                catch (const hresult_error& e)
+                {
+                    DialogManager::GetInstance().HideLoadingDialog();
+                    Helper::PrintDebugLine(e.message());
+                }
+
+                DialogManager::GetInstance().HideLoadingDialog();
 
                 break;
 
@@ -77,25 +74,22 @@ namespace winrt::MainApplication::implementation
         switch (result)
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                if (auto MainWindow = Application::Current().as<MainApplication::implementation::App>()->Window().as<MainApplication::MainWindow>(); MainWindow)
+                DialogManager::GetInstance().ShowLoadingDialog();
+
+                try
                 {
-                    DialogManager::GetInstance().ShowLoadingDialog();
+                    const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
+                    const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
 
-                    try
-                    {
-                        const auto backups_directory = co_await Helper::GetBackupsDirectoryAsync();
-                        const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
-
-                        co_await MainWindow.TryGetFrameContentAsMainPage().ReplaceDataWithFileAsync(backup_file, true);
-                    }
-                    catch (const hresult_error& e)
-                    {
-                        DialogManager::GetInstance().HideLoadingDialog();
-                        Helper::PrintDebugLine(e.message());
-                    }
-
-                    DialogManager::GetInstance().HideLoadingDialog();
+                    co_await DataManager::GetInstance().ReplaceDataWithFileAsync({ backup_file }, true);
                 }
+                catch (const hresult_error& e)
+                {
+                    DialogManager::GetInstance().HideLoadingDialog();
+                    Helper::PrintDebugLine(e.message());
+                }
+
+                DialogManager::GetInstance().HideLoadingDialog();
 
                 break;
 
@@ -116,11 +110,14 @@ namespace winrt::MainApplication::implementation
         }
     }
 
-    hstring BackupDataListItem::Date() const
+    hstring BackupDataListItem::Date()
     {
         if (BackupTime() == Helper::GetCurrentDayTimeCount())
         {
-            return L"Current";
+            BT_Restore_Update().IsEnabled(false);
+            BT_Restore_Replace().IsEnabled(false);
+
+            return L"Current Data";
         }
 
         return Helper::TimeToString(Helper::ToTimePoint(BackupTime()), true, false);

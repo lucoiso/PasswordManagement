@@ -193,8 +193,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </ClInclude>
     <ClInclude Include="Public\DialogManager.h" />
+    <ClInclude Include="Public\DataManager.h" />
     <ClInclude Include="Public\Helpers\CastingHelper.h" />
-    <ClInclude Include="Public\Helpers\FileLoadingHelper.h" />
     <ClInclude Include="Public\Helpers\SecurityHelper.h" />
     <ClInclude Include="Public\Helpers\SettingsHelper.h" />
   </ItemGroup>
@@ -244,6 +244,7 @@
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
     <ClCompile Include="Private\DialogManager.cpp" />
+    <ClCompile Include="Private\DataManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="App.idl">

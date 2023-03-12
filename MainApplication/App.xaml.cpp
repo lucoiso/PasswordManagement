@@ -84,7 +84,7 @@ Windows::Foundation::IAsyncAction App::OnLaunched([[maybe_unused]] LaunchActivat
     InitializeWindow(app_instance.GetActivatedEventArgs().Kind());
 }
 
-void winrt::MainApplication::implementation::App::InitializeWindow(const Microsoft::Windows::AppLifecycle::ExtendedActivationKind& activation_kind)
+void App::InitializeWindow(const Microsoft::Windows::AppLifecycle::ExtendedActivationKind& activation_kind)
 {
     LUPASS_LOG_FUNCTION();
 

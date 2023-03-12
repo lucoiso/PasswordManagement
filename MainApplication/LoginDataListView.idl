@@ -10,16 +10,6 @@ namespace MainApplication
     runtimeclass LoginDataListView : Microsoft.UI.Xaml.Controls.UserControl
     {
         LoginDataListView();
-
-        Boolean EnableLicenseTools;
-
-        void InsertDataInList(PasswordManager.LoginData data);
-        void RemoveDataFromList(PasswordManager.LoginData data);
-        void RemoveAllDataFromList();
-
-        Windows.Foundation.Collections.IObservableVector<PasswordManager.LoginData> FilteredData{ get; };
-        Windows.Foundation.Collections.IVector<PasswordManager.LoginData> Data{ get; };
-
-		void Sort(DataSortMode mode, DataSortOrientation orientation);
+        Windows.Foundation.Collections.IObservableVector<PasswordManager.LoginData> Data{ get; };
     }
 }

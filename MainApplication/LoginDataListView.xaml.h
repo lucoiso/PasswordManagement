@@ -12,35 +12,15 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataListView();
 
-        void UpdateListSize(const float width, const float height);
-
-        void WindowSize_Changed(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args);
-
-        bool EnableLicenseTools() const;
-        void EnableLicenseTools(bool value);
-
-        void InsertDataInList(PasswordManager::LoginData const& data);
-        void RemoveDataFromList(PasswordManager::LoginData const& data);
-        void RemoveAllDataFromList();
-
-        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> FilteredData() const;
-        Windows::Foundation::Collections::IVector<PasswordManager::LoginData> Data() const;
-
+        void ComponentLoaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void TB_Search_TextChanged(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args);
 
-        void Sort(DataSortMode const& mode, DataSortOrientation const& orientation);
+        void UpdateListSize(const float width, const float height);
+
+        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> Data() const;
 
     private:
-        bool m_enable_license_tools{ false };
-        Windows::Foundation::Collections::IVector<PasswordManager::LoginData> m_data;
-        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_filtered_data;
-
-        hstring m_current_search;
-
-    protected:
-		bool MatchSearch(const PasswordManager::LoginData& data) const;
-		void UpdateFilteredData();
-        void UpdateEntriesIndicator();
+        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_data;
     };
 }
 
