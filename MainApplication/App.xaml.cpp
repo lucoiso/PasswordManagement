@@ -19,17 +19,19 @@ constexpr auto WM_TRAYICON = (WM_USER + 1);
 constexpr auto WM_TOGGLE_WINDOW = (WM_USER + 2);
 constexpr auto WM_TOGGLE_GENERATOR = (WM_USER + 3);
 constexpr auto WM_TOGGLE_SETTINGS = (WM_USER + 4);
-constexpr auto WM_EXIT_APPLICATION = (WM_USER + 5);
+constexpr auto WM_RESTART_APPLICATION = (WM_USER + 5);
+constexpr auto WM_EXIT_APPLICATION = (WM_USER + 6);
 
-constexpr auto ID_TRAYICON = (WM_USER + 6);
+constexpr auto ID_TRAYICON = (WM_USER + 7);
 
-constexpr auto ID_APPLICATIONWINDOW_SHORTCUT = (WM_USER + 7);
-constexpr auto ID_GENERATORWINDOW_SHORTCUT = (WM_USER + 8);
+constexpr auto ID_APPLICATIONWINDOW_SHORTCUT = (WM_USER + 8);
+constexpr auto ID_GENERATORWINDOW_SHORTCUT = (WM_USER + 9);
 
-constexpr auto ID_TOGGLE_APPLICATION_VISIBILITY = (WM_USER + 9);
-constexpr auto ID_TOGGLE_GENERATOR_VISIBILITY = (WM_USER + 10);
-constexpr auto ID_TOGGLE_SETTINGS_VISIBILITY = (WM_USER + 11);
-constexpr auto ID_CLOSE_APPLICATION = (WM_USER + 12);
+constexpr auto ID_TOGGLE_APPLICATION_VISIBILITY = (WM_USER + 10);
+constexpr auto ID_TOGGLE_GENERATOR_VISIBILITY = (WM_USER + 11);
+constexpr auto ID_TOGGLE_SETTINGS_VISIBILITY = (WM_USER + 12);
+constexpr auto ID_RESTART_APPLICATION = (WM_USER + 13);
+constexpr auto ID_CLOSE_APPLICATION = (WM_USER + 14);
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -252,6 +254,8 @@ void ProcessTrayIconMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
             AppendMenuW(menu, MF_STRING, ID_TOGGLE_APPLICATION_VISIBILITY, Application::Current().as<App>()->Window().Visible() ? L"Hide Application" : L"Show Application");
             AppendMenuW(menu, MF_STRING, ID_TOGGLE_GENERATOR_VISIBILITY, L"Open Generator");
             AppendMenuW(menu, MF_STRING, ID_TOGGLE_SETTINGS_VISIBILITY, L"Open Settings");
+            AppendMenuW(menu, MF_SEPARATOR, 0, nullptr);
+            AppendMenuW(menu, MF_STRING, ID_RESTART_APPLICATION, L"Restart Application");
             AppendMenuW(menu, MF_STRING, ID_CLOSE_APPLICATION, L"Exit Application");
 
             POINT cursor_position;
@@ -276,6 +280,10 @@ void ProcessTrayIconMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 case ID_TOGGLE_SETTINGS_VISIBILITY:
                     SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
                     SendMessageW(hwnd, WM_TOGGLE_SETTINGS, 0, 0);
+                    break;
+
+                case ID_RESTART_APPLICATION:
+                    SendMessageW(hwnd, WM_RESTART_APPLICATION, 0, 0);
                     break;
 
                 case ID_CLOSE_APPLICATION:
@@ -339,6 +347,10 @@ LRESULT CALLBACK App::ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, 
 
         case WM_TOGGLE_SETTINGS:
             DialogManager::GetInstance().InvokeSettingsDialogAsync();
+            break;
+
+        case WM_RESTART_APPLICATION:
+            App::RestartApplication();
             break;
 
         case WM_EXIT_APPLICATION:

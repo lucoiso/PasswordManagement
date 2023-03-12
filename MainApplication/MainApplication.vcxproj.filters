@@ -17,6 +17,9 @@
     <ClCompile Include="Private\DialogManager.cpp">
       <Filter>Development\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Private\DataManager.cpp">
+      <Filter>Development\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -83,14 +86,14 @@
     <ClInclude Include="Public\Helpers\CastingHelper.h">
       <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Public\Helpers\FileLoadingHelper.h">
-      <Filter>Development\Header Files\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="Public\Helpers\SecurityHelper.h">
       <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Public\Helpers\SettingsHelper.h">
       <Filter>Development\Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\DataManager.h">
+      <Filter>Development\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
