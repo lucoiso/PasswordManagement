@@ -17,10 +17,10 @@
 	CornerRadius="8">
 
 	<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="Panel_Loaded">
-		<ToggleSwitch x:Name="TS_WindowsHello" OnContent="Enable Windows Hello" OffContent="Enable Windows Hello" Margin="4" />
-		<ToggleSwitch x:Name="TS_SystemTray" OnContent="Enable System Tray Icon" OffContent="Enable System Tray Icon" Margin="4" />
-		<ToggleSwitch x:Name="TS_Shortcuts" OnContent="Enable Shortcuts" OffContent="Enable Shortcuts" Margin="4" />
+		<ToggleSwitch x:Name="TS_WindowsHello" OnContent="Enable Windows Hello" OffContent="Enable Windows Hello" Margin="4" AutomationProperties.Name="{Binding OnContent, Mode=TwoWay}"/>
+		<ToggleSwitch x:Name="TS_SystemTray" OnContent="Enable System Tray Icon" OffContent="Enable System Tray Icon" Margin="4" AutomationProperties.Name="{Binding OnContent, Mode=TwoWay}"/>
+		<ToggleSwitch x:Name="TS_Shortcuts" OnContent="Enable Shortcuts" OffContent="Enable Shortcuts" Margin="4" AutomationProperties.Name="{Binding OnContent, Mode=TwoWay}"/>
 		
-		<Button x:Name="BP_Reset" Click="BP_Reset_Click" Margin="0, 24, 0, 0" HorizontalAlignment="Stretch">Reset to Defaults</Button>
+		<Button x:Name="BP_Reset" Click="BP_Reset_Click" Margin="0, 24, 0, 0" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Reset to Defaults</Button>
 	</StackPanel>
 </ContentDialog>

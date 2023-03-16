@@ -32,31 +32,31 @@
 			</Grid>
 
 			<Grid ColumnDefinitions="32, 32" RowDefinitions ="32, 32, 32, 32" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True">
-				<Button x:Name="BT_TogglePassword" Grid.Column="0" Grid.Row="0" Click="BT_TogglePassword_Clicked" Padding="4" ToolTipService.ToolTip="Show/Hide Password">
+				<Button x:Name="BT_TogglePassword" Grid.Column="0" Grid.Row="0" Click="BT_TogglePassword_Clicked" Padding="4" ToolTipService.ToolTip="Toggle Password" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe Fluent Icons" Glyph="&#xE9A9;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Url" Grid.Column="1" Grid.Row="0" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Url to Clipboard">
+				<Button Tag="Url" Grid.Column="1" Grid.Row="0" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Url to Clipboard" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8C8;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Username" Grid.Column="0" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Username to Clipboard">
+				<Button Tag="Username" Grid.Column="0" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Username to Clipboard" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7EE;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Password" Grid.Column="1" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Password to Clipboard">
+				<Button Tag="Password" Grid.Column="1" Grid.Row="1" Click="BT_CopyContent_Clicked" Padding="4" ToolTipService.ToolTip="Copy Password to Clipboard" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7EF;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit">
+				<Button Tag="Edit" x:Name="BT_Edit" Grid.Column="0" Grid.Row="2" Click="BT_Edit_Clicked" Padding="4" ToolTipService.ToolTip="Edit" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE70F;" FontSize="16"/>
 				</Button>
 
-				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete">
+				<Button Tag="Delete" x:Name="BT_Delete" Grid.Column="1" Grid.Row="2" Click="BT_Delete_Clicked" Padding="4" ToolTipService.ToolTip="Delete" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74D;" FontSize="16"/>
 				</Button>
 
-				<Button Grid.Column="1" Grid.Row="3" Padding="4" ToolTipService.ToolTip="Time Information">
+				<Button Grid.Column="1" Grid.Row="3" Padding="4" ToolTipService.ToolTip="Time Information" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xec92;" FontSize="16"/>
 
 					<Button.Flyout>

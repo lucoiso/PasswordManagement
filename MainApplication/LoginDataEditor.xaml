@@ -16,19 +16,19 @@
     CornerRadius="8">
 
 	<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="500">
-		<TextBox x:Name="TB_Name" PlaceholderText="Name (Optional)" Margin="4" TextChanged="TB_Name_TextChanged" HorizontalAlignment="Stretch"/>
-		<TextBox x:Name="TB_Url" PlaceholderText="Url" Margin="4" TextChanged="TB_Url_TextChanged" HorizontalAlignment="Stretch"/>
-		<TextBox x:Name="TB_Username" PlaceholderText="Username" Margin="4" TextChanged="TB_Username_TextChanged" HorizontalAlignment="Stretch"/>
-		<TextBox x:Name="TB_Notes" PlaceholderText="Notes (Optional)" Margin="4" TextChanged="TB_Notes_TextChanged" HorizontalAlignment="Stretch"/>
+		<TextBox Tag="Name" x:Name="TB_Name" PlaceholderText="Name (Optional)" Margin="4" TextChanged="TB_Data_Changed" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Tag, Mode=TwoWay}"/>
+		<TextBox Tag="Url" x:Name="TB_Url" PlaceholderText="Url" Margin="4" TextChanged="TB_Data_Changed" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Tag, Mode=TwoWay}"/>
+		<TextBox Tag="Username" x:Name="TB_Username" PlaceholderText="Username" Margin="4" TextChanged="TB_Data_Changed" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Tag, Mode=TwoWay}"/>
+		<TextBox Tag="Notes" x:Name="TB_Notes" PlaceholderText="Notes (Optional)" Margin="4" TextChanged="TB_Data_Changed" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Tag, Mode=TwoWay}"/>
 		
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-			<PasswordBox x:Name="TB_Password" PlaceholderText="Password" Margin="4" PasswordChanged="TB_Password_PasswordChanged" Width="420" PasswordRevealMode="Hidden" />
+			<PasswordBox Tag="Password" x:Name="TB_Password" PlaceholderText="Password" Margin="4" PasswordChanged="TB_Data_Changed" Width="420" PasswordRevealMode="Hidden" AutomationProperties.Name="{Binding Tag, Mode=TwoWay}"/>
 			
-			<Button x:Name="BP_TogglePassword" Click="BT_TogglePasswordView_Click" Padding="4" ToolTipService.ToolTip="Show/Hide Password" Width="Auto" Margin="4">
+			<Button x:Name="BP_TogglePassword" Click="BT_TogglePasswordView_Click" Padding="4" ToolTipService.ToolTip="Toggle Password" Width="Auto" Margin="4" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 				<FontIcon x:Name="FI_TogglePassword" FontFamily="Segoe Fluent Icons" Glyph="&#xE9A9;" FontSize="18"/>
 			</Button>
 			
-			<Button x:Name="BP_GeneratePassword" Click="BT_GeneratePassword_Click" Padding="4" ToolTipService.ToolTip="Password Generator" Width="Auto" Margin="4">
+			<Button x:Name="BP_GeneratePassword" Click="BT_GeneratePassword_Click" Padding="4" ToolTipService.ToolTip="Password Generator" Width="Auto" Margin="4" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 				<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE730;" FontSize="18"/>
 			</Button>
 		</StackPanel>

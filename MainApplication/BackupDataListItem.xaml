@@ -14,11 +14,11 @@
 	<Grid ColumnDefinitions="*, 32, 32" RowDefinitions ="*">
 		<TextBlock Grid.Column="0" Grid.Row="0" Text="{x:Bind Date, Mode=OneWay}" Style="{ThemeResource BodyStrongTextBlockStyle}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 		
-        <Button x:Name="BT_Restore_Update" Grid.Column="1" Grid.Row="0" Padding="4" Click="BT_Restore_Update_Click" HorizontalAlignment="Right" ToolTipService.ToolTip="Restore (Update): Will add all backup data and update existing informations.">
+        <Button x:Name="BT_Restore_Update" Grid.Column="1" Grid.Row="0" Padding="4" Click="BT_Restore_Update_Click" HorizontalAlignment="Right" AutomationProperties.Name="Restore" ToolTipService.ToolTip="Restore (Update): Will add all backup data and update existing informations.">
 			<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe82e;" FontSize="16"/>			
 		</Button>
 
-		<Button x:Name="BT_Restore_Replace" Grid.Column="2" Grid.Row="0" Padding="4" Click="BT_Restore_Replace_Click" HorizontalAlignment="Right" ToolTipService.ToolTip="Restore (Replace): Will replace all current data with the backup data, removing existing informations that doesn't exists in the backup data.">
+		<Button x:Name="BT_Restore_Replace" Grid.Column="2" Grid.Row="0" Padding="4" Click="BT_Restore_Replace_Click" HorizontalAlignment="Right" AutomationProperties.Name="Restore" ToolTipService.ToolTip="Restore (Replace): Will replace all current data with the backup data, removing existing informations that doesn't exists in the backup data.">
 			<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe82d;" FontSize="16"/>
 		</Button>
     </Grid>

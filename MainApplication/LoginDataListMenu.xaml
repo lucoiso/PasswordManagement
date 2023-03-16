@@ -14,48 +14,48 @@
 
 	<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Top">
 		<Grid ColumnDefinitions="160, 160" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16">
-			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="0" Margin="0, 0, 0, 8">Sorting</TextBlock>
+			<TextBlock Text="Sorting" Style="{StaticResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="0" Margin="0, 0, 0, 8"/>
 
-			<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" SelectedIndex="0" HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
-				<x:String>Name</x:String>
-				<x:String>Url</x:String>
-				<x:String>Username</x:String>
-				<x:String>Notes</x:String>
-				<x:String>Time Created</x:String>
-				<x:String>Time Used</x:String>
-				<x:String>Time Changed</x:String>
+			<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" AutomationProperties.Name="{Binding PlaceholderText, Mode=TwoWay}" SelectedIndex="0" HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+				<ComboBoxItem Content="Name" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Url" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Username" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Notes" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Time Created" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Time Used" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Time Changed" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 			</ComboBox>
 
-			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" HorizontalContentAlignment="Center" SelectedIndex="0" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
-				<x:String>Ascending</x:String>
-				<x:String>Descending</x:String>
+			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" AutomationProperties.Name="{Binding PlaceholderText, Mode=TwoWay}" HorizontalContentAlignment="Center" SelectedIndex="0" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+				<ComboBoxItem Content="Ascending" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
+				<ComboBoxItem Content="Descending" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 			</ComboBox>
 
-			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="0" Margin="0, 16, 0, 8">Import / Export</TextBlock>
+			<TextBlock Text="Import / Export" Style="{StaticResource BaseTextBlockStyle}" Grid.Row="2" Grid.Column="0" Margin="0, 16, 0, 8"/>
 
-			<Button x:Name="BP_Import" Click="BP_Import_Click" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Import</Button>
+			<Button Content="Import" x:Name="BP_Import" Click="BP_Import_Click" AutomationProperties.Name="{Binding Content, Mode=TwoWay}" Grid.Row="3" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch"/>
 
-			<DropDownButton Content="Export" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" >
+			<DropDownButton AutomationProperties.Name="{Binding Content, Mode=TwoWay}" Content="Export" Grid.Row="3" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" >
 				<DropDownButton.Flyout>
 					<MenuFlyout>
-						<MenuFlyoutItem Tag="Lupass" Text="Lupass" Click="BP_Export_Click"/>
-						<MenuFlyoutItem Tag="Microsoft" Text="Microsoft" Click="BP_Export_Click"/>
-						<MenuFlyoutItem Tag="Google" Text="Google" Click="BP_Export_Click"/>
-						<MenuFlyoutItem Tag="Firefox" Text="Firefox" Click="BP_Export_Click"/>
-						<MenuFlyoutItem Tag="Kapersky" Text="Kapersky" Click="BP_Export_Click"/>
+						<MenuFlyoutItem Text="Lupass" Tag="Lupass" AutomationProperties.Name="{Binding Text, Mode=TwoWay}" Click="BP_Export_Click"/>
+						<MenuFlyoutItem Text="Microsoft" Tag="Microsoft" AutomationProperties.Name="{Binding Text, Mode=TwoWay}" Click="BP_Export_Click"/>
+						<MenuFlyoutItem Text="Google" Tag="Google" AutomationProperties.Name="{Binding Text, Mode=TwoWay}" Click="BP_Export_Click"/>
+						<MenuFlyoutItem Text="Firefox" Tag="Firefox" AutomationProperties.Name="{Binding Text, Mode=TwoWay}" Click="BP_Export_Click"/>
+						<MenuFlyoutItem Text="Kapersky" Tag="Kapersky" AutomationProperties.Name="{Binding Text, Mode=TwoWay}" Click="BP_Export_Click"/>
 					</MenuFlyout>
 				</DropDownButton.Flyout>
 			</DropDownButton>
 
-			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="0" Margin="0, 16, 0, 8">Management</TextBlock>
-			
-			<Button x:Name="BP_Insert" Click="BP_Insert_Click" Grid.Row="5" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Insert</Button>
+			<TextBlock Text="Management" Style="{StaticResource BaseTextBlockStyle}" Grid.Row="4" Grid.Column="0" Margin="0, 16, 0, 8"/>
 
-			<Button x:Name="BP_Clear" Click="BP_Clear_Click" Grid.Row="5" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch">Clear</Button>
+			<Button Content="Insert" x:Name="BP_Insert" Click="BP_Insert_Click" AutomationProperties.Name="{Binding Content, Mode=TwoWay}" Grid.Row="5" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch"/>
 
-			<TextBlock Style="{StaticResource BaseTextBlockStyle}" Grid.Row="6" Grid.Column="0" Margin="0, 16, 0, 8">Tools</TextBlock>
+			<Button Content="Clear" x:Name="BP_Clear" Click="BP_Clear_Click" AutomationProperties.Name="{Binding Content, Mode=TwoWay}" Grid.Row="5" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"/>
 
-			<Button x:Name="BP_Generator" Click="BP_Generator_Click" Grid.Row="7" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch">Generator</Button>
+			<TextBlock Text="Tools" Style="{StaticResource BaseTextBlockStyle}" Grid.Row="6" Grid.Column="0" Margin="0, 16, 0, 8"/>
+
+			<Button Content="Generator" x:Name="BP_Generator" Click="BP_Generator_Click" AutomationProperties.Name="{Binding Content, Mode=TwoWay}" Grid.Row="7" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch"/>
 		</Grid>
 	</Border>
 </UserControl>

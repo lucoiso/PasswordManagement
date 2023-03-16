@@ -38,39 +38,33 @@ namespace winrt::MainApplication::implementation
         TB_Password().Password(m_data.Password());
     }
 
-    void LoginDataEditor::TB_Name_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
+    void LoginDataEditor::TB_Data_Changed([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
     {
         LUPASS_LOG_FUNCTION();
 
-        m_data.Name(TB_Name().Text());
-    }
+        const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
+        const auto tag = element.Tag().as<hstring>();
 
-    void LoginDataEditor::TB_Url_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_data.Url(TB_Url().Text());
-    }
-
-    void LoginDataEditor::TB_Username_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_data.Username(TB_Username().Text());
-    }
-
-    void LoginDataEditor::TB_Notes_TextChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::Controls::TextChangedEventArgs const& args)
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_data.Notes(TB_Notes().Text());
-    }
-
-    void LoginDataEditor::TB_Password_PasswordChanged([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
-    {
-        LUPASS_LOG_FUNCTION();
-
-        m_data.Password(TB_Password().Password());
+        if (Helper::StringEquals(tag, L"Name"))
+        {
+            m_data.Name(TB_Name().Text());
+        }
+        else if (Helper::StringEquals(tag, L"Url"))
+        {
+            m_data.Url(TB_Url().Text());
+        }
+        else if (Helper::StringEquals(tag, L"Username"))
+        {
+            m_data.Username(TB_Username().Text());
+        }
+        else if (Helper::StringEquals(tag, L"Notes"))
+        {
+            m_data.Notes(TB_Notes().Text());
+        }
+        else if (Helper::StringEquals(tag, L"Password"))
+        {
+            m_data.Password(TB_Password().Password());
+        }
     }
 
     void LoginDataEditor::BT_TogglePasswordView_Click([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)

@@ -164,7 +164,7 @@ namespace winrt::MainApplication::implementation
             return DataSortMode::Undefined;
         }
 
-        const hstring selectedValue = unbox_value<hstring>(CB_SortingMode().SelectedItem());
+        const hstring selectedValue = unbox_value<hstring>(unbox_value<Microsoft::UI::Xaml::Controls::ComboBoxItem>(CB_SortingMode().SelectedItem()).Content());
 
         if (Helper::StringEquals(selectedValue, L"Name"))
         {
@@ -207,7 +207,7 @@ namespace winrt::MainApplication::implementation
             return DataSortOrientation::Undefined;
         }
 
-        const hstring selectedValue = unbox_value<hstring>(CB_SortingOrientation().SelectedItem());
+        const hstring selectedValue = unbox_value<hstring>(unbox_value<Microsoft::UI::Xaml::Controls::ComboBoxItem>(CB_SortingOrientation().SelectedItem()).Content());
 
         if (selectedValue == L"Ascending")
         {

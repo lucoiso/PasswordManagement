@@ -18,23 +18,23 @@
 
 		<Grid>
 			<Grid.Background>
-				<AcrylicBrush TintOpacity="0.75" TintLuminosityOpacity="0.25" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
+				<AcrylicBrush TintOpacity="0.5" TintLuminosityOpacity="0.75" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
 			</Grid.Background>
 			
 			<Frame x:Name="FR_MainFrame" Loaded="ComponentLoaded"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" Margin="2, 2, 2, 8">
+				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" Margin="2, 2, 2, 8" ToolTipService.ToolTip="License Status" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
 					<Flyout x:Name="FO_StoreOptions">
 						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 							<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 16" HorizontalAlignment="Center" VerticalAlignment="Center">Microsoft Store</TextBlock>
-							<HyperlinkButton Tag="Application" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center">Application</HyperlinkButton>
-							<HyperlinkButton Tag="AddOn" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center">Subscription</HyperlinkButton>
+							<HyperlinkButton Tag="Application" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Application</HyperlinkButton>
+							<HyperlinkButton Tag="AddOn" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Subscription</HyperlinkButton>
 						</StackPanel>
 					</Flyout>
 				</HyperlinkButton>
 
-				<Button Padding="4" ToolTipService.ToolTip="Backups" Margin="2, 2, 2, 8">
+				<Button Padding="4" ToolTipService.ToolTip="Backups" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2, 2, 2, 8">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe81c;" FontSize="16"/>
 
 					<Button.Flyout>
@@ -48,7 +48,7 @@
 					</Button.Flyout>
 				</Button>
 				
-				<Button Padding="4" ToolTipService.ToolTip="Shortcuts" Margin="2, 2, 2, 8">
+				<Button Padding="4" ToolTipService.ToolTip="Shortcuts" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2, 2, 2, 8">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xeda7;" FontSize="16"/>
 
 					<Button.Flyout>
@@ -62,7 +62,7 @@
 					</Button.Flyout>
 				</Button>
 				
-				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Settings" Margin="2, 2, 8, 8">
+				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Settings" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2, 2, 8, 8">
 					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE713;" FontSize="16"/>
 				</Button>
 			</StackPanel>
