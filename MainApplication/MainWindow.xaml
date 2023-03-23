@@ -18,54 +18,56 @@
 
 		<Grid>
 			<Grid.Background>
-				<AcrylicBrush TintOpacity="0.5" TintLuminosityOpacity="0.75" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
+				<AcrylicBrush TintOpacity="0.5" TintLuminosityOpacity="0.5" TintColor="{ThemeResource SystemAltHighColor}" FallbackColor="{ThemeResource SystemAltHighColor}" />
 			</Grid.Background>
 			
 			<Frame x:Name="FR_MainFrame" Loaded="ComponentLoaded"/>
 
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" Margin="2, 2, 2, 8" ToolTipService.ToolTip="License Status" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
-					<Flyout x:Name="FO_StoreOptions">
-						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-							<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 16" HorizontalAlignment="Center" VerticalAlignment="Center">Microsoft Store</TextBlock>
-							<HyperlinkButton Tag="Application" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Application</HyperlinkButton>
-							<HyperlinkButton Tag="AddOn" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Subscription</HyperlinkButton>
-						</StackPanel>
-					</Flyout>
-				</HyperlinkButton>
-
-				<Button Padding="4" ToolTipService.ToolTip="Backups" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2, 2, 2, 8">
-					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe81c;" FontSize="16"/>
-
-					<Button.Flyout>
-						<Flyout>
+			<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8" Margin="8" Padding="4, 2, 4, 2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+				<StackPanel Orientation="Horizontal">
+					<HyperlinkButton x:Name="HB_LicenseData" VerticalAlignment="Center" FontSize="12" Margin="2" ToolTipService.ToolTip="License Status" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}">
+						<Flyout x:Name="FO_StoreOptions">
 							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-								<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 12" HorizontalAlignment="Center" VerticalAlignment="Center">Available Backups</TextBlock>
-
-								<ListView x:Name="LV_Backups" Margin="4" Height="200" Width="180" Background="Transparent" SelectionMode="None"/>
+								<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 16" HorizontalAlignment="Center" VerticalAlignment="Center">Microsoft Store</TextBlock>
+								<HyperlinkButton Tag="Application" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Application</HyperlinkButton>
+								<HyperlinkButton Tag="AddOn" Click="OpenStorePage_Invoked" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding Content, Mode=TwoWay}">Subscription</HyperlinkButton>
 							</StackPanel>
 						</Flyout>
-					</Button.Flyout>
-				</Button>
-				
-				<Button Padding="4" ToolTipService.ToolTip="Shortcuts" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2, 2, 2, 8">
-					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xeda7;" FontSize="16"/>
+					</HyperlinkButton>
 
-					<Button.Flyout>
-						<Flyout>
-							<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-								<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 12" HorizontalAlignment="Center" VerticalAlignment="Center">Shortcuts</TextBlock>
-								<TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">Ctrl + Alt + N: Toggle Application View</TextBlock>
-								<TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">Ctrl + Alt + M: Open Password Generator</TextBlock>
-							</StackPanel>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-				
-				<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Settings" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2, 2, 8, 8">
-					<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE713;" FontSize="16"/>
-				</Button>
-			</StackPanel>
+					<Button Padding="4" ToolTipService.ToolTip="Backups" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2">
+						<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe81c;" FontSize="16"/>
+
+						<Button.Flyout>
+							<Flyout>
+								<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+									<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 12" HorizontalAlignment="Center" VerticalAlignment="Center">Available Backups</TextBlock>
+
+									<ListView x:Name="LV_Backups" Margin="4" Height="200" Width="180" Background="Transparent" SelectionMode="None"/>
+								</StackPanel>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+
+					<Button Padding="4" ToolTipService.ToolTip="Shortcuts" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2">
+						<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xeda7;" FontSize="16"/>
+
+						<Button.Flyout>
+							<Flyout>
+								<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+									<TextBlock Style="{StaticResource BaseTextBlockStyle}" Margin="8, 8, 8, 12" HorizontalAlignment="Center" VerticalAlignment="Center">Shortcuts</TextBlock>
+									<TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">Ctrl + Alt + N: Toggle Application View</TextBlock>
+									<TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center">Ctrl + Alt + M: Open Password Generator</TextBlock>
+								</StackPanel>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+
+					<Button x:Name="BT_Settings" Click="BT_Settings_Clicked" Padding="4" ToolTipService.ToolTip="Settings" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" Margin="2">
+						<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE713;" FontSize="16"/>
+					</Button>
+				</StackPanel>
+			</Border>
 		</Grid>
 	</ScrollViewer>
 </Window>

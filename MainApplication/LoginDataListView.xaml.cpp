@@ -43,7 +43,7 @@ namespace winrt::MainApplication::implementation
             {
                 m_data.Clear();
 
-                const auto data_container = DataManager::GetInstance().Data();
+                const auto data_container = DataManager::GetInstance().Data(true);
                 for (PasswordManager::LoginData const& data : data_container)
                 {
 					m_data.Append(data);

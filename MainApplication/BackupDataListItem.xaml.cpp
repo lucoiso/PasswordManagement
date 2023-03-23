@@ -117,7 +117,7 @@ namespace winrt::MainApplication::implementation
             BT_Restore_Update().IsEnabled(false);
             BT_Restore_Replace().IsEnabled(false);
 
-            return L"Current Data";
+            return L"Current";
         }
 
         return Helper::TimeToString(Helper::ToTimePoint(BackupTime()), true, false);

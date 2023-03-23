@@ -62,8 +62,14 @@ void DataManager::SetSortingOrientation(DataSortOrientation const& value)
     }
 }
 
-Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> DataManager::Data() const
+Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> DataManager::Data(const bool apply_filter) const
 {
+    if (!apply_filter)
+    {
+        std::vector<PasswordManager::LoginData> copied_data = m_data;
+        return single_threaded_vector(std::move(copied_data)).GetView();
+    }
+
     std::vector<PasswordManager::LoginData> filtered_container(m_data.size());
 
     std::copy_if(m_data.begin(), m_data.end(), filtered_container.begin(),

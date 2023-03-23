@@ -16,7 +16,7 @@
 		<Grid ColumnDefinitions="160, 160" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16">
 			<TextBlock Text="Sorting" Style="{StaticResource BaseTextBlockStyle}" Grid.Row="0" Grid.Column="0" Margin="0, 0, 0, 8"/>
 
-			<ComboBox x:Name="CB_SortingMode" PlaceholderText="Sorting Mode" AutomationProperties.Name="{Binding PlaceholderText, Mode=TwoWay}" SelectedIndex="0" HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+			<ComboBox x:Name="CB_SortingMode" ToolTipService.ToolTip="Sorting Mode" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" PlaceholderText="{Binding ToolTipService.ToolTip, Mode=TwoWay}" SelectedIndex="0" HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
 				<ComboBoxItem Content="Name" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 				<ComboBoxItem Content="Url" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 				<ComboBoxItem Content="Username" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
@@ -26,7 +26,7 @@
 				<ComboBoxItem Content="Time Changed" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 			</ComboBox>
 
-			<ComboBox x:Name="CB_SortingOrientation" PlaceholderText="Sorting Orientation" AutomationProperties.Name="{Binding PlaceholderText, Mode=TwoWay}" HorizontalContentAlignment="Center" SelectedIndex="0" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
+			<ComboBox x:Name="CB_SortingOrientation" ToolTipService.ToolTip="Sorting Orientation" AutomationProperties.Name="{Binding ToolTipService.ToolTip, Mode=TwoWay}" PlaceholderText="{Binding ToolTipService.ToolTip, Mode=TwoWay}" HorizontalContentAlignment="Center" SelectedIndex="0" Grid.Row="1" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" SelectionChanged="GenericSorting_SelectionChanged">
 				<ComboBoxItem Content="Ascending" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 				<ComboBoxItem Content="Descending" AutomationProperties.Name="{Binding Content, Mode=TwoWay}"/>
 			</ComboBox>

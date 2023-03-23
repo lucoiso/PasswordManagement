@@ -30,7 +30,7 @@ public:
 	void SetSortingMode(MainApplication::DataSortMode const& value);
 	void SetSortingOrientation(MainApplication::DataSortOrientation const& value);
 
-	Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> Data() const;
+	Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> Data(const bool apply_filter = false) const;
 	uint32_t DataSize() const;
 
 	Windows::Foundation::Collections::IVectorView<uint64_t> Backups() const;
