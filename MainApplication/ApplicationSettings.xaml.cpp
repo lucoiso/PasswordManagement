@@ -12,6 +12,7 @@
 #include "DialogManager.h"
 
 #include "Helpers/SettingsHelper.h"
+#include "Helpers/SecurityHelper.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
@@ -26,19 +27,23 @@ namespace winrt::MainApplication::implementation
         DefaultButton(Microsoft::UI::Xaml::Controls::ContentDialogButton::Primary);
 
         PrimaryButtonClick(
-            [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&)
+            [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&) -> Windows::Foundation::IAsyncAction
             {
-                SaveSettings();
-                Hide();
-                App::RestartApplication();
+                if (co_await SaveSettings())
+                {
+                    Hide();
+                    App::RestartApplication();
+                }
             }
         );
 
         SecondaryButtonClick(
-            [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&)
+            [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&) -> Windows::Foundation::IAsyncAction
             {
-                SaveSettings();
-                Hide();
+                if (co_await SaveSettings())
+                {
+                    Hide();
+                }
             }
         );
     }
@@ -58,6 +63,11 @@ namespace winrt::MainApplication::implementation
         {
             case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
             {
+                if (!(co_await Helper::RequestUserCredentials()))
+                {
+                    co_return;
+                }
+
                 Helper::SetSettingsToDefault();
                 App::RestartApplication();
             }
@@ -82,12 +92,19 @@ namespace winrt::MainApplication::implementation
         TS_Shortcuts().IsOn(Helper::GetSettingValue<bool>(SETTING_ENABLE_SHORTCUTS));
     }
 
-    void ApplicationSettings::SaveSettings()
+    Windows::Foundation::IAsyncOperation<bool> ApplicationSettings::SaveSettings()
     {
         LUPASS_LOG_FUNCTION();
+
+        if (!(co_await Helper::RequestUserCredentials()))
+        {
+            co_return false;
+        }
 
         Helper::InsertSettingValue(SETTING_ENABLE_WINDOWS_HELLO, TS_WindowsHello().IsOn());
 		Helper::InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, TS_SystemTray().IsOn());
         Helper::InsertSettingValue(SETTING_ENABLE_SHORTCUTS, TS_Shortcuts().IsOn());
+
+        co_return true;
     }
 }

@@ -7,7 +7,7 @@
 #include "LoginData.g.h"
 
 namespace winrt::PasswordManager::implementation
-{    
+{
     struct LoginData : LoginDataT<LoginData>
     {
         LoginData() = default;

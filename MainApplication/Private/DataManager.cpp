@@ -28,7 +28,7 @@ Windows::Foundation::IAsyncAction DataManager::Activate()
             co_await InsertLoginDataAsync({ event_data.Data() }, false);
         }
     );
-    
+
     co_await ImportDataFromFileAsync({ co_await GetLocalDataFileAsync() }, true);
     m_activated = true;
 }

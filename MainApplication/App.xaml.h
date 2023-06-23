@@ -37,7 +37,7 @@ namespace winrt::MainApplication::implementation
 
         HWND m_tray_hwnd;
         HHOOK m_mouse_hook;
-        
+
         NOTIFYICONDATA m_notify_icon_data = {};
         static LRESULT CALLBACK ApplicationProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
         static LRESULT CALLBACK LowLevelMouseProcedure(int nCode, WPARAM wParam, LPARAM lParam);

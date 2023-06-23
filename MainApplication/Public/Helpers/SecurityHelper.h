@@ -74,7 +74,7 @@ namespace winrt::Helper
 
         const auto username = unbox_value<hstring>(co_await Windows::System::User::GetDefault().GetPropertyAsync(Windows::System::KnownUserProperties::AccountName()));
         const auto credentials_request = co_await Windows::Security::Credentials::KeyCredentialManager::RequestCreateAsync(username, Windows::Security::Credentials::KeyCredentialCreationOption::ReplaceExisting);
-        
+
         DialogManager::GetInstance().HideLoadingDialog();
 
         switch (credentials_request.Status())

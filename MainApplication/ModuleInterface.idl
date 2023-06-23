@@ -24,7 +24,7 @@ namespace MainApplication
         Descending,
         MAX
     };
-    
+
     delegate void SingleVoidDelegate();
     delegate void ExportTypeDelegate(PasswordManager.LoginDataExportType export_type);
 }

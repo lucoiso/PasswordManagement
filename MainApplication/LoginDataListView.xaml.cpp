@@ -23,7 +23,7 @@ namespace winrt::MainApplication::implementation
     {
         InitializeComponent();
 
-        m_data = single_threaded_observable_vector<PasswordManager::LoginData>();        
+        m_data = single_threaded_observable_vector<PasswordManager::LoginData>();
     }
 
     void LoginDataListView::ComponentLoaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
@@ -38,6 +38,8 @@ namespace winrt::MainApplication::implementation
             }
         );
 
+        // TODO: Perform the sync update in background to avoid UI freezing
+        // TODO: Refactor to update only the sync data instead the entire list
         DataManager::GetInstance().DataSync(
             [this]()
             {

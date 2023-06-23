@@ -93,7 +93,7 @@ namespace winrt::MainApplication::implementation
     }
 
     Windows::Foundation::IAsyncAction MainWindow::InitializeBackupData()
-    {        
+    {
         co_await DataManager::GetInstance().RefreshBackupDataAsync();
 
         const auto backup_data = DataManager::GetInstance().Backups();
@@ -183,7 +183,7 @@ namespace winrt::MainApplication::implementation
     {
         return FR_MainFrame().Content().try_as<MainApplication::MainPage>();
     }
-    
+
     HWND MainWindow::GetWindowHandle()
     {
         LUPASS_LOG_FUNCTION();
@@ -196,7 +196,7 @@ namespace winrt::MainApplication::implementation
 
         return output;
     }
-    
+
     Microsoft::UI::Windowing::AppWindow MainWindow::GetAppWindow()
     {
         LUPASS_LOG_FUNCTION();

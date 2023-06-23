@@ -26,7 +26,7 @@ namespace winrt::PasswordManager::implementation
 		{
 			throw hresult_invalid_argument(L"file is unavailable");
 		}
-		
+
 		if (export_type == PasswordManager::LoginDataExportType::Lupass_Internal)
 		{
 			co_await ReadData_Lupass(file);

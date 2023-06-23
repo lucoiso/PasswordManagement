@@ -27,7 +27,7 @@ namespace winrt::Helper
         {
             return nullptr;
         }
-        
+
         if (auto casted_parent = parent.try_as<ParentTy>(); casted_parent)
         {
             return casted_parent;
@@ -39,7 +39,7 @@ namespace winrt::Helper
     constexpr uint64_t s_ticks_per_day = 864000000000;
     constexpr uint64_t s_epoch_diff = 116444736000000000;
 
-    inline winrt::clock::time_point ToTimePoint(const std::uint64_t& value) 
+    inline winrt::clock::time_point ToTimePoint(const std::uint64_t& value)
     {
         const uint64_t time_count = value - s_epoch_diff;
         const auto duration = std::chrono::duration<uint64_t, std::ratio<1, 10'000'000>>(time_count);

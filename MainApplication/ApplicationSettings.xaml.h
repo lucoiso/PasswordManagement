@@ -16,7 +16,7 @@ namespace winrt::MainApplication::implementation
         Windows::Foundation::IAsyncAction BP_Reset_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         Windows::Foundation::IAsyncAction InitializeSettingsProperties();
-        void SaveSettings();
+        Windows::Foundation::IAsyncOperation<bool> SaveSettings();
     };
 }
 

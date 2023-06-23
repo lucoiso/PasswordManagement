@@ -11,7 +11,7 @@ namespace winrt::MainApplication::implementation
     struct MainWindow : MainWindowT<MainWindow>
     {
         MainWindow();
-        
+
         Windows::Foundation::IAsyncAction ComponentLoaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
         Windows::Foundation::IAsyncAction BT_Settings_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);

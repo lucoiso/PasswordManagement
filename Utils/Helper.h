@@ -19,6 +19,8 @@ using namespace winrt;
 
 namespace winrt::Helper
 {
+	// TODO: Implement a log thread to queue messages and write them to a file
+	// TODO: Check syslog
 	inline void PrintDebugLine(const hstring& message)
 	{
 		if constexpr (ENABLE_DEBBUGGING)

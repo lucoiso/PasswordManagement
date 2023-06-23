@@ -85,7 +85,7 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        Controls::Flyout flyout;        
+        Controls::Flyout flyout;
         auto generator_content = winrt::make<MainApplication::implementation::PasswordGenerator>();
 
         generator_content.OnClose(

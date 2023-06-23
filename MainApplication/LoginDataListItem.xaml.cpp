@@ -41,7 +41,7 @@ namespace winrt::MainApplication::implementation
         if (Helper::SetMemberValue(value, m_data))
         {
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Data" });
-            
+
             m_show_password = false;
             m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
 
@@ -102,7 +102,7 @@ namespace winrt::MainApplication::implementation
 		{
 			CopyContentToClipboard(m_data.Url());
 		}
-        
+
 		Controls::Flyout flyout;
         Controls::TextBlock info;
         info.Text(L"Copied to clipboard!");
@@ -219,12 +219,12 @@ namespace winrt::MainApplication::implementation
     {
         return m_show_password ? m_data.Password() : L"****************";
     }
-    
+
     event_token MainApplication::implementation::LoginDataListItem::PropertyChanged(Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& value)
     {
         return m_property_changed.add(value);
     }
-    
+
     void MainApplication::implementation::LoginDataListItem::PropertyChanged(event_token const& token)
     {
 		m_property_changed.remove(token);
