@@ -6,18 +6,19 @@
 
 #include "LoginData.g.h"
 
-namespace winrt::PasswordManager::implementation
+namespace winrt::MainApplication::implementation
 {
     struct LoginData : LoginDataT<LoginData>
     {
         LoginData() = default;
+
         inline bool operator==(const LoginData& rhs) const
         {
             return Url() == rhs.Url() && Username() == rhs.Username();
         }
 
-        PasswordManager::IFunctionalData Clone() const;
-        const bool Equals(PasswordManager::IFunctionalData const& rhs) const;
+        MainApplication::IFunctionalData Clone() const;
+        const bool Equals(MainApplication::IFunctionalData const& rhs) const;
 
 #pragma region Getters and Setters
         hstring Name() const;
@@ -46,7 +47,7 @@ namespace winrt::PasswordManager::implementation
 #pragma endregion Getters and Setters
 
         void InitializeInvalidTimes();
-        hstring GetExportData(PasswordManager::LoginDataFileType const& type) const;
+        hstring GetExportData(MainApplication::LoginDataFileType const& type) const;
 
         bool HasEmptyData() const;
 
@@ -65,12 +66,12 @@ namespace winrt::PasswordManager::implementation
         hstring m_username;
         hstring m_password;
         hstring m_notes;
-        uint64_t m_created;
-        uint64_t m_changed;
-        uint64_t m_used;
+        uint64_t m_created = 0u;
+        uint64_t m_changed = 0u;
+        uint64_t m_used = 0u;
     };
 }
-namespace winrt::PasswordManager::factory_implementation
+namespace winrt::MainApplication::factory_implementation
 {
     struct LoginData : LoginDataT<LoginData, implementation::LoginData>
     {

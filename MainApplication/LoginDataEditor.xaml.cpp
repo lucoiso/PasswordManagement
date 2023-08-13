@@ -22,12 +22,12 @@ namespace winrt::MainApplication::implementation
         DefaultButton(Microsoft::UI::Xaml::Controls::ContentDialogButton::Primary);
     }
 
-    PasswordManager::LoginData MainApplication::implementation::LoginDataEditor::Data() const
+    MainApplication::LoginData MainApplication::implementation::LoginDataEditor::Data() const
     {
         return m_data;
     }
 
-    void MainApplication::implementation::LoginDataEditor::Data(PasswordManager::LoginData const& value)
+    void MainApplication::implementation::LoginDataEditor::Data(MainApplication::LoginData const& value)
     {
         Helper::SetMemberValue(value, m_data);
 

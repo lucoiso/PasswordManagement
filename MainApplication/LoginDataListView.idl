@@ -10,6 +10,6 @@ namespace MainApplication
     runtimeclass LoginDataListView : Microsoft.UI.Xaml.Controls.UserControl
     {
         LoginDataListView();
-        Windows.Foundation.Collections.IObservableVector<PasswordManager.LoginData> Data{ get; };
+        Windows.Foundation.Collections.IObservableVector<LoginData> Data{ get; };
     }
 }

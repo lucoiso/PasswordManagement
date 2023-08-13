@@ -6,7 +6,7 @@
 
 #include "Generator.g.h"
 
-namespace winrt::PasswordGenerator::implementation
+namespace winrt::MainApplication::implementation
 {
     struct Generator : GeneratorT<Generator>
     {
@@ -16,7 +16,7 @@ namespace winrt::PasswordGenerator::implementation
     };
 }
 
-namespace winrt::PasswordGenerator::factory_implementation
+namespace winrt::MainApplication::factory_implementation
 {
     struct Generator : GeneratorT<Generator, implementation::Generator>
     {

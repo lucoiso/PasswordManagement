@@ -31,7 +31,7 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-        const hstring generated_password = co_await winrt::PasswordGenerator::Generator::GeneratePassword();
+        const hstring generated_password = co_await winrt::MainApplication::Generator::GeneratePassword();
         TB_Password().Text(generated_password);
 
         Helper::InsertSettingValue(SETTING_GENERATOR_LAST_GENERATED_PASSWORD, generated_password);

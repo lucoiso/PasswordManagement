@@ -31,12 +31,12 @@ namespace winrt::MainApplication::implementation
         }
     }
 
-    PasswordManager::LoginData MainApplication::implementation::LoginDataListItem::Data() const
+    MainApplication::LoginData MainApplication::implementation::LoginDataListItem::Data() const
     {
         return m_data;
     }
 
-    void MainApplication::implementation::LoginDataListItem::Data(PasswordManager::LoginData const& value)
+    void MainApplication::implementation::LoginDataListItem::Data(MainApplication::LoginData const& value)
     {
         if (Helper::SetMemberValue(value, m_data))
         {
@@ -124,7 +124,7 @@ namespace winrt::MainApplication::implementation
         MainApplication::LoginDataEditor editor;
         editor.XamlRoot(DialogManager::GetInstance().GetMainWindowContentXamlRoot());
         editor.Title(box_value(L"Editor"));
-        editor.Data(Data().Clone().as<PasswordManager::LoginData>());
+        editor.Data(Data().Clone().as<MainApplication::LoginData>());
 
         switch ((co_await editor.ShowAsync()))
         {
@@ -138,10 +138,10 @@ namespace winrt::MainApplication::implementation
             {
                 EmitChangedEvent();
 
-                const auto new_data = editor.Data().Clone().as<PasswordManager::LoginData>();
+                const auto new_data = editor.Data().Clone().as<MainApplication::LoginData>();
                 new_data.Changed(Data().Changed());
 
-                const auto current_data = Data().Clone().as<PasswordManager::LoginData>();
+                const auto current_data = Data().Clone().as<MainApplication::LoginData>();
 
                 const bool is_new_data = !current_data.Equals(new_data);
                 if (is_new_data)

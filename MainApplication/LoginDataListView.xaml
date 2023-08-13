@@ -9,7 +9,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="using:MainApplication"
-    xmlns:manager="using:PasswordManager"
     mc:Ignorable="d"
 	Loaded="ComponentLoaded">
 
@@ -18,7 +17,7 @@
 
 		<ListView x:Name="LV_DataList" Margin="4" Height="600" Width="720" CornerRadius="4" ItemsSource="{x:Bind Data}" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionMode="None">
 			<ListView.ItemTemplate>
-				<DataTemplate x:DataType="manager:LoginData">
+				<DataTemplate x:DataType="local:LoginData">
 					<local:LoginDataListItem Data="{x:Bind}" HorizontalAlignment="Stretch" />
 				</DataTemplate>
 			</ListView.ItemTemplate>

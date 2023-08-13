@@ -4,6 +4,19 @@
 
 namespace MainApplication
 {
+    enum LoginDataFileType
+    {
+        Undefined,
+        Microsoft,
+        Google,
+        Firefox,
+        Kapersky,
+        Lupass_Internal,
+        Lupass_External,
+        GenericCSV,
+        MAX
+    };
+
     enum DataSortMode
     {
         Undefined,
@@ -25,6 +38,41 @@ namespace MainApplication
         MAX
     };
 
+    interface IFunctionalData
+    {
+        IFunctionalData Clone();
+        Boolean Equals(IFunctionalData rhs);
+    };
+
+    [default_interface]
+    runtimeclass LoginData : IFunctionalData
+    {
+        LoginData();
+
+        String Name;
+        String Url;
+        String Username;
+        String Password;
+        String Notes;
+
+        UInt64 Created;
+        UInt64 Changed;
+        UInt64 Used;
+
+        void InitializeInvalidTimes();
+        String GetExportData(LoginDataFileType type);
+
+        Boolean HasEmptyData();
+        void ResetLoginData();
+    }
+
+    [default_interface]
+    runtimeclass Generator
+    {
+        Generator();
+        static Windows.Foundation.IAsyncOperation<String> GeneratePassword();
+    }
+
     delegate void SingleVoidDelegate();
-    delegate void ExportTypeDelegate(PasswordManager.LoginDataFileType export_type);
+    delegate void ExportTypeDelegate(LoginDataFileType export_type);
 }

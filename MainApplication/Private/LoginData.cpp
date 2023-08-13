@@ -9,11 +9,11 @@
 
 using namespace winrt;
 
-namespace winrt::PasswordManager::implementation
+namespace winrt::MainApplication::implementation
 {
-    PasswordManager::IFunctionalData LoginData::Clone() const
+    MainApplication::IFunctionalData LoginData::Clone() const
     {
-        PasswordManager::LoginData output;
+        MainApplication::LoginData output;
         output.Name(m_name);
         output.Url(m_url);
         output.Username(m_username);
@@ -26,7 +26,7 @@ namespace winrt::PasswordManager::implementation
         return output;
     }
 
-    const bool LoginData::Equals(PasswordManager::IFunctionalData const& rhs) const
+    const bool LoginData::Equals(MainApplication::IFunctionalData const& rhs) const
     {
         return *this == *rhs.try_as<LoginData>().get();
     }
@@ -140,24 +140,24 @@ namespace winrt::PasswordManager::implementation
         initialization_lambda(m_created);
     }
 
-    hstring LoginData::GetExportData(PasswordManager::LoginDataFileType const& inType) const
+    hstring LoginData::GetExportData(MainApplication::LoginDataFileType const& inType) const
     {
         switch (inType)
         {
-        case PasswordManager::LoginDataFileType::Microsoft:
+        case MainApplication::LoginDataFileType::Microsoft:
             return GetExportData_Microsoft();
 
-        case PasswordManager::LoginDataFileType::Google:
+        case MainApplication::LoginDataFileType::Google:
             return GetExportData_Google();
 
-        case PasswordManager::LoginDataFileType::Firefox:
+        case MainApplication::LoginDataFileType::Firefox:
             return GetExportData_Firefox();
 
-        case PasswordManager::LoginDataFileType::Lupass_External:
-        case PasswordManager::LoginDataFileType::Lupass_Internal:
+        case MainApplication::LoginDataFileType::Lupass_External:
+        case MainApplication::LoginDataFileType::Lupass_Internal:
             return GetExportData_Lupass();
 
-        case PasswordManager::LoginDataFileType::Kapersky:
+        case MainApplication::LoginDataFileType::Kapersky:
             return GetExportData_Kapersky();
 
         default:

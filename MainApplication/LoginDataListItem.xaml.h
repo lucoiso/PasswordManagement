@@ -5,6 +5,7 @@
 #pragma once
 
 #include "LoginDataListItem.g.h"
+#include "LoginData.h"
 
 namespace winrt::MainApplication::implementation
 {
@@ -14,8 +15,8 @@ namespace winrt::MainApplication::implementation
 
         void ComponentLoaded(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
-        PasswordManager::LoginData Data() const;
-        void Data(PasswordManager::LoginData const& value);
+        MainApplication::LoginData Data() const;
+        void Data(MainApplication::LoginData const& value);
 
         Windows::Foundation::IAsyncAction BT_TogglePassword_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         Windows::Foundation::IAsyncAction BT_CopyContent_Clicked(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
@@ -36,7 +37,7 @@ namespace winrt::MainApplication::implementation
         void PropertyChanged(event_token const& token);
 
     private:
-        PasswordManager::LoginData m_data;
+        MainApplication::LoginData m_data;
         bool m_show_password{ false };
         event<Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_property_changed;
     };

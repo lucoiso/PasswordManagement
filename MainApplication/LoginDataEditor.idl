@@ -2,12 +2,14 @@
 // Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
+import "ModuleInterface.idl";
+
 namespace MainApplication
 {
     [default_interface]
     runtimeclass LoginDataEditor : Microsoft.UI.Xaml.Controls.ContentDialog
     {
         LoginDataEditor();
-        PasswordManager.LoginData Data;
+        LoginData Data;
     }
 }

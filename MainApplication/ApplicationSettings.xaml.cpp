@@ -31,8 +31,14 @@ namespace winrt::MainApplication::implementation
             {
                 if (co_await SaveSettings())
                 {
-                    Hide();
-                    App::RestartApplication();
+                    try
+                    {
+                        App::RestartApplication();
+                    }
+                    catch (const hresult_error& e)
+                    {
+                        Helper::PrintDebugLine(e.message());
+                    }
                 }
             }
         );
@@ -40,10 +46,7 @@ namespace winrt::MainApplication::implementation
         SecondaryButtonClick(
             [this]([[maybe_unused]] auto&&, [[maybe_unused]] auto&&) -> Windows::Foundation::IAsyncAction
             {
-                if (co_await SaveSettings())
-                {
-                    Hide();
-                }
+                co_await SaveSettings();
             }
         );
     }
@@ -96,14 +99,18 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
+        const bool windows_hello_enabled = TS_WindowsHello().IsOn();
+        const bool system_tray_enabled = TS_SystemTray().IsOn();
+        const bool shortcuts_enabled = TS_Shortcuts().IsOn();
+
         if (!(co_await Helper::RequestUserCredentials()))
         {
             co_return false;
         }
 
-        Helper::InsertSettingValue(SETTING_ENABLE_WINDOWS_HELLO, TS_WindowsHello().IsOn());
-        Helper::InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, TS_SystemTray().IsOn());
-        Helper::InsertSettingValue(SETTING_ENABLE_SHORTCUTS, TS_Shortcuts().IsOn());
+        Helper::InsertSettingValue(SETTING_ENABLE_WINDOWS_HELLO, windows_hello_enabled);
+        Helper::InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, system_tray_enabled);
+        Helper::InsertSettingValue(SETTING_ENABLE_SHORTCUTS, shortcuts_enabled);
 
         co_return true;
     }

@@ -2,6 +2,8 @@
 // Year: 2023
 // Repository: https://github.com/lucoiso/PasswordManagement
 
+import "ModuleInterface.idl";
+
 namespace MainApplication
 {
     [default_interface]
@@ -9,7 +11,7 @@ namespace MainApplication
     {
         LoginDataListItem();
 
-        PasswordManager.LoginData Data;
+        LoginData Data;
         String Password{ get; };
 
         String TimeCreated{ get; };

@@ -67,27 +67,27 @@ namespace winrt::MainApplication::implementation
 
         const auto tag = element.Tag().as<hstring>();
 
-        PasswordManager::LoginDataFileType export_type = PasswordManager::LoginDataFileType::Undefined;
+        MainApplication::LoginDataFileType export_type = MainApplication::LoginDataFileType::Undefined;
 
         if (Helper::StringEquals(tag, L"Lupass"))
         {
-            export_type = PasswordManager::LoginDataFileType::Lupass_External;
+            export_type = MainApplication::LoginDataFileType::Lupass_External;
         }
         else if (Helper::StringEquals(tag, L"Microsoft"))
         {
-            export_type = PasswordManager::LoginDataFileType::Microsoft;
+            export_type = MainApplication::LoginDataFileType::Microsoft;
         }
         else if (Helper::StringEquals(tag, L"Google"))
         {
-            export_type = PasswordManager::LoginDataFileType::Google;
+            export_type = MainApplication::LoginDataFileType::Google;
         }
         else if (Helper::StringEquals(tag, L"Firefox"))
         {
-            export_type = PasswordManager::LoginDataFileType::Firefox;
+            export_type = MainApplication::LoginDataFileType::Firefox;
         }
         else if (Helper::StringEquals(tag, L"Kapersky"))
         {
-            export_type = PasswordManager::LoginDataFileType::Kapersky;
+            export_type = MainApplication::LoginDataFileType::Kapersky;
         }
 
         co_await DataManager::GetInstance().ExportDataAsync(export_type);

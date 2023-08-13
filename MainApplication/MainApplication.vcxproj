@@ -194,9 +194,13 @@
     </ClInclude>
     <ClInclude Include="Public\DialogManager.h" />
     <ClInclude Include="Public\DataManager.h" />
+    <ClInclude Include="Public\Generator.h" />
     <ClInclude Include="Public\Helpers\CastingHelper.h" />
+    <ClInclude Include="Public\Helpers\Constants.h" />
+    <ClInclude Include="Public\Helpers\Helper.h" />
     <ClInclude Include="Public\Helpers\SecurityHelper.h" />
     <ClInclude Include="Public\Helpers\SettingsHelper.h" />
+    <ClInclude Include="Public\LoginData.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -245,6 +249,8 @@
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
     <ClCompile Include="Private\DialogManager.cpp" />
     <ClCompile Include="Private\DataManager.cpp" />
+    <ClCompile Include="Private\Generator.cpp" />
+    <ClCompile Include="Private\LoginData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="App.idl">
@@ -300,14 +306,6 @@
   <ItemGroup>
     <None Include="MainApplication_TemporaryKey.pfx" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PasswordGenerator\PasswordGenerator.vcxproj">
-      <Project>{0bfc1dbb-fbfa-439c-ac79-c00a5f62d202}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\PasswordManager\PasswordManager.vcxproj">
-      <Project>{58907a8e-6f9b-4bbf-a38f-a0dad98c2856}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="ApplicationSettings.xaml">

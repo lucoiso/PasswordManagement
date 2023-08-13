@@ -17,10 +17,10 @@ namespace winrt::MainApplication::implementation
 
         void UpdateListSize(const float width, const float height);
 
-        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> Data() const;
+        Windows::Foundation::Collections::IObservableVector<MainApplication::LoginData> Data() const;
 
     private:
-        Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> m_data;
+        Windows::Foundation::Collections::IObservableVector<MainApplication::LoginData> m_data;
     };
 }
 

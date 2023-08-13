@@ -14,7 +14,7 @@
 
 using namespace winrt;
 
-namespace winrt::PasswordGenerator::implementation
+namespace winrt::MainApplication::implementation
 {
     hstring GeneratePasswordInBackground()
     {

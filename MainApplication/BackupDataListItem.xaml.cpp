@@ -42,9 +42,7 @@ namespace winrt::MainApplication::implementation
             try
             {
                 const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
-                const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
-
-                co_await DataManager::GetInstance().ImportDataFromFileAsync({ backup_file }, true);
+                co_await DataManager::GetInstance().ImportDataFromFileAsync({ co_await backups_directory.GetFileAsync(to_hstring(BackupTime())) }, true);
             }
             catch (const hresult_error& e)
             {
@@ -79,9 +77,7 @@ namespace winrt::MainApplication::implementation
             try
             {
                 const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
-                const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
-
-                co_await DataManager::GetInstance().ReplaceDataWithFileAsync({ backup_file }, true);
+                co_await DataManager::GetInstance().ReplaceDataWithFileAsync({ co_await backups_directory.GetFileAsync(to_hstring(BackupTime())) }, true);
             }
             catch (const hresult_error& e)
             {

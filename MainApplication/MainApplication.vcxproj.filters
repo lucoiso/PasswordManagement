@@ -20,6 +20,12 @@
     <ClCompile Include="Private\DataManager.cpp">
       <Filter>Development\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Generator.cpp">
+      <Filter>Development\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\LoginData.cpp">
+      <Filter>Development\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Assets">
@@ -94,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="Public\DataManager.h">
       <Filter>Development\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Generator.h">
+      <Filter>Development\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\LoginData.h">
+      <Filter>Development\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Helpers\Constants.h">
+      <Filter>Development\Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Helpers\Helper.h">
+      <Filter>Development\Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

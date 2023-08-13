@@ -5,6 +5,7 @@
 #pragma once
 
 #include "LoginDataEditor.g.h"
+#include "LoginData.h"
 
 namespace winrt::MainApplication::implementation
 {
@@ -12,8 +13,8 @@ namespace winrt::MainApplication::implementation
     {
         LoginDataEditor();
 
-        PasswordManager::LoginData Data() const;
-        void Data(PasswordManager::LoginData const& value);
+        MainApplication::LoginData Data() const;
+        void Data(MainApplication::LoginData const& value);
 
         void TB_Data_Changed(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
@@ -21,7 +22,7 @@ namespace winrt::MainApplication::implementation
         void BT_GeneratePassword_Click(Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
     private:
-        PasswordManager::LoginData m_data;
+        MainApplication::LoginData m_data;
     };
 }
 

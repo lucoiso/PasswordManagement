@@ -23,7 +23,7 @@ namespace winrt::MainApplication::implementation
     {
         InitializeComponent();
 
-        m_data = single_threaded_observable_vector<PasswordManager::LoginData>();
+        m_data = single_threaded_observable_vector<MainApplication::LoginData>();
     }
 
     void LoginDataListView::ComponentLoaded([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::RoutedEventArgs const& args)
@@ -46,7 +46,7 @@ namespace winrt::MainApplication::implementation
                 m_data.Clear();
 
                 const auto data_container = DataManager::GetInstance().Data(true);
-                for (PasswordManager::LoginData const& data : data_container)
+                for (MainApplication::LoginData const& data : data_container)
                 {
                     m_data.Append(data);
                 }
@@ -77,7 +77,7 @@ namespace winrt::MainApplication::implementation
         TB_Search().Width(list_width);
     }
 
-    Windows::Foundation::Collections::IObservableVector<PasswordManager::LoginData> LoginDataListView::Data() const
+    Windows::Foundation::Collections::IObservableVector<MainApplication::LoginData> LoginDataListView::Data() const
     {
         return m_data;
     }
