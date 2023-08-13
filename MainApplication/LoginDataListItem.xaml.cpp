@@ -28,7 +28,7 @@ namespace winrt::MainApplication::implementation
         if (!Helper::GetSettingValue<bool>(LICENSING_ENABLED_KEY))
         {
             BT_Edit().IsEnabled(false);
-		}
+        }
     }
 
     PasswordManager::LoginData MainApplication::implementation::LoginDataListItem::Data() const
@@ -57,8 +57,8 @@ namespace winrt::MainApplication::implementation
 
         if (!(co_await Helper::RequestUserCredentials()))
         {
-			co_return;
-		}
+            co_return;
+        }
 
         m_show_password = !m_show_password;
         m_property_changed(*this, Data::PropertyChangedEventArgs{ L"Password" });
@@ -82,31 +82,31 @@ namespace winrt::MainApplication::implementation
     {
         LUPASS_LOG_FUNCTION();
 
-		const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
-		const auto tag = element.Tag().as<hstring>();
+        const auto element = sender.as<Microsoft::UI::Xaml::FrameworkElement>();
+        const auto tag = element.Tag().as<hstring>();
 
-		if (Helper::StringEquals(tag, L"Username"))
-		{
-			CopyContentToClipboard(m_data.Username());
-		}
-		else if (Helper::StringEquals(tag, L"Password"))
-		{
+        if (Helper::StringEquals(tag, L"Username"))
+        {
+            CopyContentToClipboard(m_data.Username());
+        }
+        else if (Helper::StringEquals(tag, L"Password"))
+        {
             if (!(co_await Helper::RequestUserCredentials()))
             {
                 co_return;
             }
 
-			CopyContentToClipboard(m_data.Password());
-		}
-		else if (Helper::StringEquals(tag, L"Url"))
-		{
-			CopyContentToClipboard(m_data.Url());
-		}
+            CopyContentToClipboard(m_data.Password());
+        }
+        else if (Helper::StringEquals(tag, L"Url"))
+        {
+            CopyContentToClipboard(m_data.Url());
+        }
 
-		Controls::Flyout flyout;
+        Controls::Flyout flyout;
         Controls::TextBlock info;
         info.Text(L"Copied to clipboard!");
-		flyout.Content(info);
+        flyout.Content(info);
         flyout.ShowAt(element);
 
         EmitUsedEvent();
@@ -128,34 +128,34 @@ namespace winrt::MainApplication::implementation
 
         switch ((co_await editor.ShowAsync()))
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        {
+            if (editor.Data().HasEmptyData())
             {
-                if (editor.Data().HasEmptyData())
+                co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Registered data contains empty values.", false, true);
+            }
+            else
+            {
+                EmitChangedEvent();
+
+                const auto new_data = editor.Data().Clone().as<PasswordManager::LoginData>();
+                new_data.Changed(Data().Changed());
+
+                const auto current_data = Data().Clone().as<PasswordManager::LoginData>();
+
+                const bool is_new_data = !current_data.Equals(new_data);
+                if (is_new_data)
                 {
-                    co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Registered data contains empty values.", false, true);
-                }
-                else
-                {
-                    EmitChangedEvent();
-
-                    const auto new_data = editor.Data().Clone().as<PasswordManager::LoginData>();
-                    new_data.Changed(Data().Changed());
-
-                    const auto current_data = Data().Clone().as<PasswordManager::LoginData>();
-
-                    const bool is_new_data = !current_data.Equals(new_data);
-                    if (is_new_data)
-                    {
-                        co_await DataManager::GetInstance().RemoveLoginDataAsync({ Data() }, false);
-                    }
-
-                    co_await DataManager::GetInstance().InsertLoginDataAsync({ new_data }, true);
+                    co_await DataManager::GetInstance().RemoveLoginDataAsync({ Data() }, false);
                 }
 
-                break;
+                co_await DataManager::GetInstance().InsertLoginDataAsync({ new_data }, true);
             }
 
-            default: break;
+            break;
+        }
+
+        default: break;
         }
     }
 
@@ -172,11 +172,11 @@ namespace winrt::MainApplication::implementation
 
         switch (result)
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                co_await DataManager::GetInstance().RemoveLoginDataAsync({ Data() }, true);
-                break;
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            co_await DataManager::GetInstance().RemoveLoginDataAsync({ Data() }, true);
+            break;
 
-            default: break;
+        default: break;
         }
     }
 
@@ -227,6 +227,6 @@ namespace winrt::MainApplication::implementation
 
     void MainApplication::implementation::LoginDataListItem::PropertyChanged(event_token const& token)
     {
-		m_property_changed.remove(token);
+        m_property_changed.remove(token);
     }
 }

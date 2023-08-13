@@ -30,8 +30,8 @@ namespace winrt::MainApplication::implementation
             }
             else
             {
-				co_await Windows::System::Launcher::LaunchUriAsync(uri);
-			}
+                co_await Windows::System::Launcher::LaunchUriAsync(uri);
+            }
         }
 
         HWND GetWindowHandle();

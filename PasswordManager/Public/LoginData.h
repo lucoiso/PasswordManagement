@@ -46,7 +46,7 @@ namespace winrt::PasswordManager::implementation
 #pragma endregion Getters and Setters
 
         void InitializeInvalidTimes();
-        hstring GetExportData(PasswordManager::LoginDataExportType const& type) const;
+        hstring GetExportData(PasswordManager::LoginDataFileType const& type) const;
 
         bool HasEmptyData() const;
 

@@ -11,18 +11,18 @@ using namespace winrt;
 
 namespace winrt::PasswordManager::implementation
 {
-    LoginUpdateEventParams::LoginUpdateEventParams(PasswordManager::LoginData const& data, PasswordManager::LoginDataExportType const& type) : m_data(data), m_type(type)
+    LoginUpdateEventParams::LoginUpdateEventParams(Windows::Foundation::Collections::IVector<PasswordManager::LoginData> const& data, PasswordManager::LoginDataFileType const& type) : m_data(data), m_type(type)
     {
     }
 
-    PasswordManager::LoginData LoginUpdateEventParams::Data() const
+    Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> LoginUpdateEventParams::Data() const
     {
         LUPASS_LOG_FUNCTION();
 
-        return m_data;
+        return m_data.GetView();
     }
 
-    PasswordManager::LoginDataExportType LoginUpdateEventParams::Type() const
+    PasswordManager::LoginDataFileType LoginUpdateEventParams::Type() const
     {
         LUPASS_LOG_FUNCTION();
 

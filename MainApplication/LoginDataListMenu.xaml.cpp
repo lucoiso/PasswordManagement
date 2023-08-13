@@ -48,8 +48,8 @@ namespace winrt::MainApplication::implementation
 
         for (const auto& file : load_files)
         {
-			files.push_back(file);
-		}
+            files.push_back(file);
+        }
 
         co_await DataManager::GetInstance().ImportDataFromFileAsync(files, true);
     }
@@ -67,27 +67,27 @@ namespace winrt::MainApplication::implementation
 
         const auto tag = element.Tag().as<hstring>();
 
-        PasswordManager::LoginDataExportType export_type = PasswordManager::LoginDataExportType::Undefined;
+        PasswordManager::LoginDataFileType export_type = PasswordManager::LoginDataFileType::Undefined;
 
         if (Helper::StringEquals(tag, L"Lupass"))
         {
-            export_type = PasswordManager::LoginDataExportType::Lupass_External;
+            export_type = PasswordManager::LoginDataFileType::Lupass_External;
         }
         else if (Helper::StringEquals(tag, L"Microsoft"))
         {
-            export_type = PasswordManager::LoginDataExportType::Microsoft;
+            export_type = PasswordManager::LoginDataFileType::Microsoft;
         }
         else if (Helper::StringEquals(tag, L"Google"))
         {
-            export_type = PasswordManager::LoginDataExportType::Google;
+            export_type = PasswordManager::LoginDataFileType::Google;
         }
         else if (Helper::StringEquals(tag, L"Firefox"))
         {
-            export_type = PasswordManager::LoginDataExportType::Firefox;
+            export_type = PasswordManager::LoginDataFileType::Firefox;
         }
         else if (Helper::StringEquals(tag, L"Kapersky"))
         {
-            export_type = PasswordManager::LoginDataExportType::Kapersky;
+            export_type = PasswordManager::LoginDataFileType::Kapersky;
         }
 
         co_await DataManager::GetInstance().ExportDataAsync(export_type);
@@ -103,21 +103,21 @@ namespace winrt::MainApplication::implementation
 
         switch ((co_await editor.ShowAsync()))
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        {
+            if (editor.Data().HasEmptyData())
             {
-                if (editor.Data().HasEmptyData())
-                {
-                    co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Registered data contains empty values.", false, true);
-                }
-                else
-                {
-                    co_await DataManager::GetInstance().InsertLoginDataAsync({ editor.Data() }, true);
-                }
+                co_await DialogManager::GetInstance().ShowDialogAsync(L"Error", L"Registered data contains empty values.", false, true);
+            }
+            else
+            {
+                co_await DataManager::GetInstance().InsertLoginDataAsync({ editor.Data() }, true);
+            }
 
-				break;
-			}
+            break;
+        }
 
-            default: co_return;
+        default: co_return;
         }
     }
 
@@ -140,10 +140,10 @@ namespace winrt::MainApplication::implementation
         const auto result = co_await DialogManager::GetInstance().ShowDialogAsync(L"Delete All Data", L"Confirm process?", true, true, L"Confirm", L"Cancel");
         switch (result)
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-            {
-                co_await DataManager::GetInstance().ClearLoginDataAsync(true);
-            }
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        {
+            co_await DataManager::GetInstance().ClearLoginDataAsync(true);
+        }
         }
     }
 

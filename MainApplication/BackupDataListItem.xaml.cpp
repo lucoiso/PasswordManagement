@@ -36,27 +36,27 @@ namespace winrt::MainApplication::implementation
 
         switch (result)
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                DialogManager::GetInstance().ShowLoadingDialog();
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            DialogManager::GetInstance().ShowLoadingDialog();
 
-                try
-                {
-                    const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
-                    const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
+            try
+            {
+                const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
+                const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
 
-                    co_await DataManager::GetInstance().ImportDataFromFileAsync({ backup_file }, true);
-                }
-                catch (const hresult_error& e)
-                {
-                    DialogManager::GetInstance().HideLoadingDialog();
-                    Helper::PrintDebugLine(e.message());
-                }
-
+                co_await DataManager::GetInstance().ImportDataFromFileAsync({ backup_file }, true);
+            }
+            catch (const hresult_error& e)
+            {
                 DialogManager::GetInstance().HideLoadingDialog();
+                Helper::PrintDebugLine(e.message());
+            }
 
-                break;
+            DialogManager::GetInstance().HideLoadingDialog();
 
-            default: break;
+            break;
+
+        default: break;
         }
     }
 
@@ -73,27 +73,27 @@ namespace winrt::MainApplication::implementation
 
         switch (result)
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
-                DialogManager::GetInstance().ShowLoadingDialog();
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+            DialogManager::GetInstance().ShowLoadingDialog();
 
-                try
-                {
-                    const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
-                    const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
+            try
+            {
+                const auto backups_directory = co_await DataManager::GetInstance().GetBackupsDirectoryAsync();
+                const auto backup_file = co_await backups_directory.GetFileAsync(to_hstring(BackupTime()));
 
-                    co_await DataManager::GetInstance().ReplaceDataWithFileAsync({ backup_file }, true);
-                }
-                catch (const hresult_error& e)
-                {
-                    DialogManager::GetInstance().HideLoadingDialog();
-                    Helper::PrintDebugLine(e.message());
-                }
-
+                co_await DataManager::GetInstance().ReplaceDataWithFileAsync({ backup_file }, true);
+            }
+            catch (const hresult_error& e)
+            {
                 DialogManager::GetInstance().HideLoadingDialog();
+                Helper::PrintDebugLine(e.message());
+            }
 
-                break;
+            DialogManager::GetInstance().HideLoadingDialog();
 
-            default: break;
+            break;
+
+        default: break;
         }
     }
 

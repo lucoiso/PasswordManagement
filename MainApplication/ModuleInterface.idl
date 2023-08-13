@@ -26,5 +26,5 @@ namespace MainApplication
     };
 
     delegate void SingleVoidDelegate();
-    delegate void ExportTypeDelegate(PasswordManager.LoginDataExportType export_type);
+    delegate void ExportTypeDelegate(PasswordManager.LoginDataFileType export_type);
 }

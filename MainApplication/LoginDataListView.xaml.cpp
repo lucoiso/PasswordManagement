@@ -48,8 +48,8 @@ namespace winrt::MainApplication::implementation
                 const auto data_container = DataManager::GetInstance().Data(true);
                 for (PasswordManager::LoginData const& data : data_container)
                 {
-					m_data.Append(data);
-				}
+                    m_data.Append(data);
+                }
 
                 TB_TotalEntriesNum().Text(hstring(L"Total Entries: " + to_hstring(DataManager::GetInstance().DataSize())));
                 TB_FilteredEntriesNum().Text(hstring(L"Filtered Entries: " + to_hstring(data_container.Size())));

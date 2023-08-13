@@ -25,7 +25,13 @@ Windows::Foundation::IAsyncAction DataManager::Activate()
     m_data_update_token = m_manager.LoginDataUpdated(
         [this]([[maybe_unused]] const auto&, PasswordManager::LoginUpdateEventParams const& event_data) -> Windows::Foundation::IAsyncAction
         {
-            co_await InsertLoginDataAsync({ event_data.Data() }, false);
+            std::vector<PasswordManager::LoginData> new_data;
+            for (const auto& received_Data_it : event_data.Data())
+            {
+                new_data.emplace_back(received_Data_it);
+            }
+
+            co_await InsertLoginDataAsync(new_data, true);
         }
     );
 
@@ -90,9 +96,9 @@ Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> DataMa
         [this](const PasswordManager::LoginData& lhs, const PasswordManager::LoginData& rhs)
         {
             const auto filter_orientation = [&](const auto& left_string, const auto& right_string) -> bool
-            {
-                switch (m_sorting_orientation)
                 {
+                    switch (m_sorting_orientation)
+                    {
                     case DataSortOrientation::Ascending:
                         return left_string < right_string;
 
@@ -101,34 +107,34 @@ Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> DataMa
 
                     default:
                         return false;
-                }
-            };
+                    }
+                };
 
             switch (m_sorting_mode)
             {
-                case DataSortMode::Name:
-                    return filter_orientation(lhs.Name(), rhs.Name());
+            case DataSortMode::Name:
+                return filter_orientation(lhs.Name(), rhs.Name());
 
-                case DataSortMode::Url:
-                    return filter_orientation(lhs.Url(), rhs.Url());
+            case DataSortMode::Url:
+                return filter_orientation(lhs.Url(), rhs.Url());
 
-                case DataSortMode::Username:
-                    return filter_orientation(lhs.Username(), rhs.Username());
+            case DataSortMode::Username:
+                return filter_orientation(lhs.Username(), rhs.Username());
 
-                case DataSortMode::Notes:
-                    return filter_orientation(lhs.Notes(), rhs.Notes());
+            case DataSortMode::Notes:
+                return filter_orientation(lhs.Notes(), rhs.Notes());
 
-                case DataSortMode::Created:
-                    return filter_orientation(lhs.Created(), rhs.Created());
+            case DataSortMode::Created:
+                return filter_orientation(lhs.Created(), rhs.Created());
 
-                case DataSortMode::Used:
-                    return filter_orientation(lhs.Used(), rhs.Used());
+            case DataSortMode::Used:
+                return filter_orientation(lhs.Used(), rhs.Used());
 
-                case DataSortMode::Changed:
-                    return filter_orientation(lhs.Changed(), rhs.Changed());
+            case DataSortMode::Changed:
+                return filter_orientation(lhs.Changed(), rhs.Changed());
 
-                default:
-                    return false;
+            default:
+                return false;
             }
         }
     );
@@ -229,20 +235,20 @@ Windows::Foundation::IAsyncAction DataManager::ImportDataFromFileAsync(const std
     {
         for (const auto file : data)
         {
-            PasswordManager::LoginDataExportType export_type = PasswordManager::LoginDataExportType::Undefined;
+            PasswordManager::LoginDataFileType export_type = PasswordManager::LoginDataFileType::Undefined;
             const auto file_type = file.FileType();
 
             if (file_type == L".")
             {
-                export_type = PasswordManager::LoginDataExportType::Lupass_Internal;
+                export_type = PasswordManager::LoginDataFileType::Lupass_Internal;
             }
             else if (file_type == L".csv")
             {
-                export_type = PasswordManager::LoginDataExportType::GenericCSV;
+                export_type = PasswordManager::LoginDataFileType::GenericCSV;
             }
             else if (file_type == L".txt")
             {
-                export_type = PasswordManager::LoginDataExportType::Kapersky;
+                export_type = PasswordManager::LoginDataFileType::Kapersky;
             }
 
             co_await m_manager.ImportDataAsync(file, export_type);
@@ -268,7 +274,7 @@ Windows::Foundation::IAsyncAction DataManager::ReplaceDataWithFileAsync(const st
     co_await ImportDataFromFileAsync(data, save_data);
 }
 
-Windows::Foundation::IAsyncAction DataManager::ExportDataAsync(const PasswordManager::LoginDataExportType export_type) const
+Windows::Foundation::IAsyncAction DataManager::ExportDataAsync(const PasswordManager::LoginDataFileType export_type) const
 {
     LUPASS_LOG_FUNCTION();
 
@@ -304,7 +310,7 @@ Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVectorVi
     return file_picker.PickMultipleFilesAsync();
 }
 
-Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> DataManager::SavePasswordDataFileAsync(const PasswordManager::LoginDataExportType& export_mode) const
+Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> DataManager::SavePasswordDataFileAsync(const PasswordManager::LoginDataFileType& export_mode) const
 {
     LUPASS_LOG_FUNCTION();
 
@@ -315,24 +321,24 @@ Windows::Foundation::IAsyncOperation<Windows::Storage::StorageFile> DataManager:
 
     switch (export_mode)
     {
-        case PasswordManager::LoginDataExportType::Lupass_Internal:
-            file_types.Append(L".bin");
-            break;
+    case PasswordManager::LoginDataFileType::Lupass_Internal:
+        file_types.Append(L".bin");
+        break;
 
-        case PasswordManager::LoginDataExportType::Lupass_External:
-        case PasswordManager::LoginDataExportType::Microsoft:
-        case PasswordManager::LoginDataExportType::Google:
-        case PasswordManager::LoginDataExportType::Firefox:
-            file_types.Append(L".csv");
-            break;
+    case PasswordManager::LoginDataFileType::Lupass_External:
+    case PasswordManager::LoginDataFileType::Microsoft:
+    case PasswordManager::LoginDataFileType::Google:
+    case PasswordManager::LoginDataFileType::Firefox:
+        file_types.Append(L".csv");
+        break;
 
-        case PasswordManager::LoginDataExportType::Kapersky:
-            file_types.Append(L".txt");
-            break;
+    case PasswordManager::LoginDataFileType::Kapersky:
+        file_types.Append(L".txt");
+        break;
 
-        default:
-            throw hresult_invalid_argument(L"Invalid data type");
-            break;
+    default:
+        throw hresult_invalid_argument(L"Invalid data type");
+        break;
     }
 
     file_picker.FileTypeChoices().Insert(L"Password Data", file_types);
@@ -373,7 +379,7 @@ Windows::Foundation::IAsyncAction DataManager::SaveLocalDataFileAsync() const
 {
     try
     {
-        co_await m_manager.ExportDataAsync(co_await GetLocalDataFileAsync(), Data(), PasswordManager::LoginDataExportType::Lupass_Internal);
+        co_await m_manager.ExportDataAsync(co_await GetLocalDataFileAsync(), Data(), PasswordManager::LoginDataFileType::Lupass_Internal);
     }
     catch (const hresult_error& e)
     {

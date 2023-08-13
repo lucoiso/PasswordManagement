@@ -20,10 +20,10 @@ namespace winrt::Helper
 
         if (const auto local_settings = Windows::Storage::ApplicationData::Current().LocalSettings(); local_settings.Values().HasKey(key))
         {
-			return local_settings.Values().Lookup(key).as<SettingTy>();
-		}
+            return local_settings.Values().Lookup(key).as<SettingTy>();
+        }
 
-		return SettingTy();
+        return SettingTy();
     }
 
     inline bool HasSettingKey(const hstring& key)
@@ -60,12 +60,12 @@ namespace winrt::Helper
         LUPASS_LOG_FUNCTION();
 
         const auto initialize_setting = [](const hstring& key, const auto& value)
-        {
-            if (!HasSettingKey(key))
             {
-                InsertSettingValue(key, value);
-            }
-        };
+                if (!HasSettingKey(key))
+                {
+                    InsertSettingValue(key, value);
+                }
+            };
 
         initialize_setting(SETTING_ENABLE_SYSTEM_TRAY, true);
         initialize_setting(SETTING_ENABLE_SHORTCUTS, true);

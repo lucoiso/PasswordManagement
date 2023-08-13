@@ -128,41 +128,41 @@ namespace winrt::PasswordManager::implementation
     {
         const auto current_time = winrt::clock::now().time_since_epoch().count();
         const auto initialization_lambda = [this, current_time](std::uint64_t& value)
-        {
-            if (value == 0)
             {
-                value = current_time;
-            }
-        };
+                if (value == 0)
+                {
+                    value = current_time;
+                }
+            };
 
         initialization_lambda(m_used);
         initialization_lambda(m_changed);
         initialization_lambda(m_created);
     }
 
-    hstring LoginData::GetExportData(PasswordManager::LoginDataExportType const& inType) const
+    hstring LoginData::GetExportData(PasswordManager::LoginDataFileType const& inType) const
     {
         switch (inType)
         {
-            case PasswordManager::LoginDataExportType::Microsoft:
-                return GetExportData_Microsoft();
+        case PasswordManager::LoginDataFileType::Microsoft:
+            return GetExportData_Microsoft();
 
-            case PasswordManager::LoginDataExportType::Google:
-                return GetExportData_Google();
+        case PasswordManager::LoginDataFileType::Google:
+            return GetExportData_Google();
 
-            case PasswordManager::LoginDataExportType::Firefox:
-                return GetExportData_Firefox();
+        case PasswordManager::LoginDataFileType::Firefox:
+            return GetExportData_Firefox();
 
-            case PasswordManager::LoginDataExportType::Lupass_External:
-            case PasswordManager::LoginDataExportType::Lupass_Internal:
-                return GetExportData_Lupass();
+        case PasswordManager::LoginDataFileType::Lupass_External:
+        case PasswordManager::LoginDataFileType::Lupass_Internal:
+            return GetExportData_Lupass();
 
-            case PasswordManager::LoginDataExportType::Kapersky:
-                return GetExportData_Kapersky();
+        case PasswordManager::LoginDataFileType::Kapersky:
+            return GetExportData_Kapersky();
 
-            default:
-                throw hresult_invalid_argument(L"Invalid data type");
-                break;
+        default:
+            throw hresult_invalid_argument(L"Invalid data type");
+            break;
         }
     }
 

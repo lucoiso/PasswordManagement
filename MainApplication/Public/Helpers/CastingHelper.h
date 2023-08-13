@@ -70,9 +70,9 @@ namespace winrt::Helper
                 output = output + L" - ";
             }
 
-			const auto time_formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortTime();
+            const auto time_formatter = Windows::Globalization::DateTimeFormatting::DateTimeFormatter::ShortTime();
             output = output + time_formatter.Format(time);
-		}
+        }
 
         return output;
     }

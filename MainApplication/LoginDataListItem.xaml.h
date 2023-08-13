@@ -36,7 +36,7 @@ namespace winrt::MainApplication::implementation
         void PropertyChanged(event_token const& token);
 
     private:
-		PasswordManager::LoginData m_data;
+        PasswordManager::LoginData m_data;
         bool m_show_password{ false };
         event<Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_property_changed;
     };

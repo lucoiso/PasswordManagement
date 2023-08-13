@@ -25,9 +25,9 @@ namespace winrt::MainApplication::implementation
     {
         const auto main_window = Application::Current().as<App>()->Window();
         const auto ensure_save_lambda = [this, main_window]([[maybe_unused]] const auto& sender, [[maybe_unused]] const auto& args) -> Windows::Foundation::IAsyncAction
-        {
-            co_await DataManager::GetInstance().SaveLocalDataFileAsync();
-        };
+            {
+                co_await DataManager::GetInstance().SaveLocalDataFileAsync();
+            };
 
         main_window.Closed(ensure_save_lambda);
         co_await DataManager::GetInstance().Activate();

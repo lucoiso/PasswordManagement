@@ -12,8 +12,8 @@ namespace winrt::PasswordManager::implementation
     {
         LoginDataManager() = default;
 
-        Windows::Foundation::IAsyncAction ImportDataAsync(const Windows::Storage::StorageFile& file, const PasswordManager::LoginDataExportType export_type);
-        Windows::Foundation::IAsyncAction ExportDataAsync(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data, const PasswordManager::LoginDataExportType export_type);
+        Windows::Foundation::IAsyncAction ImportDataAsync(Windows::Storage::StorageFile const file, const PasswordManager::LoginDataFileType import_type);
+        Windows::Foundation::IAsyncAction ExportDataAsync(Windows::Storage::StorageFile const file, Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> const& data, const PasswordManager::LoginDataFileType export_type);
 
         event_token LoginDataUpdated(Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams> const& handler);
         void LoginDataUpdated(event_token const& token) noexcept;
@@ -22,18 +22,18 @@ namespace winrt::PasswordManager::implementation
         event<Windows::Foundation::EventHandler<PasswordManager::LoginUpdateEventParams>> m_data_updated;
 
     protected:
-        void PushData(const PasswordManager::LoginData& data, const PasswordManager::LoginDataExportType& type);
+        void PushData(std::vector<PasswordManager::LoginData>& data, const PasswordManager::LoginDataFileType type);
 
-        Windows::Foundation::IAsyncAction ReadData_Lupass(const Windows::Storage::StorageFile& file);
-        Windows::Foundation::IAsyncAction WriteData_Lupass(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data);
+        Windows::Foundation::IAsyncOperation<Windows::Foundation::Collections::IVector<PasswordManager::LoginData>> ReadData_Lupass(hstring const& display_name, Windows::Storage::Streams::IBuffer const& data_buffer);
+        Windows::Foundation::IAsyncAction WriteData_Lupass(Windows::Storage::StorageFile const& file, Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> const& data);
 
-        void ReadData_GenericCSV(const Windows::Foundation::Collections::IVectorView<hstring>& file_text, const PasswordManager::LoginDataExportType& data_type);
-        Windows::Foundation::IAsyncAction WriteData_GenericCSV(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data, const PasswordManager::LoginDataExportType& data_type) const;
+        std::vector<PasswordManager::LoginData> ReadData_GenericCSV(Windows::Foundation::Collections::IVectorView<hstring> const& file_text, const PasswordManager::LoginDataFileType data_type);
+        Windows::Foundation::IAsyncAction WriteData_GenericCSV(Windows::Storage::StorageFile const& file, Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> const& data, const PasswordManager::LoginDataFileType data_type) const;
 
-        void ProcessCsvLine(const hstring line, PasswordManager::LoginData& current_data, const PasswordManager::LoginDataExportType& data_type);
+        void ProcessCsvLine(hstring const& line, std::vector<PasswordManager::LoginData>& output_data, const PasswordManager::LoginDataFileType data_type);
 
-        void ReadData_Kapersky(const Windows::Foundation::Collections::IVectorView<hstring>& file_text);
-        Windows::Foundation::IAsyncAction WriteData_Kapersky(const Windows::Storage::StorageFile& file, const Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData>& data) const;
+        std::vector<PasswordManager::LoginData> ReadData_Kapersky(Windows::Foundation::Collections::IVectorView<hstring> const& file_text);
+        Windows::Foundation::IAsyncAction WriteData_Kapersky(Windows::Storage::StorageFile const& file, Windows::Foundation::Collections::IVectorView<PasswordManager::LoginData> const& data) const;
     };
 }
 namespace winrt::PasswordManager::factory_implementation

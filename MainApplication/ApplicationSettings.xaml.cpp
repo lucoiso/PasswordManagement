@@ -61,16 +61,16 @@ namespace winrt::MainApplication::implementation
 
         switch (result)
         {
-            case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        case Microsoft::UI::Xaml::Controls::ContentDialogResult::Primary:
+        {
+            if (!(co_await Helper::RequestUserCredentials()))
             {
-                if (!(co_await Helper::RequestUserCredentials()))
-                {
-                    co_return;
-                }
-
-                Helper::SetSettingsToDefault();
-                App::RestartApplication();
+                co_return;
             }
+
+            Helper::SetSettingsToDefault();
+            App::RestartApplication();
+        }
         }
     }
 
@@ -102,7 +102,7 @@ namespace winrt::MainApplication::implementation
         }
 
         Helper::InsertSettingValue(SETTING_ENABLE_WINDOWS_HELLO, TS_WindowsHello().IsOn());
-		Helper::InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, TS_SystemTray().IsOn());
+        Helper::InsertSettingValue(SETTING_ENABLE_SYSTEM_TRAY, TS_SystemTray().IsOn());
         Helper::InsertSettingValue(SETTING_ENABLE_SHORTCUTS, TS_Shortcuts().IsOn());
 
         co_return true;

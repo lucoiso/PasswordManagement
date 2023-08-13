@@ -79,12 +79,12 @@ namespace winrt::Helper
 
         switch (credentials_request.Status())
         {
-            case Windows::Security::Credentials::KeyCredentialStatus::Success:
-                Helper::InsertSettingValue(SECURITY_KEY_SET_ID, true);
-                SetForegroundWindow(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME));
-                co_return true;
+        case Windows::Security::Credentials::KeyCredentialStatus::Success:
+            Helper::InsertSettingValue(SECURITY_KEY_SET_ID, true);
+            SetForegroundWindow(FindWindow(TRAYICON_CLASSNAME, TRAYICON_CLASSNAME));
+            co_return true;
 
-            default: break;
+        default: break;
         }
 
         co_return false;
